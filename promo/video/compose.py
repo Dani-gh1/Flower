@@ -71,40 +71,124 @@ def build(name, overlays, end_text, trim_end=None, endsec=2.6):
     subprocess.run(cmd, check=True)
     print(name, round(total, 1), "s")
 
-m = {k: json.load(open(f"raw_en/{k}.json")) for k in ["umulig", "hjul", "levels", "menu", "quiz"]}
-u = m["umulig"]
-build("umulig", [
-    (0, u["spin"], "We picked Impossible.\nBig mistake.", dict(size=82, y=600)),
-    (u["spin"], u["card"] - 0.1, "The joint decides who's up next…", dict(y=1380)),
-    (u["card"], u["pass"], "Tornado. On Impossible.", dict(size=80, y=230)),
-    (u["pass"], u["end"], "Thank god for Pass", dict(size=80, y=230, style="green")),
-], "Spin the Joint · Easy, Hard or Impossible")
-h = m["hjul"]
-build("hjul", [
-    (0, h["land1"], "POV: the wheel has a personal problem with you", dict(size=76, y=210)),
-    (h["land1"], h["spin2"], "Round 1: Tornado", dict(size=80, y=210)),
-    (h["land2"], h["spin3"], "Round 2: …Tornado again", dict(size=80, y=210)),
-    (h["land3"], h["end"], "Round 3: the wheel is rigged.\nI just can't prove it.", dict(size=72, y=210, style="green")),
-], "Spin the Joint 2 · a wheel full of challenges")
-l = m["levels"]
-build("levels", [
-    (0, l["easy"], "Easy, Hard or Impossible?\nWhat would your crew pick?", dict(size=70, y=1180)),
-    (l["easy"], l["hard"], "EASY", dict(size=110, y=1350, style="green")),
-    (l["hard"], l["impossible"], "HARD", dict(size=110, y=1350, style="green")),
-    (l["impossible"], l["end"], "IMPOSSIBLE", dict(size=110, y=1350, style="green")),
-], "Tell us in the comments what you'd pick")
-n = m["menu"]
-build("menu", [
-    (0, n["games"], "For your next game night", dict(size=80, y=1150)),
-    (n["games"], n["spin2"], "6 games in one app", dict(size=90, y=1450, style="green")),
-    (n["spin2"], n["end"], "We're starting with the wheel", dict(size=78, y=1450)),
-], "Game of Joints, Spin the Joint, Weed Quiz and more")
-q = m["quiz"]; qa = q["a1"]
-build("quiz", [
-    (0, q["q1"], "Weed Quiz: can you answer this one?", dict(size=80, y=700)),
-    (q["q1"], qa - 3, "You've got 3 seconds", dict(size=80, y=1150, style="green")),
-    (qa - 3, qa - 2, "3", dict(size=180, y=1150)),
-    (qa - 2, qa - 1, "2", dict(size=180, y=1150)),
-    (qa - 1, qa, "1", dict(size=180, y=1150)),
-    (qa, q["end"], "Hops! Did you get it?", dict(size=84, y=1150, style="green")),
-], "130 questions in Weed Quiz. Test your friends")
+# Hver video er en funktion, der får sine tidsmærker (fra rec.js) som mk.
+VIDEOS = {}
+
+def video(fn):
+    VIDEOS[fn.__name__] = fn
+    return fn
+
+
+@video
+def umulig(mk):
+    u = mk
+    build("umulig", [
+        (0, u["spin"], "We picked Impossible.\nBig mistake.", dict(size=82, y=600)),
+        (u["spin"], u["card"] - 0.1, "The joint decides who's up next…", dict(y=1380)),
+        (u["card"], u["pass"], "Tornado. On Impossible.", dict(size=80, y=230)),
+        (u["pass"], u["end"], "Thank god for Pass", dict(size=80, y=230, style="green")),
+    ], "Spin the Joint · Easy, Hard or Impossible")
+
+@video
+def hjul(mk):
+    h = mk
+    build("hjul", [
+        (0, h["land1"], "POV: the wheel has a personal problem with you", dict(size=76, y=210)),
+        (h["land1"], h["spin2"], "Round 1: Tornado", dict(size=80, y=210)),
+        (h["land2"], h["spin3"], "Round 2: …Tornado again", dict(size=80, y=210)),
+        (h["land3"], h["end"], "Round 3: the wheel is rigged.\nI just can't prove it.", dict(size=72, y=210, style="green")),
+    ], "Spin the Joint 2 · a wheel full of challenges")
+
+@video
+def levels(mk):
+    l = mk
+    build("levels", [
+        (0, l["easy"], "Easy, Hard or Impossible?\nWhat would your crew pick?", dict(size=70, y=1180)),
+        (l["easy"], l["hard"], "EASY", dict(size=110, y=1350, style="green")),
+        (l["hard"], l["impossible"], "HARD", dict(size=110, y=1350, style="green")),
+        (l["impossible"], l["end"], "IMPOSSIBLE", dict(size=110, y=1350, style="green")),
+    ], "Tell us in the comments what you'd pick")
+
+@video
+def menu(mk):
+    n = mk
+    build("menu", [
+        (0, n["games"], "For your next game night", dict(size=80, y=1150)),
+        (n["games"], n["spin2"], "6 games in one app", dict(size=90, y=1450, style="green")),
+        (n["spin2"], n["end"], "We're starting with the wheel", dict(size=78, y=1450)),
+    ], "Game of Joints, Spin the Joint, Weed Quiz and more")
+
+@video
+def quiz(mk):
+    q = mk; qa = q["a1"]
+    build("quiz", [
+        (0, q["q1"], "Weed Quiz: can you answer this one?", dict(size=80, y=700)),
+        (q["q1"], qa - 3, "You've got 3 seconds", dict(size=80, y=1150, style="green")),
+        (qa - 3, qa - 2, "3", dict(size=180, y=1150)),
+        (qa - 2, qa - 1, "2", dict(size=180, y=1150)),
+        (qa - 1, qa, "1", dict(size=180, y=1150)),
+        (qa, q["end"], "Hops! Did you get it?", dict(size=84, y=1150, style="green")),
+    ], "130 questions in Weed Quiz. Test your friends")
+def quiz_video(name, mk, hook, answer, end_text):
+    qa = mk["a1"]
+    build(name, [
+        (0, mk["q1"], hook, dict(size=80, y=700)),
+        (mk["q1"], qa - 3, "You've got 3 seconds", dict(size=80, y=1150, style="green")),
+        (qa - 3, qa - 2, "3", dict(size=180, y=1150)),
+        (qa - 2, qa - 1, "2", dict(size=180, y=1150)),
+        (qa - 1, qa, "1", dict(size=180, y=1150)),
+        (qa, mk["end"], answer, dict(size=84, y=1150, style="green")),
+    ], end_text)
+
+# ---------- Uge 45 (2026) ----------
+@video
+def quizmalana(mk):
+    quiz_video("quizmalana", mk, "Geography test: where is this strain from?", "India! Did you get it?", "130 questions in Weed Quiz. Test your crew")
+
+@video
+def quizbanner(mk):
+    quiz_video("quizbanner", mk, "Only real comic fans get this one", "Bruce Banner! Did you get it?", "Weed Quiz · strains, terpenes and trivia")
+
+@video
+def quizlemon(mk):
+    quiz_video("quizlemon", mk, "Smell quiz: which one smells like lemon?", "Limonene! Did you know?", "Weed Quiz · no repeats until you've seen them all")
+
+@video
+def poll(mk):
+    build("poll", [
+        (0, mk["land1"], "Three friends. Three spins.\nWho got the worst one?", dict(size=72, y=210)),
+        (mk["land1"], mk["spin2"], "Jake: Turtle", dict(size=80, y=210)),
+        (mk["land2"], mk["spin3"], "Mia: DIY king", dict(size=80, y=210)),
+        (mk["land3"], mk["end"], "Liam: Tornado.\nWho had it worst?", dict(size=76, y=210, style="green")),
+    ], "Vote in the comments: Jake, Mia or Liam?")
+
+@video
+def easy(mk):
+    build("easy", [
+        (0, mk["easy"], "Every crew has that one friend…", dict(size=78, y=1180)),
+        (mk["easy"], mk["spin"], "…who always picks Easy", dict(size=84, y=1350, style="green")),
+        (mk["spin"], mk["card"], "Fine. Easy it is.", dict(size=80, y=1380)),
+        (mk["card"], mk["end"], "Of course it lands on Mia", dict(size=80, y=230, style="green")),
+    ], "Tag the friend who always picks Easy")
+
+@video
+def tour(mk):
+    build("tour", [
+        (0, mk["games"], "What's inside Flower?", dict(size=86, y=1250)),
+        (mk["games"], mk["hub"], "Games for your sesh", dict(size=84, y=1500, style="green")),
+        (mk["hub"], mk["hub2"], "Smoke Hub: share with your crew", dict(size=78, y=1500)),
+        (mk["hub2"], mk["end"], "Smoke spots, Rate the Roll,\nMunchies and a leaderboard", dict(size=70, y=1450, style="green")),
+    ], "Made by one dev · 18+")
+
+@video
+def devstory(mk):
+    build("devstory", [
+        (0, mk["spin2"], "I built a social app for my friend group", dict(size=76, y=1300)),
+        (mk["spin2"], mk["quiz"], "50+ updates in the first 3 days", dict(size=80, y=230, style="green")),
+        (mk["quiz"], mk["end"], "Now I need people to break it.\nTell me what to add next.", dict(size=70, y=1350)),
+    ], "Feedback welcome · made by one dev")
+
+if __name__ == "__main__":
+    names = sys.argv[1:] or list(VIDEOS)
+    for name in names:
+        VIDEOS[name](json.load(open(f"raw_en/{name}.json")))
