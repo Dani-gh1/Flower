@@ -20,6 +20,7 @@ const TEXT = {
     comment: (n, t) => [`${n} kommenterede dit opslag`, t],
     mention: (n, t) => [`${n} nævnte dig`, t],
     many: (k) => ["Flower", `Du har ${k} nye notifikationer`],
+    test: () => ["Flower", "Notifikationer virker! 🎉"],
   },
   en: {
     chat: (n, t) => [n, t],
@@ -30,6 +31,7 @@ const TEXT = {
     comment: (n, t) => [`${n} commented on your post`, t],
     mention: (n, t) => [`${n} mentioned you`, t],
     many: (k) => ["Flower", `You have ${k} new notifications`],
+    test: () => ["Flower", "Notifications work! 🎉"],
   },
 };
 
@@ -196,6 +198,18 @@ export async function run(env) {
         });
       for (const msg of messages) {
         const r = await sendPush(sub, JSON.stringify(msg), env.VAPID_PRIVATE);
+        // Gem svaret fra Apple/Google på telefonen, så fejl kan findes bagefter
+        const detail = r.ok ? "" : (await r.text()).slice(0, 200);
+        if (r.status !== 404 && r.status !== 410) {
+          await api(`/pushSubs/${encodeURIComponent(uid)}?updateMask.fieldPaths=subs.${key}.lastStatus&updateMask.fieldPaths=subs.${key}.lastAt&updateMask.fieldPaths=subs.${key}.lastError`, {
+            method: "PATCH",
+            body: JSON.stringify({ fields: { subs: { mapValue: { fields: { [key]: { mapValue: { fields: {
+              lastStatus: { integerValue: String(r.status) },
+              lastAt: { integerValue: String(Date.now()) },
+              lastError: { stringValue: detail },
+            } } } } } } } }),
+          });
+        }
         if (r.ok) {
           sent++;
         } else if (r.status === 404 || r.status === 410) {
@@ -206,7 +220,7 @@ export async function run(env) {
           });
           break;
         } else {
-          console.error("Push fejlede:", r.status, await r.text());
+          console.error("Push fejlede:", r.status, detail);
         }
       }
     }

@@ -5621,6 +5621,23 @@
       flex: none;
       padding: 9px 16px;
     }
+
+    .push-status {
+      margin-top: 10px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .push-status:empty {
+      display: none;
+    }
+    .push-status.error {
+      color: var(--error);
+    }
+    #push-test {
+      width: 100%;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -6415,6 +6432,8 @@
             <div class="card">
               <h3 data-i18n="notif.title">Notifikationer</h3>
               <button type="button" class="btn-plain" id="notif-toggle"></button>
+              <p class="push-status" id="push-status"></p>
+              <button type="button" class="btn-plain hidden" id="push-test" data-i18n="push.test">Send en test-notifikation</button>
               <p class="muted notif-help" id="notif-help"></p>
             </div>
             <div class="card">
@@ -7269,6 +7288,12 @@
         "push.later": "Ikke nu",
         "push.ok": "Forstået",
         "push.on": "Notifikationer er slået til",
+        "push.test": "Send en test-notifikation",
+        "push.testSent": "Test sendt! Luk appen nu. Notifikationen kommer inden for et minut.",
+        "push.testFailed": "Kunne ikke sende testen. Tjek reglerne for pushSubs og pushQueue i Firestore.",
+        "push.statusOk": "✓ Denne telefon får notifikationer, også når appen er lukket",
+        "push.statusWait": "Tilmelder telefonen…",
+        "push.statusError": "Telefonen kunne ikke tilmeldes: {error}",
         "notif.state.granted": "Notifikationer er slået til",
         "notif.state.denied": "Notifikationer er blokeret i telefonens indstillinger",
         "notif.state.unsupported": "Ikke understøttet her",
@@ -7983,6 +8008,12 @@
         "push.later": "Not now",
         "push.ok": "Got it",
         "push.on": "Notifications are on",
+        "push.test": "Send a test notification",
+        "push.testSent": "Test sent! Close the app now. The notification arrives within a minute.",
+        "push.testFailed": "Couldn't send the test. Check the pushSubs and pushQueue rules in Firestore.",
+        "push.statusOk": "✓ This phone gets notifications, even when the app is closed",
+        "push.statusWait": "Registering this phone…",
+        "push.statusError": "This phone couldn't be registered: {error}",
         "notif.state.granted": "Notifications are on",
         "notif.state.denied": "Notifications are blocked in your phone's settings",
         "notif.state.unsupported": "Not supported here",
@@ -14634,6 +14665,12 @@
       notifToggle.textContent = t("notif.state." + state);
       notifToggle.disabled = state !== "default";
       document.getElementById("notif-help").textContent = t(state === "unsupported" ? "notif.helpInstall" : "notif.help");
+      // Er denne telefon tilmeldt, så notifikationer også kommer, når appen er lukket?
+      const status = document.getElementById("push-status");
+      const granted = state === "granted" && typeof pushSupported === "function" && pushSupported();
+      status.textContent = !granted ? "" : pushState === "ok" ? t("push.statusOk") : pushState ? t("push.statusError", { error: pushState }) : t("push.statusWait");
+      status.classList.toggle("error", granted && !!pushState && pushState !== "ok");
+      document.getElementById("push-test").classList.toggle("hidden", !granted);
     }
 
     notifToggle.addEventListener("click", async () => {
@@ -14647,6 +14684,7 @@
     // Telefonen giver et "abonnement", som gemmes i pushSubs/{uid}.
     // Når man skriver til nogen osv., lægges en besked i pushQueue.
     // En Cloudflare Worker (push-worker) kigger i køen hvert minut og sender beskederne.
+    var pushState = "";   // "ok", en fejlbesked, eller tom (ikke prøvet endnu)
     const PUSH_PUBLIC_KEY = "BCddMZ1dKlYPo9CdWxrjmrs1QyxwnmJ7gyQPWqDlkO-EOl96MrUSThl7oiB5LY4SiiqNewhoGXZLlECLP6fcLXI";
     let pushAsked = false;
 
@@ -14682,9 +14720,12 @@
           uid,
           subs: { [subKey(json.endpoint)]: { endpoint: json.endpoint, keys: json.keys, lang: lang || "da", at: Date.now() } },
         }, { merge: true });
+        pushState = "ok";
       } catch (error) {
         console.error(error);
+        pushState = (error && (error.code || error.message)) || "ukendt fejl";
       }
+      renderNotifToggle();
     }
 
     async function askPushPermission() {
@@ -14702,8 +14743,9 @@
     // Lægger en notifikation i køen til en anden bruger
     function queuePush(to, type, text = "", ref = "") {
       const me = currentUserKey();
-      if (!to || !me || to === me) return;
-      db.collection("pushQueue").add({
+      // Til sig selv kun ved en test
+      if (!to || !me || (to === me && type !== "test")) return Promise.resolve(false);
+      return db.collection("pushQueue").add({
         to,
         from: me,
         fromName: myProfile ? myProfile.name : "?",
@@ -14711,8 +14753,20 @@
         text: String(text).slice(0, 120),
         ref,
         createdAt: Date.now(),
-      }).catch(() => {});
+      }).then(() => true).catch((error) => {
+        console.error(error);
+        return false;
+      });
     }
+
+    // Test: læg en notifikation til mig selv i køen. Luk appen, og den kommer inden for et minut
+    document.getElementById("push-test").addEventListener("click", async (e) => {
+      e.currentTarget.disabled = true;
+      await enablePush();
+      const ok = pushState === "ok" && (await queuePush(currentUserKey(), "test"));
+      showToast(t(ok ? "push.testSent" : "push.testFailed"));
+      e.currentTarget.disabled = false;
+    });
 
     // Første gang appen åbnes (hver gang, indtil de er slået til) spørges man
     function maybeAskPush() {

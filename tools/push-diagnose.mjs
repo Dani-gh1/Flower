@@ -1,6 +1,6 @@
 // Diagnose af push-notifikationer. Køres af GitHub Actions (diag.yml) og
 // skriver en rapport uden personlige oplysninger (ingen navne, id'er eller beskeder).
-// Kørsel nr. 1
+// Kørsel nr. 2
 const API_KEY = "AIzaSyAGS0JZBnrk5ozRrSgmypds9dNnnoBriyo";
 const DOCS = "https://firestore.googleapis.com/v1/projects/flower-438b9/databases/(default)/documents";
 const { PUSH_EMAIL, PUSH_PASSWORD, CF_TOKEN, CF_ACCOUNT } = process.env;
@@ -45,7 +45,8 @@ if (login.idToken) {
       Object.values(d.subs || {}).forEach((sub) => {
         let host = "?";
         try { host = new URL(sub.endpoint).host; } catch {}
-        log(`  bruger ${i + 1}: ${host}, sprog ${sub.lang}, tilmeldt ${ago(sub.at)}, nøgler ${sub.keys && sub.keys.p256dh && sub.keys.auth ? "OK" : "MANGLER"}`);
+        log(`  bruger ${i + 1}: ${host}, sprog ${sub.lang}, tilmeldt ${ago(sub.at)}, nøgler ${sub.keys && sub.keys.p256dh && sub.keys.auth ? "OK" : "MANGLER"}`
+          + (sub.lastAt ? `, sidst sendt ${ago(sub.lastAt)} → svar ${sub.lastStatus}${sub.lastError ? " " + sub.lastError : ""}` : ", intet sendt endnu (efter logning blev slået til)"));
       });
     });
   }
