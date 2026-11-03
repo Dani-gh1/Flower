@@ -24,7 +24,7 @@ AI'en poster ikke selv: den lægger kun opslag i køen, og dit workflow poster d
 - Fokus på **spillene, humoren og fællesskabet**: "Vi spillede Spin the Joint på Umulig".
 - Hver video skal have et **hook i de første 2 sekunder**.
 - Afslut gerne med en opfordring som "Link i bio" eller "Hent Flower". Skriv ikke "Prøv den gratis".
-- På X skrives på **engelsk**, med 1–3 hashtags og linket til appen.
+- På X skrives på **engelsk**, med 1–3 hashtags og **"Link in bio"**. Aldrig selve linket i opslaget: det koster ca. 13 gange mere og vises til færre. Linket står i X-profilens bio.
 
 ## Regler (skal altid overholdes)
 - Vis eller beskriv **aldrig** køb, salg eller deling af stoffer, og vis ikke selve rygningen i billedet. Brug skærmoptagelser af appen, reaktioner, tekst på skærm og memes.
@@ -39,5 +39,5 @@ AI'en poster ikke selv: den lægger kun opslag i køen, og dit workflow poster d
 
 ## Hvad der laves hver uge
 1. **7 X-opslag** i `promo/x/queue/`: `ÅÅÅÅ-MM-DD-N-navn.mp4` (1080×1920, 10–25 sek., hook i de første 2 sek.)
-   og en `.txt` med samme navn (engelsk, højst 280 tegn, 1–3 hashtags, link, "18+").
+   og en `.txt` med samme navn (engelsk, højst 280 tegn, 1–3 hashtags, "18+" og "Link in bio", intet link).
 2. **`uge-ÅÅÅÅ-UU.md`** med ugens nyheder (kort), en liste over ugens X-opslag og 2 opslag til Reddit/Discord.

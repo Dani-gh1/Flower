@@ -30,6 +30,8 @@ if (!next) {
 const name = next.slice(0, -4);
 const text = readFileSync(join(queue, next), "utf8").trim();
 if ([...text].length > 280) throw new Error(`${next} er over 280 tegn`);
+// Opslag med links koster ca. 13 gange mere på X, så linket står i profilens bio i stedet
+if (/https?:\/\/|\bwww\.|\.(com|io|app|dk)\b/i.test(text)) throw new Error(`${next} indeholder et link: skriv "Link in bio" i stedet`);
 
 const client = new TwitterApi({
   appKey: X_API_KEY,
