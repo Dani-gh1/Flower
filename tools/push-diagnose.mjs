@@ -1,6 +1,6 @@
 // Diagnose af push-notifikationer. Køres af GitHub Actions (diag.yml) og
 // skriver en rapport uden personlige oplysninger (ingen navne, id'er eller beskeder).
-// Kørsel nr. 5
+// Kørsel nr. 6
 const API_KEY = "AIzaSyAGS0JZBnrk5ozRrSgmypds9dNnnoBriyo";
 const DOCS = "https://firestore.googleapis.com/v1/projects/flower-438b9/databases/(default)/documents";
 const { PUSH_EMAIL, PUSH_PASSWORD, CF_TOKEN, CF_ACCOUNT } = process.env;
