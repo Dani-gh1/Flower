@@ -7297,7 +7297,7 @@
         "notif.state.granted": "Notifikationer er slået til",
         "notif.state.denied": "Notifikationer er blokeret i telefonens indstillinger",
         "notif.state.unsupported": "Ikke understøttet her",
-        "notif.help": "Du får en notifikation, når en ven trykker \"Smoker nu\" eller lægger et opslag, en roll, munchies eller et smoke spot op, når du får en venneanmodning, og en påmindelse kl. 20, hvis du ikke har logget en smoke. Også når appen er lukket.",
+        "notif.help": "Du får en notifikation, når en ven trykker \"Smoker nu\" eller lægger et opslag, en roll, munchies eller et smoke spot op, når du får en venneanmodning eller en chatbesked, når nogen kommenterer dit opslag eller nævner dig, og en påmindelse kl. 22.30, hvis du ikke har logget en smoke. Også når appen er lukket.",
         "notif.helpInstall": "På iPhone skal appen først føjes til hjemmeskærmen: tryk på Del-knappen i Safari og vælg \"Føj til hjemmeskærm\". Åbn den derfra, og slå notifikationer til her.",
         "cl.more": "Vis mere",
         "cl.title": "Opdateringer",
@@ -8017,7 +8017,7 @@
         "notif.state.granted": "Notifications are on",
         "notif.state.denied": "Notifications are blocked in your phone's settings",
         "notif.state.unsupported": "Not supported here",
-        "notif.help": "You'll get a notification when a friend taps \"Smoking now\" or shares a post, roll, munchies or smoke spot, when you get a friend request, and a reminder at 8 pm if you haven't logged a smoke. Even when the app is closed.",
+        "notif.help": "You'll get a notification when a friend taps \"Smoking now\" or shares a post, roll, munchies or smoke spot, when you get a friend request or a chat message, when someone comments on your post or mentions you, and a reminder at 10:30 pm if you haven't logged a smoke. Even when the app is closed.",
         "notif.helpInstall": "On iPhone, add the app to your home screen first: tap the Share button in Safari and choose \"Add to Home Screen\". Open it from there and turn on notifications here.",
         "cl.more": "Show more",
         "cl.title": "Updates",
@@ -10413,7 +10413,10 @@
           notifyFriends("munchie", "", ref.id);
         } else {
           const ref = await db.collection("posts").add({ ...data, likes: [], commentCount: 0 });
-          notifyFriends("post", text, ref.id);
+          // Nævnte venner får "nævnte dig", de andre "nyt opslag"
+          const tagged = data.mentions.map((m) => m.uid);
+          tagged.forEach((uid) => queuePush(uid, "mention", text, ref.id));
+          notifyFriends("post", text, ref.id, tagged);
         }
         closeSheet();
         showToast(t(editingPostId ? "post.saved" : roll ? "roll.posted" : munch ? "munch.posted" : "forum.posted"));
@@ -10683,6 +10686,11 @@
           createdAt: Date.now(),
         });
         await db.collection("posts").doc(postId).update({ commentCount: FieldValue().increment(1) });
+        // Forfatteren får "kommenterede dit opslag", nævnte personer får "nævnte dig"
+        const post = posts.find((x) => x.id === postId);
+        const tagged = findMentions(text).map((m) => m.uid);
+        if (post && !tagged.includes(post.author)) queuePush(post.author, "comment", text, postId);
+        tagged.forEach((uid) => queuePush(uid, "mention", text, postId));
       } catch (error) {
         console.error(error);
         input.value = text;
@@ -14744,9 +14752,9 @@
       });
     }
 
-    // Til alle mine venner (Smoker nu, nyt opslag, roll, munchies og smoke spot)
-    function notifyFriends(type, text = "", ref = "") {
-      friendships.map(otherUser).forEach((uid) => queuePush(uid, type, text, ref));
+    // Til alle mine venner (Smoker nu, nyt opslag, roll, munchies og smoke spot), undtagen dem i skip
+    function notifyFriends(type, text = "", ref = "", skip = []) {
+      friendships.map(otherUser).filter((uid) => !skip.includes(uid)).forEach((uid) => queuePush(uid, type, text, ref));
     }
 
     // Test: læg en notifikation til mig selv i køen. Luk appen, og den kommer inden for et minut
@@ -15707,6 +15715,7 @@
           read: { [me]: now },
         }, { merge: true });
         await db.collection("chats").doc(id).collection("messages").add({ from: me, text, createdAt: now });
+        queuePush(openChatWith, "chat", text, id);
       } catch (error) {
         console.error(error);
         input.value = text;

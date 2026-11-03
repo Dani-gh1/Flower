@@ -8,15 +8,19 @@ const API_KEY = "AIzaSyAGS0JZBnrk5ozRrSgmypds9dNnnoBriyo";
 const PROJECT = "flower-438b9";
 const VAPID_PUBLIC = "BCddMZ1dKlYPo9CdWxrjmrs1QyxwnmJ7gyQPWqDlkO-EOl96MrUSThl7oiB5LY4SiiqNewhoGXZLlECLP6fcLXI";
 const VAPID_SUBJECT = "mailto:push@flower.app";
-const REMINDER_HOUR = 20;
+const REMINDER_HOUR = 22; // påmindelsen sendes kl. 22.30 dansk tid (se wrangler.toml)
 const DOCS = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents`;
 
-// Kun disse notifikationer sendes: "Smoker nu", venneanmodninger, nyt opslag,
-// roll, munchies og smoke spot fra en ven, den daglige påmindelse og test-knappen.
+// Kun disse notifikationer sendes: "Smoker nu", venneanmodninger, chatbeskeder,
+// kommentarer, omtaler, nyt opslag, roll, munchies og smoke spot fra en ven,
+// den daglige påmindelse og test-knappen.
 const TEXT = {
   da: {
-    smoking: (n) => [`${n} smoker nu 💨`, "Skal du med?"],
+    smoking: (n) => [`${n} smoker nu 💨`, ""],
     request: (n) => ["Ny venneanmodning", `${n} vil gerne være venner`],
+    chat: (n, t) => [n, t],
+    comment: (n, t) => [`${n} kommenterede dit opslag`, t],
+    mention: (n, t) => [`${n} nævnte dig`, t],
     post: (n, t) => [`${n} har lagt et nyt opslag op`, t || "Se det i Smoke Hub"],
     roll: (n) => [`${n} har delt en roll`, "Giv den en rating i Rate the Roll"],
     munchie: (n) => [`${n} har delt sine munchies`, "Se dem i Munchies"],
@@ -26,8 +30,11 @@ const TEXT = {
     many: (k) => ["Flower", `Du har ${k} nye notifikationer`],
   },
   en: {
-    smoking: (n) => [`${n} is smoking now 💨`, "Want to join?"],
+    smoking: (n) => [`${n} is smoking now 💨`, ""],
     request: (n) => ["New friend request", `${n} wants to be friends`],
+    chat: (n, t) => [n, t],
+    comment: (n, t) => [`${n} commented on your post`, t],
+    mention: (n, t) => [`${n} mentioned you`, t],
     post: (n, t) => [`${n} shared a new post`, t || "See it in Smoke Hub"],
     roll: (n) => [`${n} shared a roll`, "Rate it in Rate the Roll"],
     munchie: (n) => [`${n} shared their munchies`, "See them in Munchies"],
@@ -207,7 +214,7 @@ function copenhagen(time = Date.now()) {
   return { date: `${parts.year}-${parts.month}-${parts.day}`, hour: Number(parts.hour) };
 }
 
-// ---------- Daglig påmindelse kl. 20 (dansk tid) ----------
+// ---------- Daglig påmindelse kl. 22.30 (dansk tid) ----------
 // Sendes til alle med en tilmeldt telefon, undtagen dem der allerede har logget i dag.
 export async function remind(env) {
   if (copenhagen().hour !== REMINDER_HOUR) return "Ikke tid til påmindelse";
@@ -278,7 +285,7 @@ export async function run(env) {
 }
 
 export default {
-  // Hvert minut: send køen. Kl. 18 og 19 UTC: tjek om det er kl. 20 i Danmark (vinter- og sommertid)
+  // Hvert minut: send køen. Kl. 20.30 og 21.30 UTC: tjek om det er kl. 22.30 i Danmark (vinter- og sommertid)
   async scheduled(event, env, ctx) {
     const job = event.cron === "* * * * *" ? run(env) : remind(env);
     ctx.waitUntil(job.then((msg) => console.log(msg)).catch((error) => console.error(error.message || error)));
