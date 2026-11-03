@@ -3229,6 +3229,32 @@
       color: var(--muted);
       font-size: 12px;
     }
+    .comment-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .comment-like {
+      flex: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      min-width: 32px;
+      padding: 2px 4px;
+      border: 0;
+      background: none;
+      color: var(--muted);
+      font: inherit;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .comment-like small {
+      font-size: 11px;
+    }
+    .comment-like.on {
+      color: #ff6b81;
+    }
     .comment-form {
       position: fixed;
       left: 16px;
@@ -7455,7 +7481,7 @@
         "notif.state.granted": "Notifikationer er slået til",
         "notif.state.denied": "Notifikationer er blokeret i telefonens indstillinger",
         "notif.state.unsupported": "Ikke understøttet her",
-        "notif.help": "Du får en notifikation, når en ven trykker \"Smoker nu\" eller lægger et opslag, en roll, munchies eller et smoke spot op, når du får en venneanmodning eller en chatbesked, når nogen kommenterer dit opslag eller nævner dig, og en påmindelse kl. 22.30, hvis du ikke har logget en smoke. Også når appen er lukket.",
+        "notif.help": "Du får en notifikation, når en ven trykker \"Smoker nu\" eller lægger et opslag, en roll, munchies eller et smoke spot op, når du får en venneanmodning eller en chatbesked, når nogen kommenterer dit opslag eller nævner dig, når din \"Smoker nu\" slutter, og en påmindelse kl. 22.30, hvis du ikke har logget en smoke. Også når appen er lukket.",
         "notif.helpInstall": "På iPhone skal appen først føjes til hjemmeskærmen: tryk på Del-knappen i Safari og vælg \"Føj til hjemmeskærm\". Åbn den derfra, og slå notifikationer til her.",
         "onb.usage": "Hvor meget ryger du?",
         "onb.errUsage": "Vælg hvor meget du ryger",
@@ -8174,7 +8200,7 @@
         "notif.state.granted": "Notifications are on",
         "notif.state.denied": "Notifications are blocked in your phone's settings",
         "notif.state.unsupported": "Not supported here",
-        "notif.help": "You'll get a notification when a friend taps \"Smoking now\" or shares a post, roll, munchies or smoke spot, when you get a friend request or a chat message, when someone comments on your post or mentions you, and a reminder at 10:30 pm if you haven't logged a smoke. Even when the app is closed.",
+        "notif.help": "You'll get a notification when a friend taps \"Smoking now\" or shares a post, roll, munchies or smoke spot, when you get a friend request or a chat message, when someone comments on your post or mentions you, when your \"Smoking now\" ends, and a reminder at 10:30 pm if you haven't logged a smoke. Even when the app is closed.",
         "notif.helpInstall": "On iPhone, add the app to your home screen first: tap the Share button in Safari and choose \"Add to Home Screen\". Open it from there and turn on notifications here.",
         "onb.usage": "How much do you smoke?",
         "onb.errUsage": "Choose how much you smoke",
@@ -10882,6 +10908,8 @@
       if (person) return openProfileOf(person.dataset.person);
       const delComment = e.target.closest("[data-delete-comment]");
       if (delComment) return deleteComment(delComment.dataset.deleteComment);
+      const likeComment = e.target.closest("[data-like-comment]");
+      if (likeComment) return toggleCommentLike(likeComment.dataset.likeComment);
     }
 
     // ---------- Et enkelt opslag med kommentarer ----------
@@ -10925,6 +10953,8 @@
           ${comments.length ? comments.map((c) => {
             const profile = (c.author === me ? myProfile : profileCache.get(c.author)) || { name: c.authorName || "?" };
             const canDelete = c.author === me || post.author === me;
+            const likes = c.likes || [];
+            const liked = likes.includes(me);
             return `
               <div class="comment">
                 <span class="avatar avatar-sm" data-person="${esc(c.author)}">${avatarHTML(profile)}</span>
@@ -10932,6 +10962,9 @@
                   <p><strong data-person="${esc(c.author)}">${esc(profile.name)}</strong> ${richText(c.text, c.mentions)}</p>
                   <small>${timeAgo(c.createdAt)}${canDelete ? ` · <button type="button" class="link-btn danger small" data-delete-comment="${esc(c.id)}">${t("forum.delete")}</button>` : ""}</small>
                 </div>
+                <button type="button" class="comment-like ${liked ? "on" : ""}" data-like-comment="${esc(c.id)}" aria-label="${t("post.like")}">
+                  <span>${liked ? "♥" : "♡"}</span>${likes.length ? `<small>${likes.length}</small>` : ""}
+                </button>
               </div>`;
           }).join("") : `<p class="empty-note">${t("post.noComments")}</p>`}
         </div>`;
@@ -10967,6 +11000,19 @@
         showToast(dbErrorText(error));
       }
     });
+
+    // Like eller fjern like på en kommentar
+    function toggleCommentLike(id) {
+      const c = comments.find((x) => x.id === id);
+      if (!c || !openPostId) return;
+      const me = currentUserKey();
+      const liked = (c.likes || []).includes(me);
+      c.likes = liked ? c.likes.filter((u) => u !== me) : [...(c.likes || []), me];
+      renderPostDetail();
+      db.collection("posts").doc(openPostId).collection("comments").doc(id)
+        .update({ likes: liked ? FieldValue().arrayRemove(me) : FieldValue().arrayUnion(me) })
+        .catch((error) => showToast(dbErrorText(error)));
+    }
 
     function deleteComment(id) {
       if (!confirm(t("post.confirmDeleteComment"))) return;
@@ -14939,10 +14985,11 @@
     }
 
     // Lægger en notifikation i køen til en anden bruger
-    function queuePush(to, type, text = "", ref = "") {
+    // sendAt: sendes først på det tidspunkt (fx når "Smoker nu" slutter)
+    function queuePush(to, type, text = "", ref = "", sendAt = 0) {
       const me = currentUserKey();
-      // Til sig selv kun ved en test
-      if (!to || !me || (to === me && type !== "test")) return Promise.resolve(false);
+      // Til sig selv kun ved en test, og når "Smoker nu" slutter
+      if (!to || !me || (to === me && type !== "test" && type !== "smokeEnd")) return Promise.resolve(false);
       return db.collection("pushQueue").add({
         to,
         from: me,
@@ -14951,6 +14998,7 @@
         text: String(text).slice(0, 120),
         ref,
         createdAt: Date.now(),
+        ...(sendAt ? { sendAt } : {}),
       }).then(() => true).catch((error) => {
         console.error(error);
         return false;
@@ -15110,7 +15158,11 @@
       if (!on) myProfile.smokingNowCount = (myProfile.smokingNowCount || 0) + 1;
       renderSmokingNow();
       showToast(t(on ? "now.stopped" : "now.started"));
-      if (!on) notifyFriends("smoking");
+      if (!on) {
+        notifyFriends("smoking");
+        // Når de 30 minutter er gået: en påmindelse om at logge sin smoke
+        queuePush(currentUserKey(), "smokeEnd", "", "", until);
+      }
       syncBadges();
       db.collection("profiles").doc(currentUserKey()).set({ smokingUntil: until, smokingNowCount: myProfile.smokingNowCount || 0 }, { merge: true })
         .catch((error) => showToast(dbErrorText(error)));

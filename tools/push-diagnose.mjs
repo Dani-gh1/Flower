@@ -30,9 +30,11 @@ if (login.idToken) {
   const qj = await q.json();
   if (!q.ok) log(`pushQueue: FEJL ${q.status} ${JSON.stringify(qj.error && qj.error.message)}`);
   else {
-    const docs = (qj.documents || []).map((d) => plain({ mapValue: { fields: d.fields } }));
-    const oldest = docs.reduce((m, d) => Math.min(m, d.createdAt || Infinity), Infinity);
-    log(`pushQueue: ${docs.length} i køen${docs.length ? `, ældste ${ago(oldest)}, typer: ${[...new Set(docs.map((d) => d.type))].join(", ")}` : ""}`);
+    const all = (qj.documents || []).map((d) => plain({ mapValue: { fields: d.fields } }));
+    // Beskeder med sendAt i fremtiden venter med vilje (fx "Smoker nu er slut")
+    const docs = all.filter((d) => !d.sendAt || d.sendAt <= Date.now());
+    const oldest = docs.reduce((m, d) => Math.min(m, d.sendAt || d.createdAt || Infinity), Infinity);
+    log(`pushQueue: ${docs.length} klar til at sende, ${all.length - docs.length} venter${docs.length ? `, ældste ${ago(oldest)}, typer: ${[...new Set(docs.map((d) => d.type))].join(", ")}` : ""}`);
     if (docs.length && Date.now() - oldest > 3 * 60000) log("  ⚠️ Der ligger gamle beskeder i køen: Cloudflare-afsenderen kører ikke eller fejler");
   }
   const s = await fetch(`${DOCS}/pushSubs?pageSize=300`, auth);

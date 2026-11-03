@@ -13,7 +13,7 @@ const DOCS = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/
 
 // Kun disse notifikationer sendes: "Smoker nu", venneanmodninger, chatbeskeder,
 // kommentarer, omtaler, nyt opslag, roll, munchies og smoke spot fra en ven,
-// den daglige påmindelse og test-knappen.
+// "Smoker nu" er slut, den daglige påmindelse og test-knappen.
 const TEXT = {
   da: {
     smoking: (n) => [`${n} smoker nu 💨`, ""],
@@ -25,6 +25,7 @@ const TEXT = {
     roll: (n) => [`${n} har delt en roll`, "Giv den en rating i Rate the Roll"],
     munchie: (n) => [`${n} har delt sine munchies`, "Se dem i Munchies"],
     spot: (n, t) => [`${n} har tilføjet et smoke spot`, t || "Se det på kortet"],
+    smokeEnd: () => ["Smoker nu er slut 💨", "Husk at logge din smoke i Flower"],
     reminder: () => ["Husk at logge din smoke 🌿", "Har du røget i dag? Log det i Flower"],
     test: () => ["Flower", "Notifikationer virker! 🎉"],
     many: (k) => ["Flower", `Du har ${k} nye notifikationer`],
@@ -39,6 +40,7 @@ const TEXT = {
     roll: (n) => [`${n} shared a roll`, "Rate it in Rate the Roll"],
     munchie: (n) => [`${n} shared their munchies`, "See them in Munchies"],
     spot: (n, t) => [`${n} added a smoke spot`, t || "See it on the map"],
+    smokeEnd: () => ["Smoking now has ended 💨", "Remember to log your smoke in Flower"],
     reminder: () => ["Remember to log your smoke 🌿", "Did you smoke today? Log it in Flower"],
     test: () => ["Flower", "Notifications work! 🎉"],
     many: (k) => ["Flower", `You have ${k} new notifications`],
@@ -252,8 +254,10 @@ export async function run(env) {
   const res = await api("/pushQueue?pageSize=300");
   const body = await res.json();
   if (!res.ok) throw new Error("Kunne ikke læse køen: " + JSON.stringify(body.error || body));
-  const queue = (body.documents || []).map((d) => ({ name: d.name, ...fields(d) }));
-  if (!queue.length) return "Køen er tom";
+  // Beskeder med sendAt venter i køen, til tidspunktet er nået
+  const now = Date.now();
+  const queue = (body.documents || []).map((d) => ({ name: d.name, ...fields(d) })).filter((it) => !it.sendAt || it.sendAt <= now);
+  if (!queue.length) return "Intet at sende";
 
   // Gruppér pr. modtager
   const byUser = new Map();
@@ -267,7 +271,13 @@ export async function run(env) {
   for (const [uid, items] of byUser) {
     items.sort((a, b) => a.createdAt - b.createdAt);
     // Typer, der ikke længere sendes (fx fra en gammel version af appen), springes over
-    const known = items.filter((it) => TEXT.da[it.type] && it.type !== "many" && it.type !== "reminder");
+    let known = items.filter((it) => TEXT.da[it.type] && it.type !== "many" && it.type !== "reminder");
+    // "Smoker nu er slut" kun, hvis det er den samme "Smoker nu" (ikke slået fra eller startet igen)
+    if (known.some((it) => it.type === "smokeEnd")) {
+      const profile = await api(`/profiles/${encodeURIComponent(uid)}`);
+      const until = profile.ok ? fields(await profile.json()).smokingUntil : null;
+      known = known.filter((it) => it.type !== "smokeEnd" || (until && Math.abs(until - it.sendAt) < 1000));
+    }
     if (!known.length) continue;
     sent += await sendToUser(api, env, uid, (L) => (known.length > 3
       ? [{ title: L.many(known.length)[0], body: L.many(known.length)[1], tag: "many" }]
