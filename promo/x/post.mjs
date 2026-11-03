@@ -12,9 +12,14 @@ const posted = join(dir, "posted");
 // Mellemrum og linjeskift fra kopiering fjernes
 const [X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET] =
   ["X_API_KEY", "X_API_SECRET", "X_ACCESS_TOKEN", "X_ACCESS_SECRET"].map((k) => (process.env[k] || "").trim());
-if (!X_API_KEY || !X_API_SECRET || !X_ACCESS_TOKEN || !X_ACCESS_SECRET) {
+const missing = Object.entries({ X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET }).filter(([, v]) => !v).map(([k]) => k);
+if (missing.length === 4) {
   console.log("::warning::Tilføj X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN og X_ACCESS_SECRET under Settings → Secrets → Actions");
   process.exit(0);
+}
+if (missing.length) {
+  console.log(`::error::Mangler ${missing.join(", ")} under Settings → Secrets → Actions`);
+  process.exit(1);
 }
 
 const next = readdirSync(queue).filter((f) => f.endsWith(".txt")).sort()[0];
