@@ -7052,9 +7052,9 @@
         "ai.methodLabel": "Hvordan?",
         "ai.productLabel": "Hvad?",
         "ai.feelLabel": "Hvordan føltes det? (vælg gerne flere)",
-        "feel.happy": "Glad",
+        "feel.happy": "Glad & fnisende",
         "feel.relaxed": "Afslappet",
-        "feel.giggly": "Fnisende",
+        "feel.energetic": "Energisk",
         "feel.creative": "Kreativ",
         "feel.hungry": "Sulten",
         "feel.sleepy": "Træt",
@@ -7771,9 +7771,9 @@
         "ai.methodLabel": "How?",
         "ai.productLabel": "What?",
         "ai.feelLabel": "How did it feel? (pick as many as you like)",
-        "feel.happy": "Happy",
+        "feel.happy": "Happy & giggly",
         "feel.relaxed": "Relaxed",
-        "feel.giggly": "Giggly",
+        "feel.energetic": "Energetic",
         "feel.creative": "Creative",
         "feel.hungry": "Hungry",
         "feel.sleepy": "Sleepy",
@@ -13605,8 +13605,13 @@
     const DAY = 864e5;
     const METHODS = ["joint", "spliff", "bong", "pipe", "vape", "dab", "edible", "other"];
     const PRODUCTS = ["flower", "hash", "concentrate", "edible", "other"];
-    const FEELINGS = ["happy", "relaxed", "giggly", "creative", "hungry", "sleepy", "paranoid", "dizzy"];
-    const FEELING_EMOJI = { happy: "😄", relaxed: "😌", giggly: "🤭", creative: "🎨", hungry: "🍕", sleepy: "😴", paranoid: "😰", dizzy: "😵‍💫" };
+    const FEELINGS = ["happy", "relaxed", "energetic", "creative", "hungry", "sleepy", "paranoid", "dizzy"];
+    const FEELING_EMOJI = { happy: "😄", relaxed: "😌", energetic: "⚡", creative: "🎨", hungry: "🍕", sleepy: "😴", paranoid: "😰", dizzy: "😵‍💫" };
+
+    // Følelserne på en registrering. "Fnisende" fra ældre registreringer tæller som "Glad & fnisende"
+    function entryFeelings(entry) {
+      return [...new Set((entry.feelings || []).map((f) => (f === "giggly" ? "happy" : f)))];
+    }
     const HIGH_EMOJI = ["😐", "🙂", "😊", "😌", "😎", "🤩", "😵‍💫", "🥴", "🛸", "🚀"];
 
     const pad2 = (n) => String(n).padStart(2, "0");
@@ -14499,9 +14504,9 @@
       const hourPart = (h) => (h < 5 ? "night" : h < 12 ? "morning" : h < 18 ? "afternoon" : "evening");
       // Den følelse, der oftest er valgt (i % af de smokes, hvor man har valgt følelser)
       const favoriteFeeling = (l) => {
-        const withFeel = l.filter((e) => (e.feelings || []).length);
+        const withFeel = l.filter((e) => entryFeelings(e).length);
         const counts = {};
-        withFeel.forEach((e) => e.feelings.forEach((f) => { counts[f] = (counts[f] || 0) + 1; }));
+        withFeel.forEach((e) => entryFeelings(e).forEach((f) => { counts[f] = (counts[f] || 0) + 1; }));
         const best = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
         return best ? { key: best, pct: Math.round((counts[best] / withFeel.length) * 100) } : null;
       };
@@ -14581,7 +14586,7 @@
           <div class="log-main">
             <strong>${formatDate(entryTime(entry))}${entry.time ? ` · ${esc(entry.time)}` : ""}</strong>
             <small>${t("ai.method." + entry.method)} · ${t("ai.product." + entry.product)}${entry.spent ? ` · ${Math.round(entry.spent)} kr` : ""}</small>
-            ${(entry.feelings || []).length ? `<small class="log-feelings">${entry.feelings.map((f) => `${FEELING_EMOJI[f] || ""} ${t("feel." + f)}`).join(" · ")}</small>` : ""}
+            ${entryFeelings(entry).length ? `<small class="log-feelings">${entryFeelings(entry).map((f) => `${FEELING_EMOJI[f] || ""} ${t("feel." + f)}`).join(" · ")}</small>` : ""}
             ${entry.note ? `<small class="log-note">${esc(entry.note)}</small>` : ""}
           </div>
           <span class="log-high">${entry.high}/10</span>
@@ -15495,7 +15500,7 @@
       { id: "streak_14", icon: "comet", color: C.purple, da: ["14 dage i træk", "Log 14 dage i træk"], en: ["14 days in a row", "Log 14 days in a row"], ok: (c) => c.streak >= 14 },
       { id: "streak_30", icon: "comet", color: C.gold, da: ["30 dage i træk", "Log 30 dage i træk"], en: ["30 days in a row", "Log 30 days in a row"], ok: (c) => c.streak >= 30 },
       { id: "feel_all", icon: "heart", color: C.pink, da: ["Følelsesregister", "Vælg alle 8 følelser mindst én gang"], en: ["Full range", "Pick all 8 feelings at least once"], ok: (c) => c.feelingsTried >= 8 },
-      { id: "happy_10", icon: "sun", color: C.gold, da: ["Glad smoker", "Vælg \"Glad\" 10 gange"], en: ["Happy smoker", "Pick \"Happy\" 10 times"], ok: (c) => (c.feelings.happy || 0) >= 10 },
+      { id: "happy_10", icon: "sun", color: C.gold, da: ["Glad smoker", "Vælg \"Glad & fnisende\" 10 gange"], en: ["Happy smoker", "Pick \"Happy & giggly\" 10 times"], ok: (c) => (c.feelings.happy || 0) >= 10 },
       { id: "big_day", icon: "cloud", color: C.blue, da: ["Skybrud", "Log 4 smokes på én dag"], en: ["Cloudburst", "Log 4 smokes in one day"], ok: (c) => c.maxDay >= 4 },
       // Metoder og produkter
       { id: "joints_10", icon: "joint", color: C.lime, da: ["Rullet 10 joints", "Log 10 joints eller spliffs"], en: ["Rolled 10 joints", "Log 10 joints or spliffs"], ok: (c) => c.joints >= 10 },
@@ -15577,10 +15582,10 @@
         hash: count("product", ["hash"]),
         methods: new Set(logEntries.map((e) => e.method)).size,
         feelings: logEntries.reduce((acc, e) => {
-          (e.feelings || []).forEach((f) => { acc[f] = (acc[f] || 0) + 1; });
+          entryFeelings(e).forEach((f) => { acc[f] = (acc[f] || 0) + 1; });
           return acc;
         }, {}),
-        feelingsTried: new Set(logEntries.flatMap((e) => e.feelings || [])).size,
+        feelingsTried: new Set(logEntries.flatMap(entryFeelings).filter((f) => FEELINGS.includes(f))).size,
         maxDay: Math.max(0, ...Object.values(perDay)),
         maxHigh: Math.max(0, ...logEntries.map((e) => Number(e.high) || 0)),
         night: hours.filter((h) => h < 5).length,
@@ -15724,7 +15729,7 @@
       { id: "logs2", xp: 60, da: "Log 2 smoke seshs i dag", en: "Log 2 smoke seshes today", goal: 2,
         check: () => todayLogs().length },
       { id: "feel2", xp: 50, da: "Log en smoke og vælg mindst 2 følelser", en: "Log a smoke and pick at least 2 feelings", goal: 1,
-        check: () => todayLogs().filter((e) => (e.feelings || []).length >= 2).length },
+        check: () => todayLogs().filter((e) => entryFeelings(e).length >= 2).length },
       { id: "bong", xp: 60, da: "Tag et bong-hit og log det", en: "Take a bong hit and log it", goal: 1,
         check: () => todayLogs().filter((e) => e.method === "bong").length },
       { id: "roll", xp: 70, da: "Del en roll i Rate the Roll", en: "Share a roll in Rate the Roll", goal: 1,
