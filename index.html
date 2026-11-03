@@ -7281,7 +7281,7 @@
         "notif.spot": "{name} har tilføjet smoke spottet {spot}",
         "notif.state.default": "Slå notifikationer til",
         "push.title": "Slå notifikationer til",
-        "push.text": "Få besked, når nogen skriver til dig, sender en venneanmodning, inviterer til en sesh eller kommenterer dit opslag. Også når appen er lukket.",
+        "push.text": "Få besked, når en ven smoker eller deler noget nyt, når du får en venneanmodning, og en påmindelse om at logge din smoke. Også når appen er lukket.",
         "push.denied": "Notifikationer er slået fra for Flower. Gå til telefonens Indstillinger → Notifikationer → Flower, og slå \"Tillad notifikationer\" til.",
         "push.install": "På iPhone virker notifikationer kun, når Flower er føjet til hjemmeskærmen: tryk på Del-knappen i Safari, vælg \"Føj til hjemmeskærm\", og åbn Flower derfra.",
         "push.yes": "Slå til",
@@ -7297,7 +7297,7 @@
         "notif.state.granted": "Notifikationer er slået til",
         "notif.state.denied": "Notifikationer er blokeret i telefonens indstillinger",
         "notif.state.unsupported": "Ikke understøttet her",
-        "notif.help": "Du får en notifikation på telefonen, når nogen skriver til dig, sender en venneanmodning, inviterer til en sesh eller kommenterer dit opslag. Også når appen er lukket (kan tage op til et minut).",
+        "notif.help": "Du får en notifikation, når en ven trykker \"Smoker nu\" eller lægger et opslag, en roll, munchies eller et smoke spot op, når du får en venneanmodning, og en påmindelse kl. 20, hvis du ikke har logget en smoke. Også når appen er lukket.",
         "notif.helpInstall": "På iPhone skal appen først føjes til hjemmeskærmen: tryk på Del-knappen i Safari og vælg \"Føj til hjemmeskærm\". Åbn den derfra, og slå notifikationer til her.",
         "cl.more": "Vis mere",
         "cl.title": "Opdateringer",
@@ -8001,7 +8001,7 @@
         "notif.spot": "{name} added the smoke spot {spot}",
         "notif.state.default": "Turn on notifications",
         "push.title": "Turn on notifications",
-        "push.text": "Get notified when someone messages you, sends a friend request, invites you to a sesh or comments on your post. Even when the app is closed.",
+        "push.text": "Get notified when a friend is smoking or shares something new, when you get a friend request, and a reminder to log your smoke. Even when the app is closed.",
         "push.denied": "Notifications are turned off for Flower. Go to your phone's Settings → Notifications → Flower and turn on \"Allow Notifications\".",
         "push.install": "On iPhone, notifications only work when Flower is added to your home screen: tap the Share button in Safari, choose \"Add to Home Screen\" and open Flower from there.",
         "push.yes": "Turn on",
@@ -8017,7 +8017,7 @@
         "notif.state.granted": "Notifications are on",
         "notif.state.denied": "Notifications are blocked in your phone's settings",
         "notif.state.unsupported": "Not supported here",
-        "notif.help": "You'll get a notification on your phone when someone messages you, sends a friend request, invites you to a sesh or comments on your post. Even when the app is closed (can take up to a minute).",
+        "notif.help": "You'll get a notification when a friend taps \"Smoking now\" or shares a post, roll, munchies or smoke spot, when you get a friend request, and a reminder at 8 pm if you haven't logged a smoke. Even when the app is closed.",
         "notif.helpInstall": "On iPhone, add the app to your home screen first: tap the Share button in Safari and choose \"Add to Home Screen\". Open it from there and turn on notifications here.",
         "cl.more": "Show more",
         "cl.title": "Updates",
@@ -9173,6 +9173,7 @@
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 15000));
         Object.assign(bench, await storeImage(pendingPhoto));
         const doc = await Promise.race([benchesRef.add(bench), timeout]);
+        notifyFriends("spot", bench.name, doc.id);
         closeSheet();
         showToast(t("bench.added"));
         openBench(doc.id);
@@ -10215,7 +10216,7 @@
       const batch = db.batch();
       batch.set(db.collection("friendships").doc(friendshipId(me, uid)), { users: [uid, me], createdAt: Date.now() });
       batch.delete(db.collection("friendRequests").doc(`${uid}_${me}`));
-      return friendAction(() => batch.commit().then(() => queuePush(uid, "accepted")), t("friends.acceptedToast", { name: nameOf(uid) }));
+      return friendAction(() => batch.commit(), t("friends.acceptedToast", { name: nameOf(uid) }));
     }
 
     function declineRequest(uid) {
@@ -10405,12 +10406,14 @@
             editedAt: Date.now(),
           });
         } else if (roll) {
-          await db.collection("rolls").add({ ...data, ratings: {} });
+          const ref = await db.collection("rolls").add({ ...data, ratings: {} });
+          notifyFriends("roll", "", ref.id);
         } else if (munch) {
-          await db.collection("munchies").add({ ...data, likes: [] });
+          const ref = await db.collection("munchies").add({ ...data, likes: [] });
+          notifyFriends("munchie", "", ref.id);
         } else {
           const ref = await db.collection("posts").add({ ...data, likes: [], commentCount: 0 });
-          data.mentions.forEach((m) => queuePush(m.uid, "mention", text, ref.id));
+          notifyFriends("post", text, ref.id);
         }
         closeSheet();
         showToast(t(editingPostId ? "post.saved" : roll ? "roll.posted" : munch ? "munch.posted" : "forum.posted"));
@@ -10680,10 +10683,6 @@
           createdAt: Date.now(),
         });
         await db.collection("posts").doc(postId).update({ commentCount: FieldValue().increment(1) });
-        const post = posts.find((x) => x.id === postId);
-        const tagged = findMentions(text).map((m) => m.uid);
-        if (post && !tagged.includes(post.author)) queuePush(post.author, "comment", text, postId);
-        tagged.forEach((uid) => queuePush(uid, "mention", text, postId));
       } catch (error) {
         console.error(error);
         input.value = text;
@@ -14481,10 +14480,9 @@
     const alerted = new Set();
     let notifications = [];
     var notifTimer = null;   // var: kan bruges, før koden her er kørt
-    let swRegistration = null;
 
     if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-      navigator.serviceWorker.register("sw.js").then((reg) => { swRegistration = reg; }).catch(() => {});
+      navigator.serviceWorker.register("sw.js").catch(() => {});
     }
 
     function personName(uid, fallback) {
@@ -14613,23 +14611,10 @@
         .forEach((n) => {
           alerted.add(n.id);
           showToast(n.text);
-          systemNotify(n);
         });
       notifications.forEach((n) => alerted.add(n.id));
     }
 
-    function systemNotify(n) {
-      if (!("Notification" in window) || Notification.permission !== "granted") return;
-      const options = { body: n.text, icon: "apple-touch-icon.png", tag: n.id };
-      if (swRegistration) swRegistration.showNotification("Flower", options).catch(() => {});
-      else {
-        try {
-          new Notification("Flower", options);
-        } catch {
-          // Nogle browsere kræver service worker
-        }
-      }
-    }
 
     function openNotifications() {
       notifications = buildNotifications();
@@ -14757,6 +14742,11 @@
         console.error(error);
         return false;
       });
+    }
+
+    // Til alle mine venner (Smoker nu, nyt opslag, roll, munchies og smoke spot)
+    function notifyFriends(type, text = "", ref = "") {
+      friendships.map(otherUser).forEach((uid) => queuePush(uid, type, text, ref));
     }
 
     // Test: læg en notifikation til mig selv i køen. Luk appen, og den kommer inden for et minut
@@ -14907,6 +14897,7 @@
       if (!on) myProfile.smokingNowCount = (myProfile.smokingNowCount || 0) + 1;
       renderSmokingNow();
       showToast(t(on ? "now.stopped" : "now.started"));
+      if (!on) notifyFriends("smoking");
       syncBadges();
       db.collection("profiles").doc(currentUserKey()).set({ smokingUntil: until, smokingNowCount: myProfile.smokingNowCount || 0 }, { merge: true })
         .catch((error) => showToast(dbErrorText(error)));
@@ -15054,7 +15045,6 @@
           responses: {},
           createdAt: Date.now(),
         });
-        friendships.map(otherUser).forEach((uid) => queuePush(uid, "sesh", place));
         closeSheet();
         showToast(t("sesh.sent"));
       } catch (error) {
@@ -15176,10 +15166,7 @@
         emoji: "💪",
         createdAt: Date.now(),
       })
-        .then(() => {
-          queuePush(uid, "cheer");
-          showToast(t("tbm.cheerSent", { name: personName(uid) }));
-        })
+        .then(() => showToast(t("tbm.cheerSent", { name: personName(uid) })))
         .catch((error) => showToast(dbErrorText(error)));
     }
 
@@ -15720,7 +15707,6 @@
           read: { [me]: now },
         }, { merge: true });
         await db.collection("chats").doc(id).collection("messages").add({ from: me, text, createdAt: now });
-        queuePush(openChatWith, "chat", text, id);
       } catch (error) {
         console.error(error);
         input.value = text;

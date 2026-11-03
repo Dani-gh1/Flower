@@ -8,30 +8,33 @@ const API_KEY = "AIzaSyAGS0JZBnrk5ozRrSgmypds9dNnnoBriyo";
 const PROJECT = "flower-438b9";
 const VAPID_PUBLIC = "BCddMZ1dKlYPo9CdWxrjmrs1QyxwnmJ7gyQPWqDlkO-EOl96MrUSThl7oiB5LY4SiiqNewhoGXZLlECLP6fcLXI";
 const VAPID_SUBJECT = "mailto:push@flower.app";
+const REMINDER_HOUR = 20;
 const DOCS = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents`;
 
+// Kun disse notifikationer sendes: "Smoker nu", venneanmodninger, nyt opslag,
+// roll, munchies og smoke spot fra en ven, den daglige påmindelse og test-knappen.
 const TEXT = {
   da: {
-    chat: (n, t) => [n, t],
+    smoking: (n) => [`${n} smoker nu 💨`, "Skal du med?"],
     request: (n) => ["Ny venneanmodning", `${n} vil gerne være venner`],
-    accepted: (n) => ["I er nu venner", `${n} har accepteret din venneanmodning`],
-    sesh: (n, t) => ["Sesh-invitation", `${n} inviterer til en sesh${t ? ` · ${t}` : ""}`],
-    cheer: (n) => ["Du får et hep", `${n} hepper på din pause. Bliv ved!`],
-    comment: (n, t) => [`${n} kommenterede dit opslag`, t],
-    mention: (n, t) => [`${n} nævnte dig`, t],
-    many: (k) => ["Flower", `Du har ${k} nye notifikationer`],
+    post: (n, t) => [`${n} har lagt et nyt opslag op`, t || "Se det i Smoke Hub"],
+    roll: (n) => [`${n} har delt en roll`, "Giv den en rating i Rate the Roll"],
+    munchie: (n) => [`${n} har delt sine munchies`, "Se dem i Munchies"],
+    spot: (n, t) => [`${n} har tilføjet et smoke spot`, t || "Se det på kortet"],
+    reminder: () => ["Husk at logge din smoke 🌿", "Har du røget i dag? Log det i Flower"],
     test: () => ["Flower", "Notifikationer virker! 🎉"],
+    many: (k) => ["Flower", `Du har ${k} nye notifikationer`],
   },
   en: {
-    chat: (n, t) => [n, t],
+    smoking: (n) => [`${n} is smoking now 💨`, "Want to join?"],
     request: (n) => ["New friend request", `${n} wants to be friends`],
-    accepted: (n) => ["You're now friends", `${n} accepted your friend request`],
-    sesh: (n, t) => ["Sesh invite", `${n} invites you to a sesh${t ? ` · ${t}` : ""}`],
-    cheer: (n) => ["You got a cheer", `${n} is cheering on your break. Keep going!`],
-    comment: (n, t) => [`${n} commented on your post`, t],
-    mention: (n, t) => [`${n} mentioned you`, t],
-    many: (k) => ["Flower", `You have ${k} new notifications`],
+    post: (n, t) => [`${n} shared a new post`, t || "See it in Smoke Hub"],
+    roll: (n) => [`${n} shared a roll`, "Rate it in Rate the Roll"],
+    munchie: (n) => [`${n} shared their munchies`, "See them in Munchies"],
+    spot: (n, t) => [`${n} added a smoke spot`, t || "See it on the map"],
+    reminder: () => ["Remember to log your smoke 🌿", "Did you smoke today? Log it in Flower"],
     test: () => ["Flower", "Notifications work! 🎉"],
+    many: (k) => ["Flower", `You have ${k} new notifications`],
   },
 };
 
@@ -158,6 +161,78 @@ async function signIn(env) {
   return json.idToken;
 }
 
+// ---------- Send til alle en brugers telefoner ----------
+// makeMessages får teksterne på telefonens sprog og giver de beskeder, der skal sendes
+async function sendToUser(api, env, uid, makeMessages, subs = null) {
+  if (!subs) {
+    const subRes = await api(`/pushSubs/${encodeURIComponent(uid)}`);
+    if (!subRes.ok) return 0; // ingen telefon tilmeldt
+    subs = fields(await subRes.json()).subs || {};
+  }
+  let sent = 0;
+  for (const [key, sub] of Object.entries(subs)) {
+    if (!sub || !sub.endpoint) continue;
+    for (const msg of makeMessages(TEXT[sub.lang] || TEXT.da)) {
+      const r = await sendPush(sub, JSON.stringify(msg), env.VAPID_PRIVATE);
+      // Gem svaret fra Apple/Google på telefonen, så fejl kan findes bagefter
+      const detail = r.ok ? "" : (await r.text()).slice(0, 200);
+      if (r.status === 404 || r.status === 410) {
+        // Telefonen er afmeldt: fjern den
+        await api(`/pushSubs/${encodeURIComponent(uid)}?updateMask.fieldPaths=subs.${key}`, {
+          method: "PATCH",
+          body: JSON.stringify({ fields: {} }),
+        });
+        break;
+      }
+      await api(`/pushSubs/${encodeURIComponent(uid)}?updateMask.fieldPaths=subs.${key}.lastStatus&updateMask.fieldPaths=subs.${key}.lastAt&updateMask.fieldPaths=subs.${key}.lastError`, {
+        method: "PATCH",
+        body: JSON.stringify({ fields: { subs: { mapValue: { fields: { [key]: { mapValue: { fields: {
+          lastStatus: { integerValue: String(r.status) },
+          lastAt: { integerValue: String(Date.now()) },
+          lastError: { stringValue: detail },
+        } } } } } } } }),
+      });
+      if (r.ok) sent++;
+      else console.error("Push fejlede:", r.status, detail);
+    }
+  }
+  return sent;
+}
+
+// Dansk tid lige nu: { date: "2026-11-03", hour: 20 }
+function copenhagen(time = Date.now()) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Copenhagen", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23",
+  }).formatToParts(new Date(time)).map((p) => [p.type, p.value]));
+  return { date: `${parts.year}-${parts.month}-${parts.day}`, hour: Number(parts.hour) };
+}
+
+// ---------- Daglig påmindelse kl. 20 (dansk tid) ----------
+// Sendes til alle med en tilmeldt telefon, undtagen dem der allerede har logget i dag.
+export async function remind(env) {
+  if (copenhagen().hour !== REMINDER_HOUR) return "Ikke tid til påmindelse";
+  const token = await signIn(env);
+  const api = (path, options = {}) =>
+    fetch(DOCS + path, { ...options, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", ...(options.headers || {}) } });
+  const res = await api("/pushSubs?pageSize=300");
+  const body = await res.json();
+  if (!res.ok) throw new Error("Kunne ikke læse pushSubs: " + JSON.stringify(body.error || body));
+  const today = copenhagen().date;
+  let sent = 0;
+  for (const doc of body.documents || []) {
+    const data = fields(doc);
+    const uid = data.uid || doc.name.split("/").pop();
+    // Har de logget en smoke i dag, får de ingen påmindelse
+    const profile = await api(`/profiles/${encodeURIComponent(uid)}`);
+    if (profile.ok) {
+      const last = fields(await profile.json()).lastSmokeAt;
+      if (last && copenhagen(last).date === today) continue;
+    }
+    sent += await sendToUser(api, env, uid, (L) => [{ title: L.reminder()[0], body: L.reminder()[1], tag: "reminder" }], data.subs || {});
+  }
+  return `Påmindelse sendt til ${sent} telefoner`;
+}
+
 // ---------- Selve arbejdet ----------
 export async function run(env) {
   if (!env.PUSH_EMAIL || !env.PUSH_PASSWORD || !env.VAPID_PRIVATE) {
@@ -183,47 +258,16 @@ export async function run(env) {
 
   let sent = 0;
   for (const [uid, items] of byUser) {
-    const subRes = await api(`/pushSubs/${encodeURIComponent(uid)}`);
-    if (!subRes.ok) continue; // ingen telefon tilmeldt
-    const subs = fields(await subRes.json()).subs || {};
     items.sort((a, b) => a.createdAt - b.createdAt);
-    for (const [key, sub] of Object.entries(subs)) {
-      const L = TEXT[sub.lang] || TEXT.da;
-      // Højst 3 enkelte notifikationer; flere bliver samlet til én
-      const messages = items.length > 3
-        ? [{ title: L.many(items.length)[0], body: L.many(items.length)[1], tag: "many" }]
-        : items.map((it) => {
-          const [title, text] = (L[it.type] || L.mention)(it.fromName || "?", it.text || "");
-          return { title, body: text, tag: it.type === "chat" ? `chat-${it.ref}` : undefined };
-        });
-      for (const msg of messages) {
-        const r = await sendPush(sub, JSON.stringify(msg), env.VAPID_PRIVATE);
-        // Gem svaret fra Apple/Google på telefonen, så fejl kan findes bagefter
-        const detail = r.ok ? "" : (await r.text()).slice(0, 200);
-        if (r.status !== 404 && r.status !== 410) {
-          await api(`/pushSubs/${encodeURIComponent(uid)}?updateMask.fieldPaths=subs.${key}.lastStatus&updateMask.fieldPaths=subs.${key}.lastAt&updateMask.fieldPaths=subs.${key}.lastError`, {
-            method: "PATCH",
-            body: JSON.stringify({ fields: { subs: { mapValue: { fields: { [key]: { mapValue: { fields: {
-              lastStatus: { integerValue: String(r.status) },
-              lastAt: { integerValue: String(Date.now()) },
-              lastError: { stringValue: detail },
-            } } } } } } } }),
-          });
-        }
-        if (r.ok) {
-          sent++;
-        } else if (r.status === 404 || r.status === 410) {
-          // Telefonen er afmeldt: fjern den
-          await api(`/pushSubs/${encodeURIComponent(uid)}?updateMask.fieldPaths=subs.${key}`, {
-            method: "PATCH",
-            body: JSON.stringify({ fields: {} }),
-          });
-          break;
-        } else {
-          console.error("Push fejlede:", r.status, detail);
-        }
-      }
-    }
+    // Typer, der ikke længere sendes (fx fra en gammel version af appen), springes over
+    const known = items.filter((it) => TEXT.da[it.type] && it.type !== "many" && it.type !== "reminder");
+    if (!known.length) continue;
+    sent += await sendToUser(api, env, uid, (L) => (known.length > 3
+      ? [{ title: L.many(known.length)[0], body: L.many(known.length)[1], tag: "many" }]
+      : known.map((it) => {
+        const [title, text] = L[it.type](it.fromName || "?", it.text || "");
+        return { title, body: text, tag: `${it.type}-${it.ref || it.from || ""}` };
+      })));
   }
 
   // Slet det sendte fra køen
@@ -234,9 +278,10 @@ export async function run(env) {
 }
 
 export default {
-  // Hvert minut (se wrangler.toml)
+  // Hvert minut: send køen. Kl. 18 og 19 UTC: tjek om det er kl. 20 i Danmark (vinter- og sommertid)
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(run(env).then((msg) => console.log(msg)).catch((error) => console.error(error.message || error)));
+    const job = event.cron === "* * * * *" ? run(env) : remind(env);
+    ctx.waitUntil(job.then((msg) => console.log(msg)).catch((error) => console.error(error.message || error)));
   },
   // Åbner man Worker'ens adresse, ser man bare, at den kører
   async fetch() {
