@@ -1589,9 +1589,11 @@
 
     .diary-photo {
       display: block;
-      width: 100%;
+      width: calc(100% - 20px);
+      margin: 0 10px;
       aspect-ratio: 4 / 3;
       object-fit: cover;
+      border-radius: 16px;
     }
 
     .diary-body {
@@ -3303,9 +3305,11 @@
     }
     .roll-photo {
       display: block;
-      width: 100%;
+      width: calc(100% - 20px);
+      margin: 0 10px;
       max-height: 480px;
       object-fit: cover;
+      border-radius: 16px;
     }
     .roll-rating {
       margin-top: 14px;
@@ -3350,10 +3354,42 @@
       cursor: zoom-out;
       animation: fadeIn 0.15s ease;
     }
+    .lightbox {
+      touch-action: none;
+      overflow: hidden;
+    }
     .lightbox img {
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
+      border-radius: 14px;
+      transform-origin: center;
+      will-change: transform;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+    }
+    .lightbox.zoomed {
+      cursor: grab;
+    }
+    .lightbox.zoomed img {
+      border-radius: 0;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: calc(var(--safe-top) + 14px);
+      right: 16px;
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
     }
 
     /* ---------- Games of Joints ---------- */
@@ -5747,9 +5783,31 @@
       font-weight: 700;
       white-space: nowrap;
     }
-    [data-open-roll],
-    [data-open-munch] {
+    [data-open-roll] {
       cursor: pointer;
+    }
+
+    /* ---------- Håndbogens forside: passer til skærmen, ingen scroll ---------- */
+    html.no-scroll,
+    html.no-scroll body,
+    html.no-scroll #phone-screen {
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+    .view.active[data-view="hb-menu"] {
+      display: flex;
+      flex-direction: column;
+      height: calc(100dvh - var(--safe-top) - 24px - var(--safe-bottom) - 110px);
+      min-height: 360px;
+    }
+    [data-view="hb-menu"] .tile-grid {
+      flex: 1;
+      min-height: 0;
+      grid-auto-rows: 1fr;
+    }
+    [data-view="hb-menu"] .tile {
+      aspect-ratio: auto;
+      min-height: 0;
     }
     @keyframes slideFromLeft {
       from { transform: translateX(-18%); opacity: 0; }
@@ -6550,7 +6608,10 @@
     <!-- Bundark: tilføj et nyt smoke spot -->
     <div id="sheet-backdrop" class="sheet-backdrop hidden"></div>
     <!-- Billede i fuld skærm -->
-    <div id="lightbox" class="lightbox hidden"><img alt=""></div>
+    <div id="lightbox" class="lightbox hidden">
+      <img alt="">
+      <button type="button" class="lightbox-close" aria-label="Luk">✕</button>
+    </div>
     <form id="bench-form" class="sheet hidden" novalidate>
       <h2 id="bench-form-title" data-i18n="bench.new">Nyt smoke spot</h2>
       <label class="photo-pick" id="photo-pick">
@@ -8733,8 +8794,19 @@
       pages.forEach((page) => page.classList.toggle("active", page.dataset.page === section));
       tabbarItems.forEach((item) => item.classList.toggle("active", item.dataset.page === name));
       activeTab = name;
+      updateScrollLock();
       scrollToTop();
     }
+
+    // Håndbogens forside passer til skærmen og kan ikke scrolles (undersiderne kan)
+    function updateScrollLock() {
+      const locked = activeTab === "handbook" && viewStack[viewStack.length - 1] === "hb-menu";
+      document.documentElement.classList.toggle("no-scroll", locked);
+    }
+
+    document.addEventListener("touchmove", (e) => {
+      if (document.documentElement.classList.contains("no-scroll") && !e.target.closest(".sheet")) e.preventDefault();
+    }, { passive: false });
 
     // Åbn en underside direkte, fx fra en genvej på forsiden
     function openView(tab, view) {
@@ -8778,6 +8850,7 @@
       if (name === "guides") renderGuides();
       if (name === "games") renderTonight();
       if (name === "guide") renderGuide();
+      updateScrollLock();
       scrollToTop();
     }
 
@@ -10442,7 +10515,8 @@
     }
 
     // Toppen af et kort i feedet: hvem, hvornår og hvilken slags
-    function feedHead(item, label) {
+    // deleteAttr: knappen til at slette, hvis det er mit eget
+    function feedHead(item, label, deleteAttr) {
       const own = item.author === currentUserKey();
       const profile = (own ? myProfile : profileCache.get(item.author)) || { name: item.authorName || "?" };
       return `
@@ -10453,6 +10527,7 @@
             <small>${timeAgo(item.createdAt)}</small>
           </span>
           <span class="feed-kind">${label}</span>
+          ${own ? `<button type="button" class="link-btn danger small" ${deleteAttr}="${esc(item.id)}">${t("forum.delete")}</button>` : ""}
         </header>`;
     }
 
@@ -10461,8 +10536,8 @@
       const count = Object.keys(roll.ratings || {}).length;
       return `
         <article class="diary-entry ${isNew("rolls", roll.createdAt, roll.author) ? "is-new" : ""}">
-          ${feedHead(roll, "Rate the Roll")}
-          <img class="diary-photo" src="${esc(photoSrc(roll))}" alt="" loading="lazy" data-open-roll="${esc(roll.id)}">
+          ${feedHead(roll, "Rate the Roll", "data-delete-roll-id")}
+          <img class="diary-photo" src="${esc(photoSrc(roll))}" alt="" loading="lazy" ${zoomAttr(roll)}>
           <div class="post-actions">
             <button type="button" data-open-roll="${esc(roll.id)}">
               <span class="stars">${starsText(avg)}</span> ${avg ? avg.toFixed(1) : ""} <small>${count ? ratingCount(count) : t("roll.noRatings")}</small>
@@ -10476,8 +10551,8 @@
       const liked = likes.includes(currentUserKey());
       return `
         <article class="diary-entry ${isNew("munchies", m.createdAt, m.author) ? "is-new" : ""}">
-          ${feedHead(m, "Munchies")}
-          <img class="diary-photo" src="${esc(photoSrc(m))}" alt="" loading="lazy" data-open-munch="${esc(m.id)}">
+          ${feedHead(m, "Munchies", "data-delete-munch-id")}
+          <img class="diary-photo" src="${esc(photoSrc(m))}" alt="" loading="lazy" ${zoomAttr(m)}>
           <div class="post-actions">
             <button type="button" class="${liked ? "on" : ""}" data-like-munch-id="${esc(m.id)}" aria-label="${t("post.like")}">
               <span class="heart">${liked ? "♥" : "♡"}</span> ${likes.length}
@@ -10492,13 +10567,12 @@
         openRollId = roll.dataset.openRoll;
         return goView("roll");
       }
-      const munch = e.target.closest("[data-open-munch]");
-      if (munch) {
-        openMunchId = munch.dataset.openMunch;
-        return goView("munchie");
-      }
       const like = e.target.closest("[data-like-munch-id]");
       if (like) return toggleMunchLike(like.dataset.likeMunchId);
+      const delRoll = e.target.closest("[data-delete-roll-id]");
+      if (delRoll) return deleteRoll(delRoll.dataset.deleteRollId);
+      const delMunch = e.target.closest("[data-delete-munch-id]");
+      if (delMunch) return deleteMunch(delMunch.dataset.deleteMunchId);
       handlePostClick(e);
     });
 
@@ -11023,14 +11097,7 @@
       if (zoom) return openLightbox(zoom.src, zoom.dataset.full);
       const person = e.target.closest("[data-person]");
       if (person) return openProfileOf(person.dataset.person);
-      if (e.target.closest("[data-delete-roll]")) {
-        if (!confirm(t("roll.confirmDelete"))) return;
-        deleteImage(rolls.find((x) => x.id === openRollId));
-        db.collection("rolls").doc(openRollId).delete()
-          .then(() => { showToast(t("roll.deleted")); backView(); })
-          .catch((error) => showToast(dbErrorText(error)));
-        return;
-      }
+      if (e.target.closest("[data-delete-roll]")) return deleteRoll(openRollId, true);
       const star = e.target.closest("[data-rate]");
       if (star && e.target.closest("[data-rate-roll]")) {
         const value = Number(star.dataset.rate);
@@ -11120,32 +11187,174 @@
       if (zoom) return openLightbox(zoom.src, zoom.dataset.full);
       const person = e.target.closest("[data-person]");
       if (person) return openProfileOf(person.dataset.person);
-      if (e.target.closest("[data-delete-munch]")) {
-        if (!confirm(t("munch.confirmDelete"))) return;
-        deleteImage(munchies.find((x) => x.id === openMunchId));
-        db.collection("munchies").doc(openMunchId).delete()
-          .then(() => { showToast(t("munch.deleted")); backView(); })
-          .catch((error) => showToast(dbErrorText(error)));
-        return;
-      }
+      if (e.target.closest("[data-delete-munch]")) return deleteMunch(openMunchId, true);
       if (e.target.closest("[data-like-munch]")) toggleMunchLike(openMunchId);
     });
 
-    // ---------- Billede i fuld skærm ----------
+    // Slet min roll eller mine munchies (fra feedet eller fra billedet selv)
+    function deleteRoll(id, goBack = false) {
+      if (!confirm(t("roll.confirmDelete"))) return;
+      deleteImage(rolls.find((x) => x.id === id));
+      db.collection("rolls").doc(id).delete()
+        .then(() => {
+          showToast(t("roll.deleted"));
+          if (goBack) backView();
+        })
+        .catch((error) => showToast(dbErrorText(error)));
+    }
+
+    function deleteMunch(id, goBack = false) {
+      if (!confirm(t("munch.confirmDelete"))) return;
+      deleteImage(munchies.find((x) => x.id === id));
+      db.collection("munchies").doc(id).delete()
+        .then(() => {
+          showToast(t("munch.deleted"));
+          if (goBack) backView();
+        })
+        .catch((error) => showToast(dbErrorText(error)));
+    }
+
+    // ---------- Billede i fuld skærm: knib for at zoome, træk for at flytte, dobbelttryk ----------
     const lightbox = document.getElementById("lightbox");
+    const lightboxImg = lightbox.querySelector("img");
+    const MAX_ZOOM = 5;
+    let zoom = { scale: 1, x: 0, y: 0 };
+    let zoomGesture = null;
+    let lastTap = 0;
+    let tapCloseTimer = null;
+    let touchUsed = false;
+
+    function applyZoom(animate = false) {
+      lightboxImg.style.transition = animate ? "transform 0.2s ease" : "none";
+      lightboxImg.style.transform = `translate(${zoom.x}px, ${zoom.y}px) scale(${zoom.scale})`;
+      lightbox.classList.toggle("zoomed", zoom.scale > 1);
+    }
+
+    // Hold billedet inden for skærmen, når det er zoomet
+    function clampZoom() {
+      zoom.scale = Math.min(MAX_ZOOM, Math.max(1, zoom.scale));
+      const maxX = Math.max(0, (lightboxImg.offsetWidth * zoom.scale - window.innerWidth) / 2);
+      const maxY = Math.max(0, (lightboxImg.offsetHeight * zoom.scale - window.innerHeight) / 2);
+      zoom.x = Math.min(maxX, Math.max(-maxX, zoom.x));
+      zoom.y = Math.min(maxY, Math.max(-maxY, zoom.y));
+      if (zoom.scale < 1.02) zoom = { scale: 1, x: 0, y: 0 };
+    }
+
+    // Zoom til en bestemt størrelse omkring et punkt på skærmen
+    function zoomAt(scale, px, py) {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const ratio = scale / zoom.scale;
+      zoom.x = px - cx - (px - cx - zoom.x) * ratio;
+      zoom.y = py - cy - (py - cy - zoom.y) * ratio;
+      zoom.scale = scale;
+    }
 
     function openLightbox(src, fullId) {
-      const img = lightbox.querySelector("img");
-      img.src = src;
+      lightboxImg.src = src;
+      zoom = { scale: 1, x: 0, y: 0 };
+      applyZoom();
       lightbox.classList.remove("hidden");
       if (fullId) {
         loadFullImage(fullId)
-          .then((full) => { if (full && img.src === src) img.src = full; })
+          .then((full) => { if (full && lightboxImg.src === src) lightboxImg.src = full; })
           .catch(() => {});
       }
     }
 
-    lightbox.addEventListener("click", () => lightbox.classList.add("hidden"));
+    function closeLightbox() {
+      clearTimeout(tapCloseTimer);
+      lightbox.classList.add("hidden");
+    }
+
+    const touchPoint = (t) => ({ x: t.clientX, y: t.clientY });
+    const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+
+    lightbox.addEventListener("touchstart", (e) => {
+      touchUsed = true;
+      if (e.target.closest(".lightbox-close")) return;
+      const pts = [...e.touches].map(touchPoint);
+      if (pts.length >= 2) {
+        zoomGesture = { type: "pinch", dist: distance(pts[0], pts[1]), mid: { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 }, start: { ...zoom }, moved: true };
+      } else {
+        zoomGesture = { type: "pan", from: pts[0], start: { ...zoom }, moved: false };
+      }
+    }, { passive: true });
+
+    lightbox.addEventListener("touchmove", (e) => {
+      if (!zoomGesture) return;
+      e.preventDefault();
+      const pts = [...e.touches].map(touchPoint);
+      const g = zoomGesture;
+      if (g.type === "pinch" && pts.length >= 2) {
+        const mid = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+        const scale = Math.min(MAX_ZOOM, Math.max(0.8, g.start.scale * (distance(pts[0], pts[1]) / g.dist)));
+        // Punktet mellem fingrene bliver under fingrene
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        zoom.scale = scale;
+        zoom.x = mid.x - cx - (g.mid.x - cx - g.start.x) * (scale / g.start.scale);
+        zoom.y = mid.y - cy - (g.mid.y - cy - g.start.y) * (scale / g.start.scale);
+        applyZoom();
+      } else if (g.type === "pan" && pts.length === 1) {
+        const dx = pts[0].x - g.from.x;
+        const dy = pts[0].y - g.from.y;
+        if (Math.abs(dx) > 6 || Math.abs(dy) > 6) g.moved = true;
+        if (zoom.scale > 1) {
+          zoom.x = g.start.x + dx;
+          zoom.y = g.start.y + dy;
+          applyZoom();
+        }
+      }
+    }, { passive: false });
+
+    lightbox.addEventListener("touchend", (e) => {
+      if (!zoomGesture) return;
+      const g = zoomGesture;
+      if (e.touches.length === 1) {
+        // Én finger tilbage efter at have knebet: fortsæt med at flytte
+        zoomGesture = { type: "pan", from: touchPoint(e.touches[0]), start: { ...zoom }, moved: true };
+        return;
+      }
+      zoomGesture = null;
+      clampZoom();
+      applyZoom(true);
+      if (g.moved) return;
+      // Dobbelttryk: zoom ind på stedet, eller ud igen. Ét tryk uden zoom: luk
+      const now = Date.now();
+      const p = touchPoint(e.changedTouches[0]);
+      if (now - lastTap < 300) {
+        clearTimeout(tapCloseTimer);
+        lastTap = 0;
+        if (zoom.scale > 1) zoom = { scale: 1, x: 0, y: 0 };
+        else zoomAt(2.5, p.x, p.y);
+        clampZoom();
+        applyZoom(true);
+      } else {
+        lastTap = now;
+        if (zoom.scale === 1) tapCloseTimer = setTimeout(closeLightbox, 300);
+      }
+    });
+
+    // Med mus: klik lukker, dobbeltklik og scroll zoomer
+    lightbox.addEventListener("click", (e) => {
+      if (e.target.closest(".lightbox-close")) return closeLightbox();
+      if (touchUsed) return;
+      if (zoom.scale === 1) closeLightbox();
+    });
+    lightbox.addEventListener("dblclick", (e) => {
+      if (touchUsed) return;
+      if (zoom.scale > 1) zoom = { scale: 1, x: 0, y: 0 };
+      else zoomAt(2.5, e.clientX, e.clientY);
+      clampZoom();
+      applyZoom(true);
+    });
+    lightbox.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      zoomAt(Math.min(MAX_ZOOM, Math.max(1, zoom.scale * (e.deltaY < 0 ? 1.15 : 0.87))), e.clientX, e.clientY);
+      clampZoom();
+      applyZoom();
+    }, { passive: false });
 
     // ==========================================================
     // GUIDES OG FAKTA OM CANNABIS
