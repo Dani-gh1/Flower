@@ -4291,6 +4291,41 @@
       font-weight: 600;
     }
 
+    /* ---------- Opdateringer ---------- */
+    .changelog h3 {
+      margin-bottom: 10px;
+    }
+    .cl-day + .cl-day {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .cl-date {
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .cl-date::first-letter {
+      text-transform: uppercase;
+    }
+    .cl-date small {
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .changelog ul {
+      display: grid;
+      gap: 6px;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .changelog li::marker {
+      color: var(--accent);
+    }
+    #changelog-more {
+      margin-top: 12px;
+    }
+
     .rank-decay {
       margin: 12px 0 0;
       color: var(--accent);
@@ -5813,6 +5848,181 @@
       cursor: pointer;
     }
 
+    /* ---------- Weed Chess ---------- */
+    .game-item {
+      position: relative;
+    }
+    .chess-help {
+      margin-bottom: 8px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .chess-row {
+      cursor: pointer;
+    }
+    .chess-yourturn {
+      color: var(--accent);
+    }
+    .chess-invite-actions {
+      display: flex;
+      flex: none;
+      gap: 6px;
+    }
+    .chess-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 4px 0 12px;
+    }
+    .chess-head strong {
+      font-size: 22px;
+    }
+    .chess-state {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      text-align: right;
+    }
+    .chess-state.mine {
+      color: var(--accent);
+    }
+    .chess-board {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      overflow: hidden;
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+    .chess-sq {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      padding: 0;
+      border: 0;
+      font: inherit;
+      cursor: pointer;
+    }
+    .chess-sq.light {
+      background: #e9eedc;
+    }
+    .chess-sq.dark {
+      background: #6f9a5d;
+    }
+    .chess-sq.last {
+      box-shadow: inset 0 0 0 100px rgba(255, 209, 102, 0.38);
+    }
+    .chess-sq.selected {
+      box-shadow: inset 0 0 0 100px rgba(255, 209, 102, 0.65);
+    }
+    .chess-sq.check {
+      box-shadow: inset 0 0 0 100px rgba(229, 83, 75, 0.7);
+    }
+    .chess-sq.target::after {
+      content: "";
+      position: absolute;
+      width: 30%;
+      height: 30%;
+      border-radius: 50%;
+      background: rgba(20, 40, 25, 0.35);
+    }
+    .chess-sq.capture::after {
+      width: 84%;
+      height: 84%;
+      border: 4px solid rgba(20, 40, 25, 0.4);
+      background: none;
+    }
+    .chess-piece {
+      position: relative;
+      z-index: 1;
+      font-size: min(9.6vw, 46px);
+      line-height: 1;
+      font-family: "Segoe UI Symbol", "Apple Symbols", "Noto Sans Symbols 2", sans-serif;
+    }
+    .chess-piece.white {
+      color: #fff;
+      text-shadow: 0 0 1px #000, 0 0 1px #000, 0 1px 2px rgba(0, 0, 0, 0.6);
+    }
+    .chess-piece.black {
+      color: #161a17;
+      text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    }
+    .chess-board.locked .chess-sq {
+      cursor: default;
+    }
+    .chess-you {
+      margin: 8px 0 14px;
+      font-size: 13px;
+      text-align: center;
+    }
+    .chess-legend h3,
+    .chess-log h3 {
+      margin-bottom: 8px;
+    }
+    .chess-legend-row {
+      display: grid;
+      grid-template-columns: 30px 78px 1fr;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 0;
+      font-size: 14px;
+    }
+    .chess-legend-row strong {
+      text-align: right;
+    }
+    .chess-legend-piece {
+      font-size: 22px;
+      font-family: "Segoe UI Symbol", "Apple Symbols", "Noto Sans Symbols 2", sans-serif;
+    }
+    .chess-log p {
+      margin: 4px 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .chess-log b {
+      color: var(--text);
+    }
+    .chess-resign {
+      display: block;
+      margin: 14px auto 0;
+    }
+    .chess-friends {
+      max-height: 50vh;
+      margin: 12px 0;
+      overflow-y: auto;
+    }
+    .chess-penalty {
+      text-align: center;
+    }
+    .chess-penalty > small {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .chess-penalty-piece {
+      display: block;
+      margin: 6px 0 2px;
+      font-size: 54px;
+      line-height: 1;
+      font-family: "Segoe UI Symbol", "Apple Symbols", "Noto Sans Symbols 2", sans-serif;
+    }
+    .chess-penalty h2 {
+      margin-bottom: 4px;
+    }
+    .chess-penalty-tile {
+      margin: 8px 0 4px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
     /* ---------- Håndbogens forside: passer til skærmen, ingen scroll ---------- */
     html.no-scroll,
     html.no-scroll body,
@@ -6146,7 +6356,30 @@
                 <span><strong>Double Trouble</strong><small data-i18n="dt.tagline">To joints, hver sin vej rundt</small></span>
                 <span class="chevron">›</span>
               </button>
+              <button class="game-item" data-go="chess">
+                <span class="tile-badge hidden" id="chess-badge"></span>
+                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v4M10 5h4"/><path d="M8.5 21h7l-1-6.5c1.6-.8 2.5-2.2 2.5-3.8a4 4 0 0 0-8 0c0 1.6.9 3 2.5 3.8z"/><path d="M6 21h12"/></svg></span>
+                <span><strong>Weed Chess</strong><small data-i18n="chess.tagline">Skak mod en ven. Mister du en brik, får du en straf</small></span>
+                <span class="chevron">›</span>
+              </button>
             </div>
+          </div>
+
+          <!-- Weed Chess: mine spil og udfordringer -->
+          <div class="view" data-view="chess">
+            <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
+            <div class="title-row">
+              <h1 class="page-title">Weed Chess</h1>
+              <button type="button" class="mini-btn primary" id="chess-new" data-i18n="chess.challenge">＋ Udfordr</button>
+            </div>
+            <p class="muted chess-help" data-i18n="chess.help">Spil skak mod en ven på hver sin telefon. Mister du en brik, får du en straf fra Game of Joints: jo vigtigere brik, jo hårdere straf. Bliver du sat skakmat, skal du tage en Lunge-tornado.</p>
+            <div id="chess-list" class="chess-list"></div>
+          </div>
+
+          <!-- Weed Chess: selve spillet -->
+          <div class="view" data-view="chessGame">
+            <button class="back" data-back data-i18n="back.chess">‹ Weed Chess</button>
+            <div id="chess-game"></div>
           </div>
 
           <!-- Terningespillet -->
@@ -6444,6 +6677,13 @@
             <button type="button" class="install-close" id="install-close" aria-label="Luk">✕</button>
           </div>
           <div class="card home-rank-card" id="home-rank"></div>
+
+          <!-- Opdateringer: de store nyheder i appen -->
+          <div class="card changelog">
+            <h3 data-i18n="cl.title">Opdateringer</h3>
+            <div id="changelog-list"></div>
+            <button type="button" class="link-btn hidden" id="changelog-more" data-i18n="cl.more">Vis mere</button>
+          </div>
         </section>
 
 
@@ -6756,6 +6996,23 @@
       </div>
     </div>
 
+    <!-- Bundark: Weed Chess, vælg hvem du vil udfordre -->
+    <div id="chess-friend-sheet" class="sheet hidden">
+      <h2 data-i18n="chess.pickFriend">Hvem vil du udfordre?</h2>
+      <div id="chess-friends" class="people chess-friends"></div>
+      <div class="sheet-actions">
+        <button type="button" class="btn-plain" id="chess-friend-cancel" data-i18n="common.cancel">Annuller</button>
+      </div>
+    </div>
+
+    <!-- Bundark: Weed Chess, du har mistet en brik -->
+    <div id="chess-penalty-sheet" class="sheet hidden">
+      <div id="chess-penalty" class="chess-penalty"></div>
+      <div class="sheet-actions">
+        <button type="button" class="btn-primary" id="chess-penalty-ok" data-i18n="chess.done">Klaret</button>
+      </div>
+    </div>
+
     <!-- Bundark: vælg hvilken slags opslag -->
     <div id="new-kind-sheet" class="sheet hidden">
       <h2 data-i18n="new.title">Hvad vil du dele?</h2>
@@ -7052,7 +7309,7 @@
         "ai.methodLabel": "Hvordan?",
         "ai.productLabel": "Hvad?",
         "ai.feelLabel": "Hvordan føltes det? (vælg gerne flere)",
-        "feel.happy": "Glad & fnisende",
+        "feel.happy": "Giggles",
         "feel.relaxed": "Afslappet",
         "feel.energetic": "Energisk",
         "feel.creative": "Kreativ",
@@ -7167,6 +7424,52 @@
         "ai.timesN": "{n} gange",
         "game.tagline": "Brætspillet for dig og vennerne",
         "back.games": "‹ Games of Joints",
+        "back.chess": "‹ Weed Chess",
+        "chess.tagline": "Skak mod en ven. Mister du en brik, får du en straf",
+        "chess.help": "Spil skak mod en ven på hver sin telefon. Mister du en brik, får du en straf fra Game of Joints: jo vigtigere brik, jo hårdere straf. Bliver du sat skakmat, skal du tage en Lunge-tornado.",
+        "chess.challenge": "＋ Udfordr",
+        "chess.pickFriend": "Hvem vil du udfordre?",
+        "chess.noFriends": "Tilføj venner for at udfordre dem til Weed Chess.",
+        "chess.sent": "Udfordring sendt til {name}",
+        "chess.invites": "Udfordringer",
+        "chess.challengesYou": "Udfordrer dig til Weed Chess",
+        "chess.accept": "Spil",
+        "chess.games": "Dine spil",
+        "chess.noGames": "Ingen spil endnu. Udfordr en ven!",
+        "chess.finished": "Færdige spil",
+        "chess.waitingAnswer": "Venter på svar",
+        "chess.yourTurn": "Din tur",
+        "chess.theirTurn": "{name}s tur",
+        "chess.check": "Skak!",
+        "chess.draw": "Uafgjort",
+        "chess.youWon": "Du vandt",
+        "chess.youLost": "Du tabte",
+        "chess.mateWon": "Skakmat! Du vandt 🎉",
+        "chess.mateLost": "Skakmat! Du tabte",
+        "chess.youResigned": "Du gav op",
+        "chess.theyResigned": "De gav op. Du vandt 🎉",
+        "chess.youWhite": "Du spiller med de hvide brikker",
+        "chess.youBlack": "Du spiller med de sorte brikker",
+        "chess.penalties": "Straffe i dette spil",
+        "chess.log": "Mistede brikker",
+        "chess.logYou": "Du mistede en",
+        "chess.logThem": "{name} mistede en",
+        "chess.lost": "Du mistede din {piece}",
+        "chess.done": "Klaret",
+        "chess.resign": "Giv op",
+        "chess.confirmResign": "Vil du give op? Så taber du og skal tage en Lunge-tornado.",
+        "chess.gone": "Spillet findes ikke længere.",
+        "chess.noLib": "Kunne ikke hente skakreglerne. Tjek din internetforbindelse.",
+        "chess.pushTurn": "Din tur",
+        "chess.pushCapture": "Din {piece} blev slået: {tile}",
+        "chess.pushMate": "Skakmat! Tag en Lunge-tornado",
+        "chess.pushResign": "De gav op. Du vandt!",
+        "chess.piece.k": "Konge",
+        "chess.piece.q": "Dronning",
+        "chess.piece.r": "Tårn",
+        "chess.piece.b": "Løber",
+        "chess.piece.n": "Springer",
+        "chess.piece.p": "Bonde",
         "dice.title": "Terningespillet",
         "dice.tagline": "Slå med terningen. Øjnene er antal sug",
         "dice.help": "Slå med terningen. Det antal øjne, den lander på, er det antal sug, du skal tage. Send den videre til den næste.",
@@ -7483,6 +7786,11 @@
         "notif.state.unsupported": "Ikke understøttet her",
         "notif.help": "Du får en notifikation, når en ven trykker \"Smoker nu\" eller lægger et opslag, en roll, munchies eller et smoke spot op, når du får en venneanmodning eller en chatbesked, når nogen kommenterer dit opslag eller nævner dig, når din \"Smoker nu\" slutter, og en påmindelse kl. 22.30, hvis du ikke har logget en smoke. Også når appen er lukket.",
         "notif.helpInstall": "På iPhone skal appen først føjes til hjemmeskærmen: tryk på Del-knappen i Safari og vælg \"Føj til hjemmeskærm\". Åbn den derfra, og slå notifikationer til her.",
+        "cl.more": "Vis mere",
+        "cl.title": "Opdateringer",
+        "cl.less": "Vis mindre",
+        "cl.today": "I dag",
+        "cl.yesterday": "I går",
         "onb.usage": "Hvor meget ryger du?",
         "onb.errUsage": "Vælg hvor meget du ryger",
         "onb.startRank": "Du starter som {rank}",
@@ -7771,7 +8079,7 @@
         "ai.methodLabel": "How?",
         "ai.productLabel": "What?",
         "ai.feelLabel": "How did it feel? (pick as many as you like)",
-        "feel.happy": "Happy & giggly",
+        "feel.happy": "Giggles",
         "feel.relaxed": "Relaxed",
         "feel.energetic": "Energetic",
         "feel.creative": "Creative",
@@ -7886,6 +8194,52 @@
         "ai.timesN": "{n} times",
         "game.tagline": "The board game for you and your friends",
         "back.games": "‹ Games of Joints",
+        "back.chess": "‹ Weed Chess",
+        "chess.tagline": "Chess against a friend. Lose a piece, take a penalty",
+        "chess.help": "Play chess against a friend, each on your own phone. Lose a piece and you get a penalty from Game of Joints: the more important the piece, the harder the penalty. Get checkmated and you take a Lung tornado.",
+        "chess.challenge": "＋ Challenge",
+        "chess.pickFriend": "Who do you want to challenge?",
+        "chess.noFriends": "Add friends to challenge them to Weed Chess.",
+        "chess.sent": "Challenge sent to {name}",
+        "chess.invites": "Challenges",
+        "chess.challengesYou": "Challenges you to Weed Chess",
+        "chess.accept": "Play",
+        "chess.games": "Your games",
+        "chess.noGames": "No games yet. Challenge a friend!",
+        "chess.finished": "Finished games",
+        "chess.waitingAnswer": "Waiting for an answer",
+        "chess.yourTurn": "Your turn",
+        "chess.theirTurn": "{name}'s turn",
+        "chess.check": "Check!",
+        "chess.draw": "Draw",
+        "chess.youWon": "You won",
+        "chess.youLost": "You lost",
+        "chess.mateWon": "Checkmate! You won 🎉",
+        "chess.mateLost": "Checkmate! You lost",
+        "chess.youResigned": "You resigned",
+        "chess.theyResigned": "They resigned. You won 🎉",
+        "chess.youWhite": "You play the white pieces",
+        "chess.youBlack": "You play the black pieces",
+        "chess.penalties": "Penalties in this game",
+        "chess.log": "Lost pieces",
+        "chess.logYou": "You lost a",
+        "chess.logThem": "{name} lost a",
+        "chess.lost": "You lost your {piece}",
+        "chess.done": "Done",
+        "chess.resign": "Resign",
+        "chess.confirmResign": "Do you want to resign? You lose and have to take a Lung tornado.",
+        "chess.gone": "This game no longer exists.",
+        "chess.noLib": "Couldn't load the chess rules. Check your internet connection.",
+        "chess.pushTurn": "Your turn",
+        "chess.pushCapture": "Your {piece} was taken: {tile}",
+        "chess.pushMate": "Checkmate! Take a Lung tornado",
+        "chess.pushResign": "They resigned. You won!",
+        "chess.piece.k": "King",
+        "chess.piece.q": "Queen",
+        "chess.piece.r": "Rook",
+        "chess.piece.b": "Bishop",
+        "chess.piece.n": "Knight",
+        "chess.piece.p": "Pawn",
         "dice.title": "The Dice Game",
         "dice.tagline": "Roll the die. The dots are the number of hits",
         "dice.help": "Roll the die. The number it lands on is the number of hits you take. Then pass it to the next person.",
@@ -8202,6 +8556,11 @@
         "notif.state.unsupported": "Not supported here",
         "notif.help": "You'll get a notification when a friend taps \"Smoking now\" or shares a post, roll, munchies or smoke spot, when you get a friend request or a chat message, when someone comments on your post or mentions you, when your \"Smoking now\" ends, and a reminder at 10:30 pm if you haven't logged a smoke. Even when the app is closed.",
         "notif.helpInstall": "On iPhone, add the app to your home screen first: tap the Share button in Safari and choose \"Add to Home Screen\". Open it from there and turn on notifications here.",
+        "cl.more": "Show more",
+        "cl.title": "Updates",
+        "cl.less": "Show less",
+        "cl.today": "Today",
+        "cl.yesterday": "Yesterday",
         "onb.usage": "How much do you smoke?",
         "onb.errUsage": "Choose how much you smoke",
         "onb.startRank": "You start as {rank}",
@@ -8528,6 +8887,7 @@
       lang = newLang;
       localStorage.setItem(LANG_KEY, newLang);
       applyLanguage();
+      renderChangelog();
     }
 
     // Sprogvalg-skærmen vises første gang, og når man trykker på sprog-knappen
@@ -8762,6 +9122,7 @@
       listenToChats();
       listenToChecklist();
       listenToLogs();
+      listenToChess();
 
       // Man starter altid på hjemmeskærmen
       showPage("home");
@@ -8780,6 +9141,7 @@
       stopChats();
       stopChecklist();
       stopLogs();
+      stopChess();
     }
 
     document.getElementById("logout").addEventListener("click", async () => {
@@ -8876,6 +9238,10 @@
       if (name === "guides") renderGuides();
       if (name === "games") renderTonight();
       if (name === "guide") renderGuide();
+      if (name === "chess") {
+        renderChessList();
+        loadChessLib().catch(() => {});
+      }
       updateScrollLock();
       scrollToTop();
     }
@@ -12974,7 +13340,7 @@
         </div>`;
     }
 
-    [spinCard, document.getElementById("spin2-card")].forEach((card) => {
+    [spinCard, document.getElementById("spin2-card"), document.getElementById("chess-penalty")].forEach((card) => {
       card.addEventListener("click", (e) => {
         const button = e.target.closest("[data-spin-timer]");
         if (!button) return;
@@ -13157,6 +13523,408 @@
 
     shuffleSpin2();
 
+    // ==========================================================
+    // WEED CHESS: skak mod en ven på hver sin telefon, med straffe
+    // ==========================================================
+    // Spillene ligger i chessGames. Mister man en brik, får man en straf fra
+    // Game of Joints med cirka samme point som brikkens værdi (±2). Straffene
+    // trækkes nye for hvert spil. Bliver man sat skakmat, er straffen en Lunge-tornado.
+    const CHESS_LIB = "https://unpkg.com/chess.js@0.10.3/chess.js";
+    const CHESS_START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    const CHESS_VALUE = { p: 1, n: 3, b: 3, r: 5, q: 9 };
+    const CHESS_GLYPH = { k: "♚", q: "♛", r: "♜", b: "♝", n: "♞", p: "♟" };
+    const CHESS_KING_PENALTY = "lungTornado";
+    let chessLibLoading = null;
+    let chessGames = [];
+    let chessUnsub = null;
+    let openChessId = null;
+    let chessSelected = null;
+    const chessPenaltyQueue = [];
+
+    function loadChessLib() {
+      if (window.Chess) return Promise.resolve();
+      if (!chessLibLoading) {
+        chessLibLoading = new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = CHESS_LIB;
+          script.onload = resolve;
+          script.onerror = () => {
+            chessLibLoading = null;
+            reject(new Error("chess.js"));
+          };
+          document.head.appendChild(script);
+        });
+      }
+      return chessLibLoading;
+    }
+
+    // En tilfældig straf til hver brik: point = brikkens værdi ±2
+    function chessPenalties() {
+      const pool = [...SPIN_TILES, ...SPIN_IMPOSSIBLE].filter((id) => TILES[id] && TILES[id].hits && id !== CHESS_KING_PENALTY);
+      const out = { k: CHESS_KING_PENALTY };
+      Object.entries(CHESS_VALUE).forEach(([piece, value]) => {
+        const fit = pool.filter((id) => Math.abs(TILES[id].hits - value) <= 2);
+        out[piece] = fit[Math.floor(Math.random() * fit.length)];
+      });
+      return out;
+    }
+
+    const chessOpponent = (g) => g.players.find((u) => u !== currentUserKey());
+    const chessMyColor = (g) => (g.white === currentUserKey() ? "w" : "b");
+    const chessTurn = (g) => (g.fen || CHESS_START).split(" ")[1];
+    const chessMyTurn = (g) => g.status === "active" && chessTurn(g) === chessMyColor(g);
+    const chessName = (g, uid) => (g.names || {})[uid] || personName(uid);
+    const chessPiece = (p) => t("chess.piece." + p);
+
+    function listenToChess() {
+      const me = currentUserKey();
+      if (chessUnsub || !me || !db) return;
+      chessUnsub = db.collection("chessGames").where("players", "array-contains", me).onSnapshot((snap) => {
+        chessGames = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        renderChessList();
+        if (handbookPage.querySelector('[data-view="chessGame"]').classList.contains("active")) renderChessGame();
+        checkChessPenalties();
+      }, (error) => console.error(error));
+    }
+
+    function stopChess() {
+      if (chessUnsub) chessUnsub();
+      chessUnsub = null;
+      chessGames = [];
+    }
+
+    // ---------- Listen over spil ----------
+    function renderChessList() {
+      const me = currentUserKey();
+      const box = document.getElementById("chess-list");
+      const badge = document.getElementById("chess-badge");
+      const waiting = chessGames.filter((g) => (g.status === "invited" && g.from !== me) || chessMyTurn(g)).length;
+      badge.textContent = waiting;
+      badge.classList.toggle("hidden", !waiting);
+      if (!me) return;
+      const byTime = (a, b) => (b.updatedAt || 0) - (a.updatedAt || 0);
+      const invites = chessGames.filter((g) => g.status === "invited" && g.from !== me).sort(byTime);
+      const active = chessGames.filter((g) => g.status === "active" || (g.status === "invited" && g.from === me)).sort(byTime);
+      const done = chessGames.filter((g) => g.status === "finished").sort(byTime).slice(0, 8);
+      const row = (g, extra) => {
+        const opp = chessOpponent(g);
+        const profile = profileCache.get(opp) || { name: chessName(g, opp) };
+        return `
+          <div class="person chess-row" data-chess-open="${esc(g.id)}" role="button" tabindex="0">
+            <span class="avatar avatar-sm">${avatarHTML(profile)}</span>
+            <span class="person-text">
+              <strong>${esc(chessName(g, opp))}</strong>
+              <small>${extra}</small>
+            </span>
+            <span class="chevron">›</span>
+          </div>`;
+      };
+      const status = (g) => {
+        if (g.status === "invited") return t("chess.waitingAnswer");
+        if (g.status === "finished") return g.result === "draw" ? t("chess.draw") : t(g.winner === me ? "chess.youWon" : "chess.youLost");
+        return chessMyTurn(g) ? `<b class="chess-yourturn">${t("chess.yourTurn")}</b>` : t("chess.theirTurn", { name: esc(chessName(g, chessOpponent(g))) });
+      };
+      box.innerHTML = `
+        ${invites.length ? `
+          <h2 class="section-title">${t("chess.invites")}</h2>
+          <div class="people">${invites.map((g) => `
+            <div class="person chess-row">
+              <span class="avatar avatar-sm">${avatarHTML(profileCache.get(g.from) || { name: chessName(g, g.from) })}</span>
+              <span class="person-text"><strong>${esc(chessName(g, g.from))}</strong><small>${t("chess.challengesYou")}</small></span>
+              <span class="chess-invite-actions">
+                <button type="button" class="mini-btn" data-chess-decline="${esc(g.id)}">${t("friends.decline")}</button>
+                <button type="button" class="mini-btn primary" data-chess-accept="${esc(g.id)}">${t("chess.accept")}</button>
+              </span>
+            </div>`).join("")}</div>` : ""}
+        <h2 class="section-title">${t("chess.games")}</h2>
+        <div class="people">${active.length ? active.map((g) => row(g, status(g))).join("") : `<p class="empty-note">${t("chess.noGames")}</p>`}</div>
+        ${done.length ? `<h2 class="section-title">${t("chess.finished")}</h2><div class="people">${done.map((g) => row(g, status(g))).join("")}</div>` : ""}`;
+    }
+
+    document.getElementById("chess-list").addEventListener("click", async (e) => {
+      const accept = e.target.closest("[data-chess-accept]");
+      if (accept) {
+        const g = chessGames.find((x) => x.id === accept.dataset.chessAccept);
+        if (!g) return;
+        try {
+          await db.collection("chessGames").doc(g.id).update({ status: "active", updatedAt: Date.now() });
+          queuePush(g.from, "chessAccept", "", g.id);
+          openChessGame(g.id);
+        } catch (error) {
+          showToast(dbErrorText(error));
+        }
+        return;
+      }
+      const decline = e.target.closest("[data-chess-decline]");
+      if (decline) {
+        db.collection("chessGames").doc(decline.dataset.chessDecline).delete().catch((error) => showToast(dbErrorText(error)));
+        return;
+      }
+      const open = e.target.closest("[data-chess-open]");
+      if (open) openChessGame(open.dataset.chessOpen);
+    });
+
+    // ---------- Udfordr en ven ----------
+    const chessFriendSheet = document.getElementById("chess-friend-sheet");
+
+    document.getElementById("chess-new").addEventListener("click", () => {
+      const friends = friendProfiles();
+      document.getElementById("chess-friends").innerHTML = friends.length
+        ? friends.map((p) => `
+          <div class="person" data-chess-friend="${esc(p.id)}" role="button" tabindex="0">
+            <span class="avatar avatar-sm">${avatarHTML(p)}</span>
+            <span class="person-text"><strong>${esc(p.name)}</strong></span>
+            <span class="chevron">›</span>
+          </div>`).join("")
+        : `<p class="empty-note">${t("chess.noFriends")}</p>`;
+      sheetBackdrop.classList.remove("hidden");
+      chessFriendSheet.classList.remove("hidden");
+    });
+
+    document.getElementById("chess-friend-cancel").addEventListener("click", closeSheet);
+
+    chessFriendSheet.addEventListener("click", async (e) => {
+      const pick = e.target.closest("[data-chess-friend]");
+      if (!pick) return;
+      const me = currentUserKey();
+      const uid = pick.dataset.chessFriend;
+      // Hvem der starter som hvid, trækkes lod om
+      const white = Math.random() < 0.5 ? me : uid;
+      const now = Date.now();
+      closeSheet();
+      try {
+        const ref = await db.collection("chessGames").add({
+          players: [me, uid],
+          from: me,
+          white,
+          black: white === me ? uid : me,
+          names: { [me]: myProfile ? myProfile.name : "?", [uid]: nameOf(uid) },
+          status: "invited",
+          fen: CHESS_START,
+          moves: 0,
+          penalties: chessPenalties(),
+          log: [],
+          createdAt: now,
+          updatedAt: now,
+        });
+        queuePush(uid, "chessInvite", "", ref.id);
+        showToast(t("chess.sent", { name: nameOf(uid) }));
+      } catch (error) {
+        showToast(dbErrorText(error));
+      }
+    });
+
+    // ---------- Selve spillet ----------
+    async function openChessGame(id) {
+      openChessId = id;
+      chessSelected = null;
+      goView("chessGame");
+      document.getElementById("chess-game").innerHTML = `<p class="empty-note">${t("lb.loading")}</p>`;
+      try {
+        await loadChessLib();
+      } catch {
+        document.getElementById("chess-game").innerHTML = `<p class="empty-note">${t("chess.noLib")}</p>`;
+        return;
+      }
+      renderChessGame();
+    }
+
+    function renderChessGame() {
+      const box = document.getElementById("chess-game");
+      const g = chessGames.find((x) => x.id === openChessId);
+      if (!g) {
+        box.innerHTML = `<p class="empty-note">${t("chess.gone")}</p>`;
+        return;
+      }
+      if (!window.Chess) return;
+      const me = currentUserKey();
+      const opp = chessOpponent(g);
+      const myColor = chessMyColor(g);
+      const chess = new Chess(g.fen || CHESS_START);
+      const board = chess.board();
+      const files = "abcdefgh";
+      const targets = chessSelected && chessMyTurn(g)
+        ? chess.moves({ square: chessSelected, verbose: true }).map((m) => m.to)
+        : [];
+      const last = g.lastMove || {};
+      // Kongen, der står i skak
+      let checkSquare = null;
+      if (chess.in_check()) {
+        board.forEach((row, r) => row.forEach((p, c) => {
+          if (p && p.type === "k" && p.color === chess.turn()) checkSquare = files[c] + (8 - r);
+        }));
+      }
+      // Egne brikker nederst
+      const rows = myColor === "w" ? [0, 1, 2, 3, 4, 5, 6, 7] : [7, 6, 5, 4, 3, 2, 1, 0];
+      const cols = myColor === "w" ? [0, 1, 2, 3, 4, 5, 6, 7] : [7, 6, 5, 4, 3, 2, 1, 0];
+      const squares = rows.map((r) => cols.map((c) => {
+        const sq = files[c] + (8 - r);
+        const piece = board[r][c];
+        const cls = [
+          "chess-sq",
+          (r + c) % 2 ? "dark" : "light",
+          sq === chessSelected ? "selected" : "",
+          sq === last.from || sq === last.to ? "last" : "",
+          sq === checkSquare ? "check" : "",
+          targets.includes(sq) ? (piece ? "target capture" : "target") : "",
+        ].join(" ");
+        return `<button type="button" class="${cls}" data-sq="${sq}">${piece ? `<span class="chess-piece ${piece.color === "w" ? "white" : "black"}">${CHESS_GLYPH[piece.type]}︎</span>` : ""}</button>`;
+      }).join("")).join("");
+
+      let state;
+      if (g.status === "invited") state = t(g.from === me ? "chess.waitingAnswer" : "chess.challengesYou");
+      else if (g.status === "finished") {
+        state = g.result === "draw" ? t("chess.draw")
+          : g.result === "resign" ? t(g.winner === me ? "chess.theyResigned" : "chess.youResigned")
+            : t(g.winner === me ? "chess.mateWon" : "chess.mateLost");
+      } else state = chessMyTurn(g) ? t("chess.yourTurn") + (chess.in_check() ? ` · ${t("chess.check")}` : "") : t("chess.theirTurn", { name: esc(chessName(g, opp)) });
+
+      const penalties = g.penalties || {};
+      const myLosses = (g.log || []).filter((x) => x.loser === me);
+      const theirLosses = (g.log || []).filter((x) => x.loser === opp);
+      box.innerHTML = `
+        <div class="chess-head">
+          <strong>${esc(chessName(g, opp))}</strong>
+          <span class="chess-state ${chessMyTurn(g) ? "mine" : ""}">${state}</span>
+        </div>
+        <div class="chess-board ${g.status !== "active" ? "locked" : ""}">${squares}</div>
+        <p class="muted chess-you">${t(myColor === "w" ? "chess.youWhite" : "chess.youBlack")}</p>
+        <div class="card chess-legend">
+          <h3>${t("chess.penalties")}</h3>
+          ${["q", "r", "b", "n", "p", "k"].map((p) => `
+            <div class="chess-legend-row">
+              <span class="chess-legend-piece">${CHESS_GLYPH[p]}︎</span>
+              <span>${chessPiece(p)}</span>
+              <strong>${esc(tileText(penalties[p] || CHESS_KING_PENALTY).name)}</strong>
+            </div>`).join("")}
+        </div>
+        ${myLosses.length || theirLosses.length ? `
+          <div class="card chess-log">
+            <h3>${t("chess.log")}</h3>
+            ${(g.log || []).slice().reverse().map((x) => `
+              <p>${x.loser === me ? t("chess.logYou") : t("chess.logThem", { name: esc(chessName(g, opp)) })} ${CHESS_GLYPH[x.piece]}︎ ${chessPiece(x.piece).toLowerCase()} → <b>${esc(tileText(x.tile).name)}</b></p>`).join("")}
+          </div>` : ""}
+        ${g.status === "active" ? `<button type="button" class="link-btn danger chess-resign" data-chess-resign>${t("chess.resign")}</button>` : ""}`;
+    }
+
+    document.getElementById("chess-game").addEventListener("click", async (e) => {
+      const g = chessGames.find((x) => x.id === openChessId);
+      if (!g || !window.Chess) return;
+      if (e.target.closest("[data-chess-resign]")) return resignChess(g);
+      const square = e.target.closest("[data-sq]");
+      if (!square || !chessMyTurn(g)) return;
+      const sq = square.dataset.sq;
+      const chess = new Chess(g.fen || CHESS_START);
+      const piece = chess.get(sq);
+      // Tryk på egen brik: vælg den. Tryk på et lovligt felt: ryk
+      if (piece && piece.color === chessMyColor(g)) {
+        chessSelected = chessSelected === sq ? null : sq;
+        return renderChessGame();
+      }
+      if (!chessSelected) return;
+      const move = chess.move({ from: chessSelected, to: sq, promotion: "q" });
+      chessSelected = null;
+      if (!move) return renderChessGame();
+      await saveChessMove(g, chess, move);
+    });
+
+    async function saveChessMove(g, chess, move) {
+      const me = currentUserKey();
+      const opp = chessOpponent(g);
+      const now = Date.now();
+      const log = [...(g.log || [])];
+      const penalties = g.penalties || {};
+      if (move.captured) log.push({ at: now, loser: opp, piece: move.captured, tile: penalties[move.captured], by: me });
+      const update = { fen: chess.fen(), lastMove: { from: move.from, to: move.to }, moves: (g.moves || 0) + 1, updatedAt: now };
+      let text = move.captured ? t("chess.pushCapture", { piece: chessPiece(move.captured).toLowerCase(), tile: tileText(penalties[move.captured]).name }) : t("chess.pushTurn");
+      if (chess.in_checkmate()) {
+        log.push({ at: now, loser: opp, piece: "k", tile: penalties.k || CHESS_KING_PENALTY, by: me });
+        Object.assign(update, { status: "finished", winner: me, result: "checkmate" });
+        text = t("chess.pushMate");
+      } else if (chess.game_over()) {
+        Object.assign(update, { status: "finished", winner: null, result: "draw" });
+        text = t("chess.draw");
+      }
+      update.log = log;
+      // Vis trækket med det samme, databasen følger efter
+      Object.assign(g, update);
+      renderChessGame();
+      try {
+        await db.collection("chessGames").doc(g.id).update(update);
+        queuePush(opp, "chessMove", text, g.id);
+        if (update.status === "finished") finishChess(g);
+      } catch (error) {
+        showToast(dbErrorText(error));
+      }
+    }
+
+    async function resignChess(g) {
+      if (!confirm(t("chess.confirmResign"))) return;
+      const me = currentUserKey();
+      const opp = chessOpponent(g);
+      const now = Date.now();
+      const log = [...(g.log || []), { at: now, loser: me, piece: "k", tile: (g.penalties || {}).k || CHESS_KING_PENALTY, by: opp }];
+      try {
+        await db.collection("chessGames").doc(g.id).update({ status: "finished", winner: opp, result: "resign", log, updatedAt: now });
+        queuePush(opp, "chessMove", t("chess.pushResign"), g.id);
+        finishChess(g);
+      } catch (error) {
+        showToast(dbErrorText(error));
+      }
+    }
+
+    function finishChess() {
+      recordGame("chess");
+    }
+
+    // ---------- Straffe: vis dem, man har fået, og som man ikke har set ----------
+    function chessSeenKey(id) {
+      return `chessSeen_${currentUserKey()}_${id}`;
+    }
+
+    function checkChessPenalties() {
+      const me = currentUserKey();
+      chessGames.forEach((g) => {
+        const log = g.log || [];
+        let seen = 0;
+        try {
+          seen = Number(localStorage.getItem(chessSeenKey(g.id))) || 0;
+          localStorage.setItem(chessSeenKey(g.id), String(log.length));
+        } catch {
+          // Virker også uden at huske
+        }
+        // Kun nye straffe (fx ikke gamle spil, når man logger ind på en ny telefon)
+        log.slice(seen).filter((x) => x.at > Date.now() - 86400000).forEach((x) => {
+          if (x.loser === me) chessPenaltyQueue.push({ game: g, entry: x });
+          else if (g.status === "finished" && x.piece === "k") showToast(t("chess.mateWon"));
+        });
+      });
+      showNextChessPenalty();
+    }
+
+    const chessPenaltySheet = document.getElementById("chess-penalty-sheet");
+
+    function showNextChessPenalty() {
+      if (!chessPenaltyQueue.length || !chessPenaltySheet.classList.contains("hidden")) return;
+      const { game, entry } = chessPenaltyQueue.shift();
+      const text = tileText(entry.tile);
+      const opp = chessOpponent(game);
+      document.getElementById("chess-penalty").innerHTML = `
+        <small>Weed Chess · ${esc(chessName(game, opp))}</small>
+        <span class="chess-penalty-piece">${CHESS_GLYPH[entry.piece]}︎</span>
+        <h2>${entry.piece === "k" ? t(game.result === "resign" ? "chess.youResigned" : "chess.mateLost") : t("chess.lost", { piece: chessPiece(entry.piece).toLowerCase() })}</h2>
+        <p class="chess-penalty-tile">${esc(text.name)}</p>
+        ${text.desc ? `<p class="muted">${esc(text.desc)}</p>` : ""}
+        ${spinTimerHTML(entry.tile)}`;
+      sheetBackdrop.classList.remove("hidden");
+      chessPenaltySheet.classList.remove("hidden");
+    }
+
+    document.getElementById("chess-penalty-ok").addEventListener("click", () => {
+      timerToken++;
+      closeSheet();
+      setTimeout(showNextChessPenalty, 250);
+    });
 
     // ---------- Timere til felter som 5×10 og 3×10×2 ----------
     let timerToken = 0;
@@ -13608,7 +14376,7 @@
     const FEELINGS = ["happy", "relaxed", "energetic", "creative", "hungry", "sleepy", "paranoid", "dizzy"];
     const FEELING_EMOJI = { happy: "😄", relaxed: "😌", energetic: "⚡", creative: "🎨", hungry: "🍕", sleepy: "😴", paranoid: "😰", dizzy: "😵‍💫" };
 
-    // Følelserne på en registrering. "Fnisende" fra ældre registreringer tæller som "Glad & fnisende"
+    // Følelserne på en registrering. "Fnisende" fra ældre registreringer tæller som "Giggles"
     function entryFeelings(entry) {
       return [...new Set((entry.feelings || []).map((f) => (f === "giggly" ? "happy" : f)))];
     }
@@ -14733,6 +15501,99 @@
     renderInstallCard();
 
     // ==========================================================
+    // OPDATERINGER: kun de store nyheder, nyeste først
+    // ==========================================================
+    // Tilføj en ny dag øverst, når der kommer noget stort.
+    const UPDATES = [
+      {
+        date: "2026-11-03",
+        da: [
+          "Ny Smoke Hub: opslag, Rate the Roll og Munchies samlet i ét feed, og kortet ved at swipe til højre",
+          "Weed Chess: udfordr en ven til skak på hver sin telefon. Mister du en brik, får du en straf",
+          "Notifikationer, også når appen er lukket: Smoker nu, venneanmodninger, chat, kommentarer, nye opslag og en daglig påmindelse",
+        ],
+        en: [
+          "New Smoke Hub: posts, Rate the Roll and Munchies in one feed, and the map by swiping right",
+          "Weed Chess: challenge a friend to chess on your own phones. Lose a piece, take a penalty",
+          "Notifications, even when the app is closed: Smoking now, friend requests, chat, comments, new posts and a daily reminder",
+        ],
+      },
+      {
+        date: "2026-10-27",
+        da: [
+          "Flower kan hentes som app på iPhone og Android",
+          "Chat med dine venner",
+          "\"Smoker nu\": vis dine venner, at du er i gang",
+          "Badges, ugens udfordring og streak",
+          "T-break-tilstand med opmuntring fra venner",
+          "Nye spil: Double Trouble, Spin the Joint, Terningespillet og Weed Quiz",
+          "Guides og fakta om cannabis",
+        ],
+        en: [
+          "Flower can be installed as an app on iPhone and Android",
+          "Chat with your friends",
+          "\"Smoking now\": show your friends you're smoking",
+          "Badges, weekly challenge and streak",
+          "T-break mode with cheers from friends",
+          "New games: Double Trouble, Spin the Joint, the Dice Game and Weed Quiz",
+          "Guides and facts about cannabis",
+        ],
+      },
+      {
+        date: "2026-10-26",
+        da: [
+          "Første version af Flower",
+          "Log en smoke, statistik, køre-timer og T-Break beregner",
+          "Ranks med XP",
+          "Smoke spots på kortet",
+          "Venner, profiler og opslag",
+          "Game of Joints og tjekliste over sorter",
+        ],
+        en: [
+          "First version of Flower",
+          "Log a smoke, stats, driving timer and T-Break calculator",
+          "Ranks with XP",
+          "Smoke spots on the map",
+          "Friends, profiles and posts",
+          "Game of Joints and strain checklist",
+        ],
+      },
+    ];
+    const changelogList = document.getElementById("changelog-list");
+    const changelogMore = document.getElementById("changelog-more");
+    let changelogAll = false;
+    const changelogDays = UPDATES.map((u) => ({ day: dayStart(new Date(u.date + "T12:00").getTime()), update: u }));
+
+    function dayLabel(day) {
+      const today = dayStart(Date.now());
+      if (day === today) return t("cl.today");
+      if (day === today - DAY || day === dayStart(today - DAY + 2 * HOUR)) return t("cl.yesterday");
+      return new Date(day).toLocaleDateString(t("locale"), { weekday: "long", day: "numeric", month: "long" });
+    }
+
+    function renderChangelog() {
+      if (!changelogDays.length) return;
+      const shown = changelogAll ? changelogDays.slice(0, 14) : changelogDays.slice(0, 1);
+      changelogList.innerHTML = shown.map(({ day, update }) => {
+        const items = update[lang === "en" ? "en" : "da"];
+        return `
+        <div class="cl-day">
+          <p class="cl-date">${dayLabel(day)} <small>${new Date(day).toLocaleDateString(t("locale"), { day: "numeric", month: "short" })}</small></p>
+          <ul>${(changelogAll ? items : items.slice(0, 5)).map((item) => `<li>${esc(item)}</li>`).join("")}</ul>
+        </div>`;
+      }).join("");
+      changelogMore.classList.toggle("hidden", changelogDays.length < 2 && changelogDays[0].update.da.length <= 5);
+      changelogMore.textContent = t(changelogAll ? "cl.less" : "cl.more");
+    }
+
+    changelogMore.addEventListener("click", () => {
+      changelogAll = !changelogAll;
+      renderChangelog();
+    });
+
+    renderChangelog();
+
+    // ==========================================================
     // NOTIFIKATIONER: nyt i Smoke Hub og venneanmodninger
     // ==========================================================
     // Listen bygges ud fra det, appen allerede lytter efter. Hvad man har
@@ -15500,7 +16361,7 @@
       { id: "streak_14", icon: "comet", color: C.purple, da: ["14 dage i træk", "Log 14 dage i træk"], en: ["14 days in a row", "Log 14 days in a row"], ok: (c) => c.streak >= 14 },
       { id: "streak_30", icon: "comet", color: C.gold, da: ["30 dage i træk", "Log 30 dage i træk"], en: ["30 days in a row", "Log 30 days in a row"], ok: (c) => c.streak >= 30 },
       { id: "feel_all", icon: "heart", color: C.pink, da: ["Følelsesregister", "Vælg alle 8 følelser mindst én gang"], en: ["Full range", "Pick all 8 feelings at least once"], ok: (c) => c.feelingsTried >= 8 },
-      { id: "happy_10", icon: "sun", color: C.gold, da: ["Glad smoker", "Vælg \"Glad & fnisende\" 10 gange"], en: ["Happy smoker", "Pick \"Happy & giggly\" 10 times"], ok: (c) => (c.feelings.happy || 0) >= 10 },
+      { id: "happy_10", icon: "sun", color: C.gold, da: ["Giggle-mester", "Vælg \"Giggles\" 10 gange"], en: ["Giggle master", "Pick \"Giggles\" 10 times"], ok: (c) => (c.feelings.happy || 0) >= 10 },
       { id: "big_day", icon: "cloud", color: C.blue, da: ["Skybrud", "Log 4 smokes på én dag"], en: ["Cloudburst", "Log 4 smokes in one day"], ok: (c) => c.maxDay >= 4 },
       // Metoder og produkter
       { id: "joints_10", icon: "joint", color: C.lime, da: ["Rullet 10 joints", "Log 10 joints eller spliffs"], en: ["Rolled 10 joints", "Log 10 joints or spliffs"], ok: (c) => c.joints >= 10 },

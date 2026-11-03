@@ -12,8 +12,8 @@ const REMINDER_HOUR = 22; // påmindelsen sendes kl. 22.30 dansk tid (se wrangle
 const DOCS = `https://firestore.googleapis.com/v1/projects/${PROJECT}/databases/(default)/documents`;
 
 // Kun disse notifikationer sendes: "Smoker nu", venneanmodninger, chatbeskeder,
-// kommentarer, omtaler, nyt opslag, roll, munchies og smoke spot fra en ven,
-// "Smoker nu" er slut, den daglige påmindelse og test-knappen.
+// kommentarer, omtaler, Weed Chess, nyt opslag, roll, munchies og smoke spot fra
+// en ven, "Smoker nu" er slut, den daglige påmindelse og test-knappen.
 const TEXT = {
   da: {
     smoking: (n) => [`${n} smoker nu 💨`, ""],
@@ -21,6 +21,9 @@ const TEXT = {
     chat: (n, t) => [n, t],
     comment: (n, t) => [`${n} kommenterede dit opslag`, t],
     mention: (n, t) => [`${n} nævnte dig`, t],
+    chessInvite: (n) => [`${n} udfordrer dig til Weed Chess ♟️`, "Tag imod udfordringen i Games of Joints"],
+    chessAccept: (n) => [`${n} tog imod din udfordring ♟️`, "Weed Chess er i gang"],
+    chessMove: (n, t) => [`${n} har rykket ♟️`, t || "Din tur"],
     post: (n, t) => [`${n} har lagt et nyt opslag op`, t || "Se det i Smoke Hub"],
     roll: (n) => [`${n} har delt en roll`, "Giv den en rating i Rate the Roll"],
     munchie: (n) => [`${n} har delt sine munchies`, "Se dem i Munchies"],
@@ -36,6 +39,9 @@ const TEXT = {
     chat: (n, t) => [n, t],
     comment: (n, t) => [`${n} commented on your post`, t],
     mention: (n, t) => [`${n} mentioned you`, t],
+    chessInvite: (n) => [`${n} challenges you to Weed Chess ♟️`, "Accept the challenge in Games of Joints"],
+    chessAccept: (n) => [`${n} accepted your challenge ♟️`, "Weed Chess has started"],
+    chessMove: (n, t) => [`${n} made a move ♟️`, t || "Your turn"],
     post: (n, t) => [`${n} shared a new post`, t || "See it in Smoke Hub"],
     roll: (n) => [`${n} shared a roll`, "Rate it in Rate the Roll"],
     munchie: (n) => [`${n} shared their munchies`, "See them in Munchies"],
