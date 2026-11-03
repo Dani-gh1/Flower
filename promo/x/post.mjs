@@ -31,6 +31,15 @@ const client = new TwitterApi({
   accessSecret: X_ACCESS_SECRET,
 });
 
+// Tjek nøglerne først, så en fejl siger, om det er login eller upload, der fejler
+try {
+  const { data: me } = await client.v2.me();
+  console.log(`Logget ind som @${me.username}`);
+} catch (e) {
+  console.log(`::error::X afviste nøglerne (${e.code}). Tjek de fire secrets: rigtige værdier i rigtige felter, ingen mellemrum, og at Access Token er lavet efter "Read and write" og efter sidste Consumer Key.`);
+  process.exit(1);
+}
+
 const payload = {};
 const video = join(queue, name + ".mp4");
 if (existsSync(video)) {
