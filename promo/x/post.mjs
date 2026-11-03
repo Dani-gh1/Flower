@@ -9,7 +9,9 @@ const dir = new URL(".", import.meta.url).pathname;
 const queue = join(dir, "queue");
 const posted = join(dir, "posted");
 
-const { X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET } = process.env;
+// Mellemrum og linjeskift fra kopiering fjernes
+const [X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET] =
+  ["X_API_KEY", "X_API_SECRET", "X_ACCESS_TOKEN", "X_ACCESS_SECRET"].map((k) => (process.env[k] || "").trim());
 if (!X_API_KEY || !X_API_SECRET || !X_ACCESS_TOKEN || !X_ACCESS_SECRET) {
   console.log("::warning::Tilføj X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN og X_ACCESS_SECRET under Settings → Secrets → Actions");
   process.exit(0);
@@ -36,6 +38,12 @@ try {
   const { data: me } = await client.v2.me();
   console.log(`Logget ind som @${me.username}`);
 } catch (e) {
+  // Vis kun længde og form, aldrig selve nøglerne (normalt ca. 25, 50, 50 og 45 tegn)
+  const shape = (v) => `${v.length} tegn${/\s/.test(v) ? ", har mellemrum" : ""}`;
+  console.log(`X_API_KEY: ${shape(X_API_KEY)}`);
+  console.log(`X_API_SECRET: ${shape(X_API_SECRET)}`);
+  console.log(`X_ACCESS_TOKEN: ${shape(X_ACCESS_TOKEN)}${/^\d+-/.test(X_ACCESS_TOKEN) ? "" : ", ligner ikke et Access Token (skal starte med tal og bindestreg)"}`);
+  console.log(`X_ACCESS_SECRET: ${shape(X_ACCESS_SECRET)}`);
   console.log(`::error::X afviste nøglerne (${e.code}). Tjek de fire secrets: rigtige værdier i rigtige felter, ingen mellemrum, og at Access Token er lavet efter "Read and write" og efter sidste Consumer Key.`);
   process.exit(1);
 }
