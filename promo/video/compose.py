@@ -176,8 +176,8 @@ def tour(mk):
     build("tour", [
         (0, mk["games"], "What's inside Flower?", dict(size=86, y=1250)),
         (mk["games"], mk["hub"], "Games for your sesh", dict(size=84, y=1500, style="green")),
-        (mk["hub"], mk["hub2"], "Smoke Hub: share with your crew", dict(size=78, y=1500)),
-        (mk["hub2"], mk["end"], "Smoke spots, Rate the Roll,\nMunchies and a leaderboard", dict(size=70, y=1450, style="green")),
+        (mk["hub"], mk["hub2"], "Smoke Hub: a map and one feed for your crew", dict(size=76, y=700)),
+        (mk["hub2"], mk["end"], "Share posts, rate rolls\nand show your munchies", dict(size=74, y=300, style="green")),
     ], "Made by one dev · 18+")
 
 @video

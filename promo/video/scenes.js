@@ -153,7 +153,7 @@ module.exports = {
     await p.waitForTimeout(3300); await showCard(p, '#spin-card'); await p.waitForTimeout(200); mark('card');
     await p.waitForTimeout(2600);
   },
-  // Rundtur: Håndbog → spil → Smoke Hub
+  // Rundtur: Håndbog → spil → Smoke Hub → ＋ (hvad vil du dele?)
   tour: async (p, mark) => {
     await p.evaluate(() => openView('handbook', 'hb-menu')); mark('start');
     await p.waitForTimeout(1600);
@@ -162,8 +162,9 @@ module.exports = {
     for (let i = 0; i < 5; i++) { await p.mouse.wheel(0, 110); await p.waitForTimeout(220); }
     await p.waitForTimeout(800);
     await p.evaluate(() => { window.scrollTo(0, 0); phoneScreen.scrollTop = 0; showPage('hub'); }); mark('hub');
-    await p.waitForTimeout(2200); mark('hub2');
-    await p.waitForTimeout(2800);
+    await p.waitForTimeout(1300);
+    await p.click('#hub-new-btn'); mark('hub2');
+    await p.waitForTimeout(3600);
   },
   // Udvikleren: et hurtigt klip fra tre spil
   devstory: async (p, mark) => {
