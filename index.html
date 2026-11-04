@@ -1999,8 +1999,8 @@
     }
     .mm-lyrics {
       position: relative;
-      height: 46vh;
-      margin: 14px 0 10px;
+      height: 52vh;
+      margin: 10px 0 12px;
       padding: 30% 16px;
       overflow-y: auto;
       border-radius: 20px;
@@ -2047,13 +2047,35 @@
       0% { transform: scale(1); }
       40% { transform: scale(1.25); }
     }
-    .mm-sync {
+    .mm-line {
+      cursor: pointer;
+    }
+    .mm-time {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 10px;
+      margin: 0 4px 12px;
       color: var(--muted);
       font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+    .mm-time .mm-progress {
+      flex: 1;
+      margin: 0;
+    }
+    .mm-hint {
+      margin: 10px 8px 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+    .mm-source {
+      display: block;
+      margin: 10px auto 0;
+      font-size: 14px;
+    }
+    #mm1-video {
+      margin: 12px 0 0;
     }
     .mm-cats {
       display: grid;
@@ -7092,16 +7114,18 @@
 
             <!-- 1: sangen spiller, og teksten kører med -->
             <div class="hidden" id="mm1-play">
-              <div class="mm-video"><div id="mm-yt"></div></div>
               <div class="mm-counter" id="mm1-counter"></div>
-              <p class="mm-status" id="mm1-status" aria-live="polite"></p>
-              <button type="button" class="btn-primary" id="mm1-playbtn" data-i18n="mm.play">▶ Afspil sangen</button>
               <div class="mm-lyrics" id="mm1-lyrics"></div>
-              <div class="mm-sync">
-                <button type="button" class="mini-btn" data-mm-sync="-0.5">−½ s</button>
-                <span data-i18n="mm.sync">Synk tekst</span>
-                <button type="button" class="mini-btn" data-mm-sync="0.5">+½ s</button>
+              <div class="mm-time">
+                <span id="mm1-time">0:00</span>
+                <div class="mm-progress"><span id="mm1-bar"></span></div>
+                <span id="mm1-len">0:00</span>
               </div>
+              <p class="mm-status" id="mm1-status" aria-live="polite"></p>
+              <button type="button" class="btn-primary" id="mm1-playbtn">▶ Start</button>
+              <p class="mm-hint" id="mm1-hint"></p>
+              <button type="button" class="link-btn mm-source" id="mm1-source"></button>
+              <div class="mm-video hidden" id="mm1-video"><div id="mm-yt"></div></div>
               <button type="button" class="link-btn play-exit" data-mm-exit data-i18n="setup.exit">Afslut</button>
             </div>
 
@@ -8204,7 +8228,13 @@
         "mm.play2": "▶ Afspil",
         "mm.pause": "⏸ Pause",
         "mm.again": "↺ Afspil igen",
-        "mm.sync": "Synk tekst",
+        "mm.start": "▶ Start",
+        "mm.resume": "▶ Fortsæt",
+        "mm.restart": "↺ Forfra",
+        "mm.selfHint": "Start sangen fx på Spotify samtidig. Tryk på en linje for at hoppe dertil.",
+        "mm.ytHint": "Tryk på en linje for at spole dertil.",
+        "mm.useYt": "Afspil fra YouTube i stedet",
+        "mm.useSelf": "Spil sangen selv i stedet",
         "mm.guess": "Gæt sangen",
         "mm.next": "Næste sang",
         "mm.popular": "Populære sange",
@@ -9019,7 +9049,13 @@
         "mm.play2": "▶ Play",
         "mm.pause": "⏸ Pause",
         "mm.again": "↺ Play again",
-        "mm.sync": "Sync lyrics",
+        "mm.start": "▶ Start",
+        "mm.resume": "▶ Resume",
+        "mm.restart": "↺ Start over",
+        "mm.selfHint": "Start the song on e.g. Spotify at the same time. Tap a line to jump there.",
+        "mm.ytHint": "Tap a line to skip there.",
+        "mm.useYt": "Play from YouTube instead",
+        "mm.useSelf": "Play the song yourself instead",
         "mm.guess": "Guess the song",
         "mm.next": "Next song",
         "mm.popular": "Popular songs",
@@ -14375,7 +14411,10 @@
     let mmLoop = 0;
     let mmLine = -1;
     let mmCount = 0;
-    let mmOffset = 0;
+    let mmSource = "self";  // "self" = man spiller selv sangen (fx på Spotify), "yt" = fra YouTube
+    const mmClock = { running: false, pos: 0, t0: 0 };
+    let mmSeekTarget = null;
+    let mmSeekUntil = 0;
     let mmRecorded = false;
     let ytLoading = null;
 
@@ -14398,6 +14437,10 @@
 
     function mmStopAll() {
       clearInterval(mmLoop);
+      if (mmClock.running) {
+        mmClock.pos = (performance.now() - mmClock.t0) / 1000;
+        mmClock.running = false;
+      }
       try { if (mmPlayer && mmPlayer.pauseVideo) mmPlayer.pauseVideo(); } catch {}
       const audio = document.getElementById("mm2-audio");
       audio.pause();
@@ -14542,12 +14585,103 @@
       mmTotal = mmSong.lines.reduce((s, l) => s + l.hits, 0);
       mmCount = 0;
       mmLine = -1;
-      mmOffset = 0;
+      mmClock.running = false;
+      mmClock.pos = 0;
+      document.getElementById("mm1-time").textContent = "0:00";
+      document.getElementById("mm1-len").textContent = fmtDuration(mmSong.duration);
+      document.getElementById("mm1-bar").style.width = "0";
       document.getElementById("mm1-lyrics").innerHTML = mmSong.lines.map((l, i) => `<p class="mm-line${l.hits ? " has-hit" : ""}" data-line="${i}">${mmLineHTML(l.text)}</p>`).join("");
       document.getElementById("mm1-lyrics").scrollTop = 0;
       renderMmCounter();
       mmShow("mm1-play");
-      mmStartVideo();
+      mmSetSource(mmSource, 0);
+    });
+
+    // ---------- 1: tiden i sangen ----------
+    // Spiller man selv sangen, følger teksten et ur; ellers følger den YouTube
+    function mmNow() {
+      if (mmSource === "yt") return mmPlayer && mmPlayer.getCurrentTime ? mmPlayer.getCurrentTime() : 0;
+      return mmClock.running ? (performance.now() - mmClock.t0) / 1000 : mmClock.pos;
+    }
+
+    function mmPause() {
+      if (mmSource === "yt") {
+        try { if (mmPlayer && mmPlayer.pauseVideo) mmPlayer.pauseVideo(); } catch {}
+      } else if (mmClock.running) {
+        mmClock.pos = mmNow();
+        mmClock.running = false;
+      }
+      clearInterval(mmLoop);
+      renderMmButton();
+    }
+
+    function mmSetSource(source, pos = mmNow()) {
+      mmPause();
+      mmSource = source;
+      mmClock.pos = Math.max(0, pos);
+      const yt = source === "yt";
+      document.getElementById("mm1-video").classList.toggle("hidden", !yt);
+      document.getElementById("mm1-source").textContent = t(yt ? "mm.useSelf" : "mm.useYt");
+      document.getElementById("mm1-hint").textContent = t(yt ? "mm.ytHint" : "mm.selfHint");
+      mmStatus("mm1-status", "");
+      renderMmButton();
+      if (yt) mmStartVideo();
+    }
+
+    function renderMmButton() {
+      if (mmSource === "yt" || !mmSong) return; // YouTube sætter selv teksten på knappen
+      const btn = document.getElementById("mm1-playbtn");
+      const ended = mmClock.pos >= mmSong.duration;
+      btn.disabled = false;
+      btn.textContent = t(mmClock.running ? "mm.pause" : ended ? "mm.restart" : mmClock.pos > 0 ? "mm.resume" : "mm.start");
+    }
+
+    function mmClockStart() {
+      mmClock.t0 = performance.now() - mmClock.pos * 1000;
+      mmClock.running = true;
+      mmStatus("mm1-status", "");
+      clearInterval(mmLoop);
+      mmLoop = setInterval(mmTick, 150);
+      mmTick();
+      renderMmButton();
+      if (!mmRecorded) {
+        mmRecorded = true;
+        recordGame("musical");
+      }
+    }
+
+    function mmRestart() {
+      mmClock.pos = 0;
+      mmCount = 0;
+      mmLine = -1;
+      renderMmCounter();
+    }
+
+    document.getElementById("mm1-source").addEventListener("click", () => {
+      mmSetSource(mmSource === "yt" ? "self" : "yt");
+    });
+
+    // Tryk på en linje for at hoppe dertil
+    document.getElementById("mm1-lyrics").addEventListener("click", (e) => {
+      const el = e.target.closest(".mm-line");
+      if (!el || !mmSong) return;
+      const i = Number(el.dataset.line);
+      const at = mmSong.lines[i].t;
+      // Kun det, der bliver sunget herfra, tæller som sug
+      mmLine = i - 1;
+      if (mmSource === "yt") {
+        if (!mmPlayer || !mmPlayer.seekTo) return;
+        mmSeekTarget = at;
+        mmSeekUntil = performance.now() + 2000;
+        mmPlayer.seekTo(at, true);
+        if (mmPlayer.getPlayerState() !== YT.PlayerState.PLAYING) mmPlayer.playVideo();
+      } else {
+        mmClock.pos = at;
+        if (mmClock.running) mmClock.t0 = performance.now() - at * 1000;
+        else mmClockStart();
+      }
+      mmStatus("mm1-status", "");
+      mmTick();
     });
 
     function renderMmCounter(hit) {
@@ -14654,6 +14788,7 @@
     }
 
     function mmVideoState(e) {
+      if (mmSource !== "yt") return;
       const btn = document.getElementById("mm1-playbtn");
       if (e.data === YT.PlayerState.PLAYING) {
         btn.textContent = t("mm.pause");
@@ -14675,11 +14810,17 @@
     }
 
     document.getElementById("mm1-playbtn").addEventListener("click", () => {
+      if (!mmSong) return;
+      if (mmSource === "self") {
+        if (mmClock.running) return mmPause();
+        if (mmClock.pos >= mmSong.duration) mmRestart();
+        return mmClockStart();
+      }
       if (!mmPlayer || !mmPlayer.getPlayerState) return;
       const state = mmPlayer.getPlayerState();
       if (state === YT.PlayerState.PLAYING) return mmPlayer.pauseVideo();
       if (state === YT.PlayerState.ENDED) {
-        mmLine = -1;
+        mmRestart();
         mmPlayer.seekTo(0, true);
       }
       mmPlayer.playVideo();
@@ -14691,16 +14832,34 @@
 
     // Finder den linje, der bliver sunget nu, og tæller sug
     function mmTick() {
-      if (!mmPlayer || !mmPlayer.getCurrentTime || !mmSong) return;
-      const now = mmPlayer.getCurrentTime() + mmOffset;
+      if (!mmSong) return;
+      const now = mmNow();
+      // Lige efter et hop på YouTube kan tiden stadig være den gamle
+      if (mmSeekTarget !== null) {
+        if (Math.abs(now - mmSeekTarget) > 1.5 && performance.now() < mmSeekUntil) return;
+        mmSeekTarget = null;
+      }
+      const length = mmSong.duration || 1;
+      document.getElementById("mm1-time").textContent = fmtDuration(Math.floor(Math.min(now, length)));
+      document.getElementById("mm1-bar").style.width = `${Math.min(100, (now / length) * 100)}%`;
+      if (mmSource === "self" && mmClock.running && now >= length) {
+        mmClock.pos = length;
+        mmClock.running = false;
+        clearInterval(mmLoop);
+        renderMmButton();
+        mmStatus("mm1-status", t("mm.done", { n: mmCount }));
+      }
       const lines = mmSong.lines;
       let idx = -1;
       while (idx + 1 < lines.length && lines[idx + 1].t <= now) idx++;
       if (idx === mmLine) return;
+      // Kun de linjer, der faktisk bliver sunget, tæller som sug
+      let hit = false;
+      for (let i = Math.max(0, mmLine + 1); i <= idx; i++) {
+        mmCount += lines[i].hits;
+        if (lines[i].hits) hit = true;
+      }
       mmLine = idx;
-      const count = lines.slice(0, idx + 1).reduce((s, l) => s + l.hits, 0);
-      const hit = count > mmCount;
-      mmCount = count;
       if (hit) vibrate([120, 60, 120]);
       renderMmCounter(hit);
       const box = document.getElementById("mm1-lyrics");
@@ -14711,15 +14870,6 @@
       const active = box.querySelector(".mm-line.active");
       if (active) box.scrollTo({ top: active.offsetTop - box.clientHeight / 2 + active.offsetHeight / 2, behavior: "smooth" });
     }
-
-    document.querySelector(".mm-sync").addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-mm-sync]");
-      if (!btn) return;
-      mmOffset += Number(btn.dataset.mmSync);
-      mmLine = -2;
-      mmTick();
-      mmStatus("mm1-status", `${t("mm.sync")}: ${mmOffset > 0 ? "+" : ""}${mmOffset.toFixed(1).replace(".", lang === "en" ? "." : ",")} s`);
-    });
 
     // ---------- 2: gæt sangen ----------
     const MM_DK = ["Medina", "L.O.C.", "Rasmus Seebach", "Lukas Graham", "Suspekt", "Gilli", "Kim Larsen", "TV-2", "Shu-bi-dua",
