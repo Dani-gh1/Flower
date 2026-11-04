@@ -1,0 +1,42 @@
+# Henter hitlisterne til Musical Marijuana 2 hver dag og lægger dem på grenen "music".
+# Appen henter filen derfra (raw.githubusercontent.com).
+name: Hitlister til Musical Marijuana
+
+on:
+  schedule:
+    - cron: "17 4 * * *"
+  push:
+    branches: [main]
+    paths:
+      - "tools/music-charts.mjs"
+      - ".github/workflows/music.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: music-charts
+  cancel-in-progress: true
+
+jobs:
+  charts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node tools/music-charts.mjs
+      - name: Gem listerne på grenen music
+        run: |
+          mkdir -p /tmp/out && cp music/top.json /tmp/out/
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git checkout --orphan music
+          git rm -rq --cached . && git clean -fdq
+          cp /tmp/out/top.json .
+          git add top.json
+          git commit -qm "Hitlister $(date -u +%F)"
+          git push -f origin music

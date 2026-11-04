@@ -14872,48 +14872,16 @@
     }
 
     // ---------- 2: gæt sangen ----------
-    const MM_DK = ["Medina", "L.O.C.", "Rasmus Seebach", "Lukas Graham", "Suspekt", "Gilli", "Kim Larsen", "TV-2", "Shu-bi-dua",
-      "Nik & Jay", "Burhan G", "Christopher", "MØ", "Aqua", "Alphabeat", "Kesi", "Benny Jamz", "Tobias Rahim", "Hjalmer",
-      "Ukendt Kunstner", "Specktors", "Joey Moe", "Volbeat", "D-A-D", "Gasolin'", "Natasja", "Outlandish", "Karl William",
-      "Annika", "Ude Af Kontrol", "Andreas Odbjerg", "Fresh-I", "Thomas Helmig", "Infernal", "Dúné", "Mø", "Phlake", "Malte Ebert"];
-    const MM_80S = ["Michael Jackson|Billie Jean", "Queen|Another One Bites the Dust", "a-ha|Take On Me", "Toto|Africa",
-      "Madonna|Like a Prayer", "Whitney Houston|I Wanna Dance with Somebody", "Bon Jovi|Livin' on a Prayer", "Europe|The Final Countdown",
-      "Cyndi Lauper|Girls Just Want to Have Fun", "Survivor|Eye of the Tiger", "Guns N' Roses|Sweet Child O' Mine", "Prince|Purple Rain",
-      "Wham!|Wake Me Up Before You Go-Go", "Rick Astley|Never Gonna Give You Up", "Dire Straits|Money for Nothing",
-      "Tears for Fears|Everybody Wants to Rule the World", "Eurythmics|Sweet Dreams", "Journey|Don't Stop Believin'",
-      "Kim Wilde|Kids in America", "Lionel Richie|All Night Long", "Run-DMC|It's Tricky", "Michael Jackson|Beat It"];
-    const MM_90S = ["Nirvana|Smells Like Teen Spirit", "Backstreet Boys|I Want It That Way", "Spice Girls|Wannabe",
-      "Britney Spears|...Baby One More Time", "Aqua|Barbie Girl", "Coolio|Gangsta's Paradise", "Oasis|Wonderwall", "TLC|No Scrubs",
-      "Dr. Dre|Still D.R.E.", "2Pac|California Love", "Haddaway|What Is Love", "Vengaboys|Boom, Boom, Boom, Boom!!",
-      "Eiffel 65|Blue (Da Ba Dee)", "Red Hot Chili Peppers|Under the Bridge", "Alanis Morissette|Ironic", "Will Smith|Gettin' Jiggy Wit It",
-      "Shaggy|Boombastic", "Fugees|Killing Me Softly", "Ace of Base|All That She Wants", "The Notorious B.I.G.|Juicy",
-      "Blackstreet|No Diggity", "Los del Rio|Macarena"];
-    const MM_00S = ["Eminem|Without Me", "50 Cent|In Da Club", "OutKast|Hey Ya!", "Beyoncé|Crazy in Love", "The Killers|Mr. Brightside",
-      "Black Eyed Peas|I Gotta Feeling", "Rihanna|Umbrella", "Nelly|Hot in Herre", "Usher|Yeah!", "Gnarls Barkley|Crazy",
-      "Lady Gaga|Poker Face", "Kanye West|Gold Digger", "Shakira|Hips Don't Lie", "Amy Winehouse|Rehab", "Justin Timberlake|SexyBack",
-      "Britney Spears|Toxic", "Sean Paul|Get Busy", "Snoop Dogg|Drop It Like It's Hot", "Linkin Park|In the End",
-      "Avril Lavigne|Complicated", "Akon|Smack That", "Kings of Leon|Sex on Fire"];
-    const MM_STONER = ["Afroman|Because I Got High", "Snoop Dogg|Young, Wild & Free", "Dr. Dre|The Next Episode",
-      "Cypress Hill|Hits from the Bong", "Cypress Hill|Insane in the Brain", "Bob Marley|Kaya", "Peter Tosh|Legalize It",
-      "Musical Youth|Pass the Dutchie", "Rick James|Mary Jane", "Wiz Khalifa|Roll Up", "Kid Cudi|Pursuit of Happiness",
-      "Bob Dylan|Rainy Day Women #12 & 35", "Black Sabbath|Sweet Leaf", "Sublime|Smoke Two Joints", "Method Man|How High",
-      "Tom Petty|Mary Jane's Last Dance", "Willie Nelson|Roll Me Up", "311|Amber", "Bob Marley|Easy Skanking",
-      "Wiz Khalifa|Black and Yellow", "Afroman|Crazy Rap"];
+    // Hitlisterne hentes hver dag af GitHub Actions (tools/music-charts.mjs), fordi
+    // Apple Musics liste over de mest spillede sange ikke kan hentes direkte fra appen
+    const MM_TOP_URL = "https://raw.githubusercontent.com/FlowerSmokeapp/Flowers/music/top.json";
     const MM_CATS = [
-      { id: "top", icon: "🔥", da: "Top hits", en: "Top hits", chart: "" },
-      { id: "dk", icon: "🇩🇰", da: "Danske hits", en: "Danish hits", artists: MM_DK },
-      { id: "hiphop", icon: "🎤", da: "Hiphop", en: "Hip-hop", chart: 18 },
-      { id: "pop", icon: "🎧", da: "Pop", en: "Pop", chart: 14 },
-      { id: "rock", icon: "🎸", da: "Rock", en: "Rock", chart: 21 },
-      { id: "dance", icon: "🪩", da: "Dance", en: "Dance", chart: 17 },
-      { id: "rnb", icon: "💜", da: "R&B", en: "R&B", chart: 15 },
-      { id: "reggae", icon: "🌴", da: "Reggae", en: "Reggae", chart: 24 },
-      { id: "80s", icon: "📼", da: "80'erne", en: "80s", songs: MM_80S },
-      { id: "90s", icon: "💿", da: "90'erne", en: "90s", songs: MM_90S },
-      { id: "00s", icon: "📱", da: "2000'erne", en: "2000s", songs: MM_00S },
-      { id: "stoner", icon: "🌿", da: "Stoner-sange", en: "Stoner songs", songs: MM_STONER },
+      { id: "dk", icon: "🇩🇰", da: "Top dansk", en: "Top Danish", fallback: `${ITUNES}/dk/rss/topsongs/limit=100/json` },
+      { id: "en", icon: "🇬🇧", da: "Top engelsk", en: "Top English", fallback: `${ITUNES}/gb/rss/topsongs/limit=100/json` },
+      { id: "house", icon: "🪩", da: "Top house", en: "Top house", fallback: `${ITUNES}/dk/rss/topsongs/limit=100/genre=1048/json` },
     ];
-    let mmCat = "top";
+    let mmTop = null;
+    let mmCat = "dk";
     let mmPool = [];
     let mmBase = [];
     let mmTrack = null;
@@ -14965,38 +14933,24 @@
         return (own.length ? own : results).map(itunesTrack).filter(Boolean);
       }
       const cat = MM_CATS.find((c) => c.id === mmCat);
-      if (cat.chart !== undefined) {
-        const data = await mmJson(`${ITUNES}/dk/rss/topsongs/limit=100${cat.chart ? `/genre=${cat.chart}` : ""}/json`, 2);
-        return ((data.feed && data.feed.entry) || []).map((x) => {
-          const preview = (x.link || []).find((l) => l.attributes && l.attributes["im:assetType"] === "preview");
-          if (!preview) return null;
-          const images = x["im:image"] || [];
-          return {
-            title: x["im:name"].label,
-            artist: x["im:artist"].label,
-            art: bigArt(images.length ? images[images.length - 1].label : ""),
-            preview: preview.attributes.href,
-          };
-        }).filter(Boolean);
-      }
-      if (cat.artists) return cat.artists.map((a) => ({ artist: a }));
-      return cat.songs.map((s) => {
-        const [artist, title] = s.split("|");
-        return { artist, title };
-      });
-    }
-
-    async function mmResolve(src) {
-      if (src.preview) return src;
-      if (!src.title) {
-        // En tilfældig af kunstnerens populære sange
-        const results = (await itunesSearch(src.artist, true)).filter((r) => r.previewUrl && looseName(r.artistName).includes(looseName(src.artist).slice(0, 5)));
-        const fresh = results.slice(0, 15).filter((r) => !mmSeen.has(looseName(r.trackName + r.artistName)));
-        return itunesTrack(fresh[Math.floor(Math.random() * fresh.length)]);
-      }
-      const results = await itunesSearch(`${src.artist} ${src.title}`);
-      const want = looseName(src.artist).slice(0, 5);
-      return itunesTrack(results.find((r) => r.previewUrl && looseName(r.artistName).includes(want)) || results.find((r) => r.previewUrl));
+      try {
+        if (!mmTop) mmTop = await mmJson(`${MM_TOP_URL}?d=${new Date().toISOString().slice(0, 10)}`, 2);
+        const list = (mmTop[cat.id] || []).map((x) => ({ title: x.t, artist: x.a, art: x.art, preview: x.p }));
+        if (list.length) return list;
+      } catch {}
+      // Reserve, hvis dagens lister ikke kan hentes: iTunes' hitliste
+      const data = await mmJson(cat.fallback, 2);
+      return [].concat((data.feed && data.feed.entry) || []).map((x) => {
+        const preview = (x.link || []).find((l) => l.attributes && l.attributes["im:assetType"] === "preview");
+        if (!preview) return null;
+        const images = x["im:image"] || [];
+        return {
+          title: x["im:name"].label,
+          artist: x["im:artist"].label,
+          art: bigArt(images.length ? images[images.length - 1].label : ""),
+          preview: preview.attributes.href,
+        };
+      }).filter(Boolean);
     }
 
     function mmResetRound() {
@@ -15019,21 +14973,18 @@
       mmResetRound();
       mmTrack = null;
       mmStatus("mm2-status", t("mm.loadingSong"));
-      for (let tries = 0; tries < 6 && !mmTrack; tries++) {
+      for (let tries = 0; tries < 20 && !mmTrack; tries++) {
         if (!mmPool.length) {
           // Alle sange er brugt: start forfra
           mmSeen.clear();
           mmPool = shuffle([...mmBase]);
         }
-        const src = mmPool.shift();
-        try {
-          const track = await mmResolve(src);
-          const key = track && looseName(track.title + track.artist);
-          if (track && !mmSeen.has(key)) {
-            mmSeen.add(key);
-            mmTrack = track;
-          }
-        } catch {}
+        const track = mmPool.shift();
+        const key = looseName(track.title + track.artist);
+        if (track.preview && !mmSeen.has(key)) {
+          mmSeen.add(key);
+          mmTrack = track;
+        }
       }
       if (!mmTrack) return mmStatus("mm2-status", t("mm.searchError"));
       const audio = document.getElementById("mm2-audio");
