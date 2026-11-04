@@ -7088,8 +7088,7 @@
               <div id="mm1-setup">
                 <h2 class="section-title" data-i18n="mm.pickSong">Vælg en sang</h2>
                 <form id="mm-search" class="player-add" novalidate>
-                  <input type="search" name="q" maxlength="80" autocomplete="off" data-i18n-ph="mm.searchPh" placeholder="Søg efter sang eller kunstner">
-                  <button type="submit" class="mini-btn primary" data-i18n="mm.search">Søg</button>
+                  <input type="search" name="q" maxlength="80" autocomplete="off" enterkeyhint="search" data-i18n-ph="mm.searchPh" placeholder="Søg efter sang eller kunstner">
                 </form>
                 <div class="mm-results" id="mm-results"></div>
               </div>
@@ -8219,7 +8218,6 @@
         "setup.exit": "Afslut",
         "mm.pickSong": "Vælg en sang",
         "mm.searchPh": "Søg efter sang eller kunstner",
-        "mm.search": "Søg",
         "mm.pickCat": "Vælg en kategori",
         "mm.artistPh": "Eller skriv en kunstner",
         "mm.pickWord": "Vælg et ord",
@@ -9040,7 +9038,6 @@
         "setup.exit": "Quit",
         "mm.pickSong": "Pick a song",
         "mm.searchPh": "Search for a song or artist",
-        "mm.search": "Search",
         "mm.pickCat": "Pick a category",
         "mm.artistPh": "Or type an artist",
         "mm.pickWord": "Pick a word",
@@ -14488,10 +14485,16 @@
         </button>`).join("");
     }
 
+    let mmSearchSeq = 0;
+    let mmSearchTimer = 0;
+
     async function mmSearch(q, autoPick) {
-      renderMmResults(t("mm.searching"));
+      const seq = ++mmSearchSeq;
+      // De gamle resultater bliver stående, til de nye er klar
+      if (!mmResults.length) renderMmResults(t("mm.searching"));
       try {
         const list = await mmJson(`${LRCLIB}/search?q=${encodeURIComponent(q)}`);
+        if (seq !== mmSearchSeq) return; // man har skrevet videre
         const seen = new Set();
         mmResults = list.filter((x) => x.syncedLyrics && !x.instrumental).filter((x) => {
           const key = mmNorm(`${x.artistName}|${x.trackName}`);
@@ -14503,20 +14506,28 @@
         if (autoPick) return mmPickSong(mmResults[0]);
         renderMmResults();
       } catch {
-        renderMmResults(t("mm.searchError"));
+        if (seq === mmSearchSeq) renderMmResults(t("mm.searchError"));
       }
     }
 
-    document.getElementById("mm-search").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const input = e.target.elements.q;
-      input.blur();
-      const q = input.value.trim();
-      if (!q) {
+    // Sangene kommer frem, mens man skriver
+    function mmSearchNow(delay) {
+      clearTimeout(mmSearchTimer);
+      const q = document.getElementById("mm-search").elements.q.value.trim();
+      if (q.length < 2) {
+        mmSearchSeq++;
         mmResults = [];
         return renderMmResults();
       }
-      mmSearch(q);
+      mmSearchTimer = setTimeout(() => mmSearch(q), delay);
+    }
+
+    document.getElementById("mm-search").addEventListener("input", () => mmSearchNow(350));
+
+    document.getElementById("mm-search").addEventListener("submit", (e) => {
+      e.preventDefault();
+      e.target.elements.q.blur();
+      mmSearchNow(0);
     });
 
     document.getElementById("mm-results").addEventListener("click", (e) => {
