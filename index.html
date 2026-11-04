@@ -1838,6 +1838,498 @@
       font-size: 14px;
     }
 
+    /* Musical Marijuana */
+    .mm-sub {
+      margin: 14px 4px 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .mm-suggest {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .mm-suggest .chip small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .mm-results {
+      margin-top: 12px;
+    }
+    .mm-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 8px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .mm-row-icon {
+      display: grid;
+      place-items: center;
+      flex: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 20px;
+    }
+    .mm-row-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .mm-row-text strong,
+    .mm-row-text small {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .mm-row-text small {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .mm-row-go {
+      color: var(--muted);
+      font-size: 22px;
+    }
+    .mm-status {
+      margin: 8px 4px;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+    }
+    .mm-status:empty {
+      display: none;
+    }
+    .mm-song {
+      margin: 4px 0 18px;
+      text-align: center;
+    }
+    .mm-song strong {
+      display: block;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+    }
+    .mm-song small {
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .mm-words {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .mm-word {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .mm-word b {
+      flex: none;
+      color: #ff5a5f;
+      font-size: 14px;
+    }
+    .mm-video {
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      margin-bottom: 12px;
+      border-radius: 18px;
+      background: #000;
+    }
+    .mm-video iframe,
+    .mm-video > div {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .mm-counter {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .mm-counter strong {
+      color: #ff3b42;
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .mm-counter span {
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .mm-counter em {
+      width: 100%;
+      color: var(--text);
+      font-style: normal;
+      font-weight: 700;
+      text-align: center;
+    }
+    .mm-counter.hit strong {
+      animation: mmPop 0.6s ease;
+    }
+    @keyframes mmPop {
+      40% { transform: scale(1.45); text-shadow: 0 0 24px rgba(255, 59, 66, 0.9); }
+    }
+    .mm-lyrics {
+      position: relative;
+      height: 46vh;
+      margin: 14px 0 10px;
+      padding: 30% 16px;
+      overflow-y: auto;
+      border-radius: 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      text-align: center;
+      -webkit-mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent);
+      mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent);
+    }
+    .mm-line {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.35;
+      opacity: 0.55;
+      transition: opacity 0.25s, transform 0.25s, color 0.25s;
+    }
+    .mm-line.past {
+      opacity: 0.35;
+    }
+    .mm-line.active {
+      color: var(--text);
+      opacity: 1;
+      transform: scale(1.06);
+    }
+    .mm-hit {
+      padding: 0 2px;
+      border-radius: 4px;
+      background: none;
+      color: inherit;
+      box-shadow: inset 0 -2px 0 rgba(255, 59, 66, 0.6);
+    }
+    .mm-line.past .mm-hit {
+      color: #ff5a5f;
+    }
+    .mm-line.active .mm-hit {
+      color: #fff;
+      background: #ff2d36;
+      box-shadow: 0 0 18px rgba(255, 45, 54, 0.85);
+      animation: mmGlow 0.7s ease;
+    }
+    @keyframes mmGlow {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.25); }
+    }
+    .mm-sync {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .mm-cats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .mm-cat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 6px;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .mm-cat span {
+      font-size: 24px;
+    }
+    .mm-cat.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .mm-disc {
+      position: relative;
+      width: min(68vw, 270px);
+      aspect-ratio: 1;
+      margin: 8px auto 18px;
+      border-radius: 50%;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+    }
+    /* Pladen snurrer, mens klippet spiller; glansen gør det synligt */
+    .mm-disc::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, #2a7f47 0 17%, #0b0c0b 17.5% 19%, transparent 19.5%),
+        conic-gradient(from 20deg, transparent 0 8%, rgba(255, 255, 255, 0.09) 12%, transparent 18% 58%, rgba(255, 255, 255, 0.07) 62%, transparent 68%),
+        repeating-radial-gradient(circle, #151715 0 2px, #1d201d 2px 4px);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.05);
+    }
+    .mm-disc img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .mm-disc.revealed img[src] {
+      opacity: 1;
+    }
+    .mm-disc-q {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 40px;
+      font-weight: 800;
+    }
+    .mm-disc.revealed .mm-disc-q {
+      display: none;
+    }
+    .mm-disc.playing::before {
+      animation: mmSpin 2.4s linear infinite;
+    }
+    @keyframes mmSpin {
+      to { transform: rotate(360deg); }
+    }
+    .mm-progress {
+      overflow: hidden;
+      height: 6px;
+      margin: 0 20px 12px;
+      border-radius: 3px;
+      background: var(--border);
+    }
+    .mm-progress span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.25s linear;
+    }
+    .mm-guess {
+      margin-top: 10px;
+    }
+    .mm-answer p:first-of-type {
+      font-size: 22px;
+    }
+    .mm-rule {
+      margin-top: 10px;
+      color: #ff7a7f;
+      font-weight: 700;
+    }
+
+    /* Blackjack */
+    .bj-table {
+      margin-bottom: 14px;
+      padding: 16px 12px;
+      border-radius: 24px;
+      background: radial-gradient(circle at 50% 0%, #1f7044, #0f3a22 75%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+    .bj-dealer {
+      margin-bottom: 8px;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.18);
+      text-align: center;
+    }
+    .bj-dealer small,
+    .bj-seat-name {
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .bj-cards {
+      display: flex;
+      justify-content: center;
+      min-height: 72px;
+      margin: 8px 0;
+    }
+    .bj-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+      width: 50px;
+      height: 72px;
+      margin-left: -16px;
+      border-radius: 8px;
+      background: #fff;
+      color: #151515;
+      box-shadow: -2px 3px 10px rgba(0, 0, 0, 0.35);
+      font-weight: 800;
+      animation: bjDeal 0.25s ease;
+    }
+    .bj-card:first-child {
+      margin-left: 0;
+    }
+    .bj-card b {
+      font-size: 20px;
+      line-height: 1;
+    }
+    .bj-card i {
+      font-size: 22px;
+      font-style: normal;
+      line-height: 1.1;
+    }
+    .bj-card.red {
+      color: #d0312d;
+    }
+    .bj-card.back {
+      border: 3px solid #fff;
+      background: repeating-linear-gradient(45deg, #2a7f47 0 6px, #1f6a3b 6px 12px);
+    }
+    @keyframes bjDeal {
+      from { opacity: 0; transform: translateY(-14px) rotate(-6deg); }
+    }
+    .bj-total {
+      display: inline-block;
+      min-width: 36px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.35);
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .bj-total.bust {
+      background: #c0392b;
+    }
+    .bj-seat {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border: 2px solid transparent;
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.12);
+    }
+    .bj-seat.turn {
+      border-color: #f2c94c;
+      background: rgba(0, 0, 0, 0.22);
+    }
+    .bj-seat-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .bj-bet-tag {
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: #f2c94c;
+      color: #2b2200;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .bj-hand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .bj-hand .bj-cards {
+      justify-content: flex-start;
+      margin: 8px 0 4px;
+    }
+    .bj-bet {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+    .bj-bet strong {
+      font-size: 18px;
+    }
+    .bj-step {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 50%;
+      background: #f2c94c;
+      color: #2b2200;
+      font: inherit;
+      font-size: 24px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .bj-step:disabled {
+      opacity: 0.35;
+    }
+    .bj-result {
+      display: block;
+      margin-top: 6px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .bj-result.win {
+      color: #8ff0ad;
+    }
+    .bj-result.lose {
+      color: #ffb3ae;
+    }
+    .bj-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .bj-controls .btn-primary,
+    .bj-controls .btn-plain {
+      width: 100%;
+    }
+    .bj-controls .bj-wide,
+    .bj-turn-name {
+      grid-column: 1 / -1;
+    }
+    .bj-turn-name {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+    }
+
     /* Spin the Joint: vælg 1 eller 2 */
     .mode-pick {
       display: grid;
@@ -6388,6 +6880,14 @@
                 <img src="img/games/double.webp" alt="" loading="lazy">
                 <strong>Double Trouble</strong>
               </button>
+              <button class="game-card" data-go="musical">
+                <img src="img/games/musical.webp" alt="" loading="lazy">
+                <strong>Musical Marijuana</strong>
+              </button>
+              <button class="game-card" data-go="blackjack">
+                <img src="img/games/blackjack.webp" alt="" loading="lazy">
+                <strong>Blackjack</strong>
+              </button>
               <button class="game-card" data-go="chess">
                 <span class="tile-badge hidden" id="chess-badge"></span>
                 <img src="img/games/chess.webp" alt="" loading="lazy">
@@ -6541,6 +7041,114 @@
               <div class="spin-card hidden" id="spin2-card" aria-live="polite"></div>
               <button type="button" class="btn-primary" id="spin2-btn" data-i18n="spin.spin">Snur jointen</button>
               <button type="button" class="link-btn play-exit" data-setup-exit="spin" data-i18n="setup.exit">Afslut</button>
+            </div>
+          </div>
+
+          <!-- Musical Marijuana: 1 = tag et sug, hver gang ordet bliver sunget, 2 = gæt sangen -->
+          <div class="view" data-view="musical">
+            <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
+            <div class="game-setup" id="mm-setup">
+              <div class="setup-hero">
+                <img src="img/games/musical.webp" alt="">
+                <h1>Musical Marijuana</h1>
+              </div>
+              <div class="mode-pick" id="mm-mode">
+                <button type="button" class="mode-card active" data-mm-mode="1">
+                  <img src="img/games/musical1.webp" alt="">
+                  <strong>Musical Marijuana 1</strong>
+                </button>
+                <button type="button" class="mode-card" data-mm-mode="2">
+                  <img src="img/games/musical2.webp" alt="">
+                  <strong>Musical Marijuana 2</strong>
+                </button>
+              </div>
+              <!-- 1: vælg en sang -->
+              <div id="mm1-setup">
+                <h2 class="section-title" data-i18n="mm.pickSong">Vælg en sang</h2>
+                <form id="mm-search" class="player-add" novalidate>
+                  <input type="search" name="q" maxlength="80" autocomplete="off" data-i18n-ph="mm.searchPh" placeholder="Søg efter sang eller kunstner">
+                  <button type="submit" class="mini-btn primary" data-i18n="mm.search">Søg</button>
+                </form>
+                <div class="mm-results" id="mm-results"></div>
+              </div>
+              <!-- 2: vælg en kategori -->
+              <div id="mm2-setup" class="hidden">
+                <h2 class="section-title" data-i18n="mm.pickCat">Vælg en kategori</h2>
+                <div class="mm-cats" id="mm-cats"></div>
+                <form id="mm-artist" class="player-add" novalidate>
+                  <input type="search" name="q" maxlength="60" autocomplete="off" data-i18n-ph="mm.artistPh" placeholder="Eller skriv en kunstner">
+                </form>
+                <button type="button" class="btn-primary setup-start" id="mm2-start" data-i18n="setup.start">Start</button>
+              </div>
+            </div>
+
+            <!-- 1: vælg et ord fra sangen -->
+            <div class="hidden" id="mm1-words">
+              <div class="mm-song" id="mm1-head"></div>
+              <h2 class="section-title" data-i18n="mm.pickWord">Vælg et ord</h2>
+              <div class="mm-words" id="mm1-wordlist"></div>
+              <button type="button" class="link-btn play-exit" data-mm-exit data-i18n="mm.otherSong">Vælg en anden sang</button>
+            </div>
+
+            <!-- 1: sangen spiller, og teksten kører med -->
+            <div class="hidden" id="mm1-play">
+              <div class="mm-video"><div id="mm-yt"></div></div>
+              <div class="mm-counter" id="mm1-counter"></div>
+              <p class="mm-status" id="mm1-status" aria-live="polite"></p>
+              <button type="button" class="btn-primary" id="mm1-playbtn" data-i18n="mm.play">▶ Afspil sangen</button>
+              <div class="mm-lyrics" id="mm1-lyrics"></div>
+              <div class="mm-sync">
+                <button type="button" class="mini-btn" data-mm-sync="-0.5">−½ s</button>
+                <span data-i18n="mm.sync">Synk tekst</span>
+                <button type="button" class="mini-btn" data-mm-sync="0.5">+½ s</button>
+              </div>
+              <button type="button" class="link-btn play-exit" data-mm-exit data-i18n="setup.exit">Afslut</button>
+            </div>
+
+            <!-- 2: gæt sangen -->
+            <div class="hidden" id="mm2-play">
+              <div class="mm-disc" id="mm2-disc">
+                <img id="mm2-art" alt="">
+                <span class="mm-disc-q">?</span>
+              </div>
+              <div class="mm-progress"><span id="mm2-bar"></span></div>
+              <p class="mm-status" id="mm2-status" aria-live="polite"></p>
+              <div class="spin-card mm-answer hidden" id="mm2-answer" aria-live="polite"></div>
+              <button type="button" class="btn-primary" id="mm2-playbtn" data-i18n="mm.play2">▶ Afspil</button>
+              <button type="button" class="btn-plain mm-guess" id="mm2-guess" data-i18n="mm.guess">Gæt sangen</button>
+              <button type="button" class="btn-primary hidden" id="mm2-next" data-i18n="mm.next">Næste sang</button>
+              <button type="button" class="link-btn play-exit" data-mm-exit data-i18n="setup.exit">Afslut</button>
+              <audio id="mm2-audio" preload="auto" playsinline></audio>
+            </div>
+          </div>
+
+          <!-- Blackjack: indsatsen er antal hits -->
+          <div class="view" data-view="blackjack">
+            <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
+            <div class="game-setup" id="bj-setup">
+              <div class="setup-hero">
+                <img src="img/games/blackjack.webp" alt="">
+                <h1>Blackjack</h1>
+              </div>
+              <h2 class="section-title" data-i18n="game.players">Spillere</h2>
+              <form id="bj-form" class="player-add" novalidate>
+                <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
+                <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
+              </form>
+              <div class="player-list" id="bj-players"></div>
+              <button type="button" class="btn-primary setup-start" id="bj-start" data-i18n="setup.start">Start</button>
+            </div>
+            <div class="hidden" id="bj-play">
+              <div class="bj-table">
+                <div class="bj-dealer">
+                  <small data-i18n="bj.dealer">Dealer</small>
+                  <div class="bj-cards" id="bj-dealer-cards"></div>
+                  <span class="bj-total" id="bj-dealer-total"></span>
+                </div>
+                <div class="bj-hands" id="bj-hands"></div>
+              </div>
+              <div class="bj-controls" id="bj-controls"></div>
+              <button type="button" class="link-btn play-exit" id="bj-exit" data-i18n="setup.exit">Afslut</button>
             </div>
           </div>
 
@@ -7585,6 +8193,49 @@
         "game.noPlayers": "Skriv et navn, vælg en farve og tryk Tilføj. I skal være mindst 2.",
         "setup.start": "Start",
         "setup.exit": "Afslut",
+        "mm.pickSong": "Vælg en sang",
+        "mm.searchPh": "Søg efter sang eller kunstner",
+        "mm.search": "Søg",
+        "mm.pickCat": "Vælg en kategori",
+        "mm.artistPh": "Eller skriv en kunstner",
+        "mm.pickWord": "Vælg et ord",
+        "mm.otherSong": "Vælg en anden sang",
+        "mm.play": "▶ Afspil sangen",
+        "mm.play2": "▶ Afspil",
+        "mm.pause": "⏸ Pause",
+        "mm.again": "↺ Afspil igen",
+        "mm.sync": "Synk tekst",
+        "mm.guess": "Gæt sangen",
+        "mm.next": "Næste sang",
+        "mm.popular": "Populære sange",
+        "mm.searching": "Søger …",
+        "mm.noResults": "Ingen sange med tekst fundet. Prøv at søge på en anden måde.",
+        "mm.searchError": "Kunne ikke hente sange lige nu. Prøv igen om lidt.",
+        "mm.noWords": "Ingen ord bliver nævnt mere end én gang.",
+        "mm.puffs": "sug",
+        "mm.finding": "Finder sangen …",
+        "mm.noVideo": "Kunne ikke finde sangen på YouTube.",
+        "mm.ytError": "Kunne ikke hente sangen fra YouTube.",
+        "mm.tapVideo": "Tryk på videoen for at starte den.",
+        "mm.done": "Sangen er slut! I tog {n} sug 💨",
+        "mm.loadingSong": "Finder en sang …",
+        "mm.noArtist": "Ingen sange fundet",
+        "mm.answer": "Sangen var",
+        "mm.rule": "Gættede du forkert? Tag 2 sug 💨",
+        "bj.dealer": "Dealer",
+        "bj.you": "Dig",
+        "bj.hits": "{n} hits",
+        "bj.deal": "Giv kort",
+        "bj.hit": "Træk kort",
+        "bj.stand": "Stå",
+        "bj.double": "Doble",
+        "bj.split": "Split",
+        "bj.turn": "Tur: {name}",
+        "bj.again": "Ny runde",
+        "bj.blackjack": "Blackjack! Del {n} hits ud",
+        "bj.win": "Vundet! Del {n} hits ud",
+        "bj.lose": "Tabt: tag {n} hits",
+        "bj.push": "Uafgjort",
         "setup.min2": "Start (mindst 2 spillere)",
         "dt.startMin": "Start (mindst 3 spillere)",
         "chess.challengeFriend": "Udfordr en ven",
@@ -8357,6 +9008,49 @@
         "game.noPlayers": "Type a name, pick a colour and tap Add. You need at least 2 players.",
         "setup.start": "Start",
         "setup.exit": "Quit",
+        "mm.pickSong": "Pick a song",
+        "mm.searchPh": "Search for a song or artist",
+        "mm.search": "Search",
+        "mm.pickCat": "Pick a category",
+        "mm.artistPh": "Or type an artist",
+        "mm.pickWord": "Pick a word",
+        "mm.otherSong": "Pick another song",
+        "mm.play": "▶ Play the song",
+        "mm.play2": "▶ Play",
+        "mm.pause": "⏸ Pause",
+        "mm.again": "↺ Play again",
+        "mm.sync": "Sync lyrics",
+        "mm.guess": "Guess the song",
+        "mm.next": "Next song",
+        "mm.popular": "Popular songs",
+        "mm.searching": "Searching …",
+        "mm.noResults": "No songs with lyrics found. Try searching another way.",
+        "mm.searchError": "Couldn't load songs right now. Try again in a moment.",
+        "mm.noWords": "No word is mentioned more than once.",
+        "mm.puffs": "hits",
+        "mm.finding": "Finding the song …",
+        "mm.noVideo": "Couldn't find the song on YouTube.",
+        "mm.ytError": "Couldn't load the song from YouTube.",
+        "mm.tapVideo": "Tap the video to start it.",
+        "mm.done": "The song is over! You took {n} hits 💨",
+        "mm.loadingSong": "Finding a song …",
+        "mm.noArtist": "No songs found",
+        "mm.answer": "The song was",
+        "mm.rule": "Guessed wrong? Take 2 hits 💨",
+        "bj.dealer": "Dealer",
+        "bj.you": "You",
+        "bj.hits": "{n} hits",
+        "bj.deal": "Deal",
+        "bj.hit": "Hit",
+        "bj.stand": "Stand",
+        "bj.double": "Double",
+        "bj.split": "Split",
+        "bj.turn": "Turn: {name}",
+        "bj.again": "New round",
+        "bj.blackjack": "Blackjack! Hand out {n} hits",
+        "bj.win": "You won! Hand out {n} hits",
+        "bj.lose": "You lost: take {n} hits",
+        "bj.push": "Push",
         "setup.min2": "Start (at least 2 players)",
         "dt.startMin": "Start (at least 3 players)",
         "chess.challengeFriend": "Challenge a friend",
@@ -13647,6 +14341,927 @@
     renderSpinSetup();
 
     // ==========================================================
+    // MUSICAL MARIJUANA
+    // 1: Vælg en sang og et ord. Teksten kører med sangen, og hver gang
+    //    ordet bliver sunget, lyser det rødt, og man tager et sug.
+    //    Teksterne kommer fra lrclib.net (millioner af sange med tidskoder),
+    //    og selve sangen spilles fra YouTube.
+    // 2: Gæt sangen ud fra et klip på 30 sekunder fra Apple Music.
+    // ==========================================================
+    const LRCLIB = "https://lrclib.net/api";
+    const YT_API = "https://www.googleapis.com/youtube/v3";
+    const YT_KEY = "AIzaSyAGS0JZBnrk5ozRrSgmypds9dNnnoBriyo";
+    const ITUNES = "https://itunes.apple.com";
+    const MM_WORD = /[\p{L}\p{N}]+(?:['’][\p{L}]+)*/gu;
+    const MM_STOP = new Set(("the a an and or but of to in on at for with from by is are was were be been am it its it's this that " +
+      "me my you your he she his her we our they them their i'm you're don't do does did not no so as if " +
+      "og at en et det den de der som på er var har til med af men om så jeg du han hun vi dem din min mit sig ikke vil kan skal").split(" "));
+    const mmNorm = (w) => w.toLowerCase().replace(/’/g, "'");
+    const MM_SUGGEST = [
+      ["Pharrell Williams", "Happy"], ["Snoop Dogg", "Young, Wild & Free"], ["Afroman", "Because I Got High"],
+      ["Dr. Dre", "The Next Episode"], ["Wiz Khalifa", "Black and Yellow"], ["Eminem", "Lose Yourself"],
+      ["OutKast", "Hey Ya!"], ["The Weeknd", "Blinding Lights"], ["Ed Sheeran", "Shape of You"],
+      ["Bob Marley", "Three Little Birds"], ["Mark Ronson", "Uptown Funk"], ["Kendrick Lamar", "HUMBLE."],
+      ["Aqua", "Barbie Girl"], ["Lukas Graham", "7 Years"], ["L.O.C.", "Frk. Escobar"],
+      ["Rasmus Seebach", "Natteravn"], ["Suspekt", "Proletar"], ["Burhan G", "Tættere på himlen"],
+    ];
+    let mmMode = "1";
+    let mmResults = [];
+    let mmSong = null;      // { id, title, artist, duration, lines: [{ t, text, hits }] }
+    let mmWord = "";
+    let mmTotal = 0;
+    let mmPlayer = null;
+    let mmVideos = [];      // YouTube-videoer til sangen, den bedste først
+    let mmLoop = 0;
+    let mmLine = -1;
+    let mmCount = 0;
+    let mmOffset = 0;
+    let mmRecorded = false;
+    let ytLoading = null;
+
+    // lrclib svarer af og til "travlt"; så prøver vi igen
+    async function mmJson(url, tries = 3) {
+      for (let i = 0; i < tries; i++) {
+        try {
+          const res = await fetch(url);
+          if (res.ok) return await res.json();
+        } catch {}
+        await new Promise((r) => setTimeout(r, 1200 * (i + 1)));
+      }
+      throw new Error("net");
+    }
+
+    function mmShow(id) {
+      ["mm-setup", "mm1-words", "mm1-play", "mm2-play"].forEach((x) => document.getElementById(x).classList.toggle("hidden", x !== id));
+      window.scrollTo(0, 0);
+    }
+
+    function mmStopAll() {
+      clearInterval(mmLoop);
+      try { if (mmPlayer && mmPlayer.pauseVideo) mmPlayer.pauseVideo(); } catch {}
+      const audio = document.getElementById("mm2-audio");
+      audio.pause();
+      document.getElementById("mm2-disc").classList.remove("playing");
+    }
+
+    function renderMmSetup() {
+      document.querySelectorAll("[data-mm-mode]").forEach((b) => b.classList.toggle("active", b.dataset.mmMode === mmMode));
+      document.getElementById("mm1-setup").classList.toggle("hidden", mmMode !== "1");
+      document.getElementById("mm2-setup").classList.toggle("hidden", mmMode !== "2");
+      renderMmCats();
+      if (!mmResults.length) renderMmResults();
+    }
+
+    document.getElementById("mm-mode").addEventListener("click", (e) => {
+      const card = e.target.closest("[data-mm-mode]");
+      if (!card) return;
+      mmMode = card.dataset.mmMode;
+      renderMmSetup();
+    });
+
+    // ---------- 1: find en sang ----------
+    function fmtDuration(sec) {
+      const s = Math.round(sec || 0);
+      return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+    }
+
+    function renderMmResults(message) {
+      const box = document.getElementById("mm-results");
+      if (message) {
+        box.innerHTML = `<p class="mm-status">${message}</p>`;
+        return;
+      }
+      if (!mmResults.length) {
+        box.innerHTML = `
+          <p class="mm-sub">${t("mm.popular")}</p>
+          <div class="mm-suggest">${MM_SUGGEST.map(([a, s], i) => `<button type="button" class="chip" data-mm-suggest="${i}">${esc(s)} <small>${esc(a)}</small></button>`).join("")}</div>`;
+        return;
+      }
+      box.innerHTML = mmResults.map((x, i) => `
+        <button type="button" class="mm-row" data-mm-song="${i}">
+          <span class="mm-row-icon">♪</span>
+          <span class="mm-row-text"><strong>${esc(x.trackName)}</strong><small>${esc(x.artistName)} · ${fmtDuration(x.duration)}</small></span>
+          <span class="mm-row-go">›</span>
+        </button>`).join("");
+    }
+
+    async function mmSearch(q, autoPick) {
+      renderMmResults(t("mm.searching"));
+      try {
+        const list = await mmJson(`${LRCLIB}/search?q=${encodeURIComponent(q)}`);
+        const seen = new Set();
+        mmResults = list.filter((x) => x.syncedLyrics && !x.instrumental).filter((x) => {
+          const key = mmNorm(`${x.artistName}|${x.trackName}`);
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        }).slice(0, 15);
+        if (!mmResults.length) return renderMmResults(t("mm.noResults"));
+        if (autoPick) return mmPickSong(mmResults[0]);
+        renderMmResults();
+      } catch {
+        renderMmResults(t("mm.searchError"));
+      }
+    }
+
+    document.getElementById("mm-search").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = e.target.elements.q;
+      input.blur();
+      const q = input.value.trim();
+      if (!q) {
+        mmResults = [];
+        return renderMmResults();
+      }
+      mmSearch(q);
+    });
+
+    document.getElementById("mm-results").addEventListener("click", (e) => {
+      const tip = e.target.closest("[data-mm-suggest]");
+      if (tip) {
+        const [artist, song] = MM_SUGGEST[Number(tip.dataset.mmSuggest)];
+        mmSearch(`${artist} ${song}`, true);
+        return;
+      }
+      const row = e.target.closest("[data-mm-song]");
+      if (row) mmPickSong(mmResults[Number(row.dataset.mmSong)]);
+    });
+
+    function mmParseLrc(lrc) {
+      const lines = [];
+      lrc.split(/\r?\n/).forEach((raw) => {
+        const stamps = [...raw.matchAll(/\[(\d+):(\d+(?:\.\d+)?)\]/g)];
+        const text = raw.replace(/\[[^\]]*\]/g, "").trim();
+        if (!stamps.length || !text) return;
+        stamps.forEach((m) => lines.push({ t: Number(m[1]) * 60 + Number(m[2]), text }));
+      });
+      return lines.sort((a, b) => a.t - b.t);
+    }
+
+    // Ordene i sangen og præcis hvor mange gange, de bliver sunget
+    function mmWordCounts(lines) {
+      const counts = new Map();
+      lines.forEach((l) => (l.text.match(MM_WORD) || []).forEach((w) => {
+        const key = mmNorm(w);
+        counts.set(key, (counts.get(key) || 0) + 1);
+      }));
+      return [...counts]
+        .filter(([w, n]) => n >= 2 && w.length > 1 && !MM_STOP.has(w))
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .slice(0, 40);
+    }
+
+    function mmPickSong(item) {
+      mmSong = { id: item.id, title: item.trackName, artist: item.artistName, duration: item.duration, lines: mmParseLrc(item.syncedLyrics) };
+      document.getElementById("mm1-head").innerHTML = `<strong>${esc(mmSong.title)}</strong><small>${esc(mmSong.artist)}</small>`;
+      const words = mmWordCounts(mmSong.lines);
+      document.getElementById("mm1-wordlist").innerHTML = words.length
+        ? words.map(([w, n]) => `<button type="button" class="mm-word" data-mm-word="${esc(w)}">${esc(w)}<b>${n}×</b></button>`).join("")
+        : `<p class="mm-status">${t("mm.noWords")}</p>`;
+      mmShow("mm1-words");
+    }
+
+    function mmLineHTML(text) {
+      let html = "";
+      let last = 0;
+      for (const m of text.matchAll(MM_WORD)) {
+        html += esc(text.slice(last, m.index));
+        html += mmNorm(m[0]) === mmWord ? `<mark class="mm-hit">${esc(m[0])}</mark>` : esc(m[0]);
+        last = m.index + m[0].length;
+      }
+      return html + esc(text.slice(last));
+    }
+
+    document.getElementById("mm1-wordlist").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-mm-word]");
+      if (!btn) return;
+      mmWord = btn.dataset.mmWord;
+      mmSong.lines.forEach((l) => {
+        l.hits = (l.text.match(MM_WORD) || []).filter((w) => mmNorm(w) === mmWord).length;
+      });
+      mmTotal = mmSong.lines.reduce((s, l) => s + l.hits, 0);
+      mmCount = 0;
+      mmLine = -1;
+      mmOffset = 0;
+      document.getElementById("mm1-lyrics").innerHTML = mmSong.lines.map((l, i) => `<p class="mm-line${l.hits ? " has-hit" : ""}" data-line="${i}">${mmLineHTML(l.text)}</p>`).join("");
+      document.getElementById("mm1-lyrics").scrollTop = 0;
+      renderMmCounter();
+      mmShow("mm1-play");
+      mmStartVideo();
+    });
+
+    function renderMmCounter(hit) {
+      const el = document.getElementById("mm1-counter");
+      el.innerHTML = `<strong>${mmCount}</strong><span>/ ${mmTotal} ${t("mm.puffs")}</span><em>“${esc(mmWord)}”</em>`;
+      if (hit) {
+        el.classList.remove("hit");
+        void el.offsetWidth;
+        el.classList.add("hit");
+      }
+    }
+
+    // ---------- 1: sangen fra YouTube ----------
+    function loadYouTube() {
+      if (window.YT && window.YT.Player) return Promise.resolve();
+      if (!ytLoading) {
+        ytLoading = new Promise((resolve, reject) => {
+          window.onYouTubeIframeAPIReady = resolve;
+          const s = document.createElement("script");
+          s.src = "https://www.youtube.com/iframe_api";
+          s.onerror = () => {
+            ytLoading = null;
+            reject(new Error("YouTube"));
+          };
+          document.head.appendChild(s);
+        });
+      }
+      return ytLoading;
+    }
+
+    function isoSeconds(d) {
+      const m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(d || "") || [];
+      return (Number(m[1]) || 0) * 3600 + (Number(m[2]) || 0) * 60 + (Number(m[3]) || 0);
+    }
+
+    // Find videoer med samme længde som teksten, så teksten passer til lyden
+    async function mmFindVideos(song) {
+      const cacheKey = "mm-yt-" + song.id;
+      try {
+        const cached = JSON.parse(localStorage.getItem(cacheKey) || "null");
+        if (cached && cached.length) return cached;
+      } catch {}
+      const q = `${song.artist} ${song.title} audio`;
+      const found = await fetch(`${YT_API}/search?part=id&type=video&videoEmbeddable=true&videoSyndicated=true&maxResults=8&q=${encodeURIComponent(q)}&key=${YT_KEY}`).then((r) => r.json());
+      if (found.error) throw new Error(found.error.message || "YouTube");
+      const ids = (found.items || []).map((x) => x.id && x.id.videoId).filter(Boolean);
+      if (!ids.length) return [];
+      const info = await fetch(`${YT_API}/videos?part=contentDetails&id=${ids.join(",")}&key=${YT_KEY}`).then((r) => r.json());
+      if (info.error) throw new Error(info.error.message || "YouTube");
+      const length = Object.fromEntries((info.items || []).map((x) => [x.id, isoSeconds(x.contentDetails.duration)]));
+      const list = ids
+        .filter((id) => length[id])
+        .map((id, i) => ({ id, i, diff: Math.abs(length[id] - song.duration) }))
+        .sort((a, b) => (a.diff > 3) - (b.diff > 3) || (a.diff <= 3 ? a.i - b.i : a.diff - b.diff))
+        .map((x) => x.id);
+      try { localStorage.setItem(cacheKey, JSON.stringify(list)); } catch {}
+      return list;
+    }
+
+    function mmStatus(id, text) {
+      document.getElementById(id).textContent = text || "";
+    }
+
+    async function mmStartVideo() {
+      const btn = document.getElementById("mm1-playbtn");
+      btn.disabled = true;
+      btn.textContent = t("mm.play");
+      mmStatus("mm1-status", t("mm.finding"));
+      try {
+        await loadYouTube();
+        mmVideos = await mmFindVideos(mmSong);
+        if (!mmVideos.length) throw new Error(t("mm.noVideo"));
+        mmCueVideo();
+      } catch (err) {
+        mmStatus("mm1-status", `${t("mm.ytError")} ${err && err.message ? `(${err.message})` : ""}`);
+      }
+    }
+
+    function mmCueVideo() {
+      const id = mmVideos[0];
+      if (!mmPlayer) {
+        mmPlayer = new YT.Player("mm-yt", {
+          videoId: id,
+          playerVars: { playsinline: 1, rel: 0, modestbranding: 1 },
+          events: { onReady: mmVideoReady, onStateChange: mmVideoState, onError: mmVideoError },
+        });
+      } else {
+        mmPlayer.cueVideoById(id);
+        mmVideoReady();
+      }
+    }
+
+    function mmVideoReady() {
+      mmStatus("mm1-status", "");
+      document.getElementById("mm1-playbtn").disabled = false;
+    }
+
+    // Må videoen ikke vises i andre apps, prøver vi den næste
+    function mmVideoError() {
+      mmVideos.shift();
+      try { localStorage.setItem("mm-yt-" + mmSong.id, JSON.stringify(mmVideos)); } catch {}
+      if (mmVideos.length) mmCueVideo();
+      else mmStatus("mm1-status", t("mm.noVideo"));
+    }
+
+    function mmVideoState(e) {
+      const btn = document.getElementById("mm1-playbtn");
+      if (e.data === YT.PlayerState.PLAYING) {
+        btn.textContent = t("mm.pause");
+        mmStatus("mm1-status", "");
+        clearInterval(mmLoop);
+        mmLoop = setInterval(mmTick, 150);
+        if (!mmRecorded) {
+          mmRecorded = true;
+          recordGame("musical");
+        }
+      } else if (e.data === YT.PlayerState.PAUSED) {
+        btn.textContent = t("mm.play");
+        clearInterval(mmLoop);
+      } else if (e.data === YT.PlayerState.ENDED) {
+        btn.textContent = t("mm.again");
+        clearInterval(mmLoop);
+        mmStatus("mm1-status", t("mm.done", { n: mmCount }));
+      }
+    }
+
+    document.getElementById("mm1-playbtn").addEventListener("click", () => {
+      if (!mmPlayer || !mmPlayer.getPlayerState) return;
+      const state = mmPlayer.getPlayerState();
+      if (state === YT.PlayerState.PLAYING) return mmPlayer.pauseVideo();
+      if (state === YT.PlayerState.ENDED) {
+        mmLine = -1;
+        mmPlayer.seekTo(0, true);
+      }
+      mmPlayer.playVideo();
+      // Nogle telefoner kræver, at man trykker på selve videoen første gang
+      setTimeout(() => {
+        if (mmPlayer.getPlayerState() !== YT.PlayerState.PLAYING) mmStatus("mm1-status", t("mm.tapVideo"));
+      }, 1800);
+    });
+
+    // Finder den linje, der bliver sunget nu, og tæller sug
+    function mmTick() {
+      if (!mmPlayer || !mmPlayer.getCurrentTime || !mmSong) return;
+      const now = mmPlayer.getCurrentTime() + mmOffset;
+      const lines = mmSong.lines;
+      let idx = -1;
+      while (idx + 1 < lines.length && lines[idx + 1].t <= now) idx++;
+      if (idx === mmLine) return;
+      mmLine = idx;
+      const count = lines.slice(0, idx + 1).reduce((s, l) => s + l.hits, 0);
+      const hit = count > mmCount;
+      mmCount = count;
+      if (hit) vibrate([120, 60, 120]);
+      renderMmCounter(hit);
+      const box = document.getElementById("mm1-lyrics");
+      box.querySelectorAll(".mm-line").forEach((el, i) => {
+        el.classList.toggle("active", i === idx);
+        el.classList.toggle("past", i < idx);
+      });
+      const active = box.querySelector(".mm-line.active");
+      if (active) box.scrollTo({ top: active.offsetTop - box.clientHeight / 2 + active.offsetHeight / 2, behavior: "smooth" });
+    }
+
+    document.querySelector(".mm-sync").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-mm-sync]");
+      if (!btn) return;
+      mmOffset += Number(btn.dataset.mmSync);
+      mmLine = -2;
+      mmTick();
+      mmStatus("mm1-status", `${t("mm.sync")}: ${mmOffset > 0 ? "+" : ""}${mmOffset.toFixed(1).replace(".", lang === "en" ? "." : ",")} s`);
+    });
+
+    // ---------- 2: gæt sangen ----------
+    const MM_DK = ["Medina", "L.O.C.", "Rasmus Seebach", "Lukas Graham", "Suspekt", "Gilli", "Kim Larsen", "TV-2", "Shu-bi-dua",
+      "Nik & Jay", "Burhan G", "Christopher", "MØ", "Aqua", "Alphabeat", "Kesi", "Benny Jamz", "Tobias Rahim", "Hjalmer",
+      "Ukendt Kunstner", "Specktors", "Joey Moe", "Volbeat", "D-A-D", "Gasolin'", "Natasja", "Outlandish", "Karl William",
+      "Annika", "Ude Af Kontrol", "Andreas Odbjerg", "Fresh-I", "Thomas Helmig", "Infernal", "Dúné", "Mø", "Phlake", "Malte Ebert"];
+    const MM_80S = ["Michael Jackson|Billie Jean", "Queen|Another One Bites the Dust", "a-ha|Take On Me", "Toto|Africa",
+      "Madonna|Like a Prayer", "Whitney Houston|I Wanna Dance with Somebody", "Bon Jovi|Livin' on a Prayer", "Europe|The Final Countdown",
+      "Cyndi Lauper|Girls Just Want to Have Fun", "Survivor|Eye of the Tiger", "Guns N' Roses|Sweet Child O' Mine", "Prince|Purple Rain",
+      "Wham!|Wake Me Up Before You Go-Go", "Rick Astley|Never Gonna Give You Up", "Dire Straits|Money for Nothing",
+      "Tears for Fears|Everybody Wants to Rule the World", "Eurythmics|Sweet Dreams", "Journey|Don't Stop Believin'",
+      "Kim Wilde|Kids in America", "Lionel Richie|All Night Long", "Run-DMC|It's Tricky", "Michael Jackson|Beat It"];
+    const MM_90S = ["Nirvana|Smells Like Teen Spirit", "Backstreet Boys|I Want It That Way", "Spice Girls|Wannabe",
+      "Britney Spears|...Baby One More Time", "Aqua|Barbie Girl", "Coolio|Gangsta's Paradise", "Oasis|Wonderwall", "TLC|No Scrubs",
+      "Dr. Dre|Still D.R.E.", "2Pac|California Love", "Haddaway|What Is Love", "Vengaboys|Boom, Boom, Boom, Boom!!",
+      "Eiffel 65|Blue (Da Ba Dee)", "Red Hot Chili Peppers|Under the Bridge", "Alanis Morissette|Ironic", "Will Smith|Gettin' Jiggy Wit It",
+      "Shaggy|Boombastic", "Fugees|Killing Me Softly", "Ace of Base|All That She Wants", "The Notorious B.I.G.|Juicy",
+      "Blackstreet|No Diggity", "Los del Rio|Macarena"];
+    const MM_00S = ["Eminem|Without Me", "50 Cent|In Da Club", "OutKast|Hey Ya!", "Beyoncé|Crazy in Love", "The Killers|Mr. Brightside",
+      "Black Eyed Peas|I Gotta Feeling", "Rihanna|Umbrella", "Nelly|Hot in Herre", "Usher|Yeah!", "Gnarls Barkley|Crazy",
+      "Lady Gaga|Poker Face", "Kanye West|Gold Digger", "Shakira|Hips Don't Lie", "Amy Winehouse|Rehab", "Justin Timberlake|SexyBack",
+      "Britney Spears|Toxic", "Sean Paul|Get Busy", "Snoop Dogg|Drop It Like It's Hot", "Linkin Park|In the End",
+      "Avril Lavigne|Complicated", "Akon|Smack That", "Kings of Leon|Sex on Fire"];
+    const MM_STONER = ["Afroman|Because I Got High", "Snoop Dogg|Young, Wild & Free", "Dr. Dre|The Next Episode",
+      "Cypress Hill|Hits from the Bong", "Cypress Hill|Insane in the Brain", "Bob Marley|Kaya", "Peter Tosh|Legalize It",
+      "Musical Youth|Pass the Dutchie", "Rick James|Mary Jane", "Wiz Khalifa|Roll Up", "Kid Cudi|Pursuit of Happiness",
+      "Bob Dylan|Rainy Day Women #12 & 35", "Black Sabbath|Sweet Leaf", "Sublime|Smoke Two Joints", "Method Man|How High",
+      "Tom Petty|Mary Jane's Last Dance", "Willie Nelson|Roll Me Up", "311|Amber", "Bob Marley|Easy Skanking",
+      "Wiz Khalifa|Black and Yellow", "Afroman|Crazy Rap"];
+    const MM_CATS = [
+      { id: "top", icon: "🔥", da: "Top hits", en: "Top hits", chart: "" },
+      { id: "dk", icon: "🇩🇰", da: "Danske hits", en: "Danish hits", artists: MM_DK },
+      { id: "hiphop", icon: "🎤", da: "Hiphop", en: "Hip-hop", chart: 18 },
+      { id: "pop", icon: "🎧", da: "Pop", en: "Pop", chart: 14 },
+      { id: "rock", icon: "🎸", da: "Rock", en: "Rock", chart: 21 },
+      { id: "dance", icon: "🪩", da: "Dance", en: "Dance", chart: 17 },
+      { id: "rnb", icon: "💜", da: "R&B", en: "R&B", chart: 15 },
+      { id: "reggae", icon: "🌴", da: "Reggae", en: "Reggae", chart: 24 },
+      { id: "80s", icon: "📼", da: "80'erne", en: "80s", songs: MM_80S },
+      { id: "90s", icon: "💿", da: "90'erne", en: "90s", songs: MM_90S },
+      { id: "00s", icon: "📱", da: "2000'erne", en: "2000s", songs: MM_00S },
+      { id: "stoner", icon: "🌿", da: "Stoner-sange", en: "Stoner songs", songs: MM_STONER },
+    ];
+    let mmCat = "top";
+    let mmPool = [];
+    let mmBase = [];
+    let mmTrack = null;
+    const mmSeen = new Set();
+
+    function renderMmCats() {
+      document.getElementById("mm-cats").innerHTML = MM_CATS.map((c) => `
+        <button type="button" class="mm-cat${c.id === mmCat ? " active" : ""}" data-mm-cat="${c.id}"><span>${c.icon}</span>${esc(lang === "en" ? c.en : c.da)}</button>`).join("");
+    }
+
+    document.getElementById("mm-cats").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-mm-cat]");
+      if (!btn) return;
+      mmCat = btn.dataset.mmCat;
+      document.getElementById("mm-artist").elements.q.value = "";
+      renderMmCats();
+    });
+
+    document.getElementById("mm-artist").addEventListener("input", (e) => {
+      // Skriver man en kunstner, bruges den i stedet for kategorien
+      document.querySelectorAll(".mm-cat").forEach((b) => b.classList.toggle("active", !e.target.value.trim() && b.dataset.mmCat === mmCat));
+    });
+
+    document.getElementById("mm-artist").addEventListener("submit", (e) => {
+      e.preventDefault();
+      document.getElementById("mm2-start").click();
+    });
+
+    const bigArt = (url) => (url || "").replace(/\/\d+x\d+bb\./, "/600x600bb.");
+
+    function itunesTrack(r) {
+      return r && r.previewUrl ? { title: r.trackName, artist: r.artistName, art: bigArt(r.artworkUrl100), preview: r.previewUrl } : null;
+    }
+
+    const looseName = (s) => mmNorm(s).normalize("NFD").replace(/[^\p{L}\p{N}]/gu, "");
+
+    async function itunesSearch(term, artistOnly) {
+      const data = await mmJson(`${ITUNES}/search?term=${encodeURIComponent(term)}&entity=song&country=dk&limit=${artistOnly ? 30 : 5}${artistOnly ? "&attribute=artistTerm" : ""}`, 2);
+      return data.results || [];
+    }
+
+    // Henter sangene til en kategori: hitlister kommer direkte med klip,
+    // kunstnere og sange slås op, når det er deres tur
+    async function mmLoadPool(artistText) {
+      if (artistText) {
+        const results = await itunesSearch(artistText, true);
+        const want = looseName(artistText);
+        const own = results.filter((r) => looseName(r.artistName).includes(want));
+        return (own.length ? own : results).map(itunesTrack).filter(Boolean);
+      }
+      const cat = MM_CATS.find((c) => c.id === mmCat);
+      if (cat.chart !== undefined) {
+        const data = await mmJson(`${ITUNES}/dk/rss/topsongs/limit=100${cat.chart ? `/genre=${cat.chart}` : ""}/json`, 2);
+        return ((data.feed && data.feed.entry) || []).map((x) => {
+          const preview = (x.link || []).find((l) => l.attributes && l.attributes["im:assetType"] === "preview");
+          if (!preview) return null;
+          const images = x["im:image"] || [];
+          return {
+            title: x["im:name"].label,
+            artist: x["im:artist"].label,
+            art: bigArt(images.length ? images[images.length - 1].label : ""),
+            preview: preview.attributes.href,
+          };
+        }).filter(Boolean);
+      }
+      if (cat.artists) return cat.artists.map((a) => ({ artist: a }));
+      return cat.songs.map((s) => {
+        const [artist, title] = s.split("|");
+        return { artist, title };
+      });
+    }
+
+    async function mmResolve(src) {
+      if (src.preview) return src;
+      if (!src.title) {
+        // En tilfældig af kunstnerens populære sange
+        const results = (await itunesSearch(src.artist, true)).filter((r) => r.previewUrl && looseName(r.artistName).includes(looseName(src.artist).slice(0, 5)));
+        const fresh = results.slice(0, 15).filter((r) => !mmSeen.has(looseName(r.trackName + r.artistName)));
+        return itunesTrack(fresh[Math.floor(Math.random() * fresh.length)]);
+      }
+      const results = await itunesSearch(`${src.artist} ${src.title}`);
+      const want = looseName(src.artist).slice(0, 5);
+      return itunesTrack(results.find((r) => r.previewUrl && looseName(r.artistName).includes(want)) || results.find((r) => r.previewUrl));
+    }
+
+    function mmResetRound() {
+      const audio = document.getElementById("mm2-audio");
+      audio.pause();
+      document.getElementById("mm2-disc").classList.remove("playing", "revealed");
+      document.getElementById("mm2-art").removeAttribute("src");
+      document.getElementById("mm2-bar").style.width = "0";
+      document.getElementById("mm2-answer").classList.add("hidden");
+      document.getElementById("mm2-guess").classList.remove("hidden");
+      document.getElementById("mm2-next").classList.add("hidden");
+      const btn = document.getElementById("mm2-playbtn");
+      btn.classList.remove("hidden");
+      btn.disabled = true;
+      btn.textContent = t("mm.play2");
+      document.getElementById("mm2-guess").disabled = true;
+    }
+
+    async function mmNextRound() {
+      mmResetRound();
+      mmTrack = null;
+      mmStatus("mm2-status", t("mm.loadingSong"));
+      for (let tries = 0; tries < 6 && !mmTrack; tries++) {
+        if (!mmPool.length) {
+          // Alle sange er brugt: start forfra
+          mmSeen.clear();
+          mmPool = shuffle([...mmBase]);
+        }
+        const src = mmPool.shift();
+        try {
+          const track = await mmResolve(src);
+          const key = track && looseName(track.title + track.artist);
+          if (track && !mmSeen.has(key)) {
+            mmSeen.add(key);
+            mmTrack = track;
+          }
+        } catch {}
+      }
+      if (!mmTrack) return mmStatus("mm2-status", t("mm.searchError"));
+      const audio = document.getElementById("mm2-audio");
+      audio.src = mmTrack.preview;
+      audio.load();
+      mmStatus("mm2-status", "");
+      document.getElementById("mm2-playbtn").disabled = false;
+      document.getElementById("mm2-guess").disabled = false;
+    }
+
+    document.getElementById("mm2-start").addEventListener("click", async () => {
+      const btn = document.getElementById("mm2-start");
+      if (btn.disabled) return;
+      const artistText = document.getElementById("mm-artist").elements.q.value.trim();
+      btn.disabled = true;
+      btn.textContent = t("mm.loadingSong");
+      try {
+        mmBase = await mmLoadPool(artistText);
+      } catch {
+        mmBase = [];
+      }
+      btn.disabled = false;
+      btn.textContent = t("setup.start");
+      if (!mmBase.length) {
+        btn.textContent = t(artistText ? "mm.noArtist" : "mm.searchError");
+        setTimeout(() => { btn.textContent = t("setup.start"); }, 2500);
+        return;
+      }
+      mmSeen.clear();
+      mmPool = shuffle([...mmBase]);
+      mmShow("mm2-play");
+      mmNextRound();
+    });
+
+    document.getElementById("mm2-playbtn").addEventListener("click", () => {
+      const audio = document.getElementById("mm2-audio");
+      if (!audio.src) return;
+      if (audio.paused) {
+        if (audio.ended) audio.currentTime = 0;
+        audio.play().catch(() => mmStatus("mm2-status", t("mm.searchError")));
+      } else {
+        audio.pause();
+      }
+    });
+
+    const mmAudio = document.getElementById("mm2-audio");
+    mmAudio.addEventListener("play", () => {
+      document.getElementById("mm2-disc").classList.add("playing");
+      document.getElementById("mm2-playbtn").textContent = t("mm.pause");
+      if (!mmRecorded) {
+        mmRecorded = true;
+        recordGame("musical");
+      }
+    });
+    mmAudio.addEventListener("pause", () => {
+      document.getElementById("mm2-disc").classList.remove("playing");
+      document.getElementById("mm2-playbtn").textContent = mmAudio.ended ? t("mm.again") : t("mm.play2");
+    });
+    mmAudio.addEventListener("timeupdate", () => {
+      if (mmAudio.duration) document.getElementById("mm2-bar").style.width = `${(mmAudio.currentTime / mmAudio.duration) * 100}%`;
+    });
+
+    document.getElementById("mm2-guess").addEventListener("click", () => {
+      if (!mmTrack) return;
+      const disc = document.getElementById("mm2-disc");
+      if (mmTrack.art) document.getElementById("mm2-art").src = mmTrack.art;
+      disc.classList.add("revealed");
+      const box = document.getElementById("mm2-answer");
+      box.innerHTML = `
+        <small>${t("mm.answer")}</small>
+        <p>${esc(mmTrack.title)}</p>
+        <p class="spin-prev">${esc(mmTrack.artist)}</p>
+        <p class="mm-rule">${t("mm.rule")}</p>`;
+      box.classList.remove("hidden");
+      document.getElementById("mm2-guess").classList.add("hidden");
+      document.getElementById("mm2-next").classList.remove("hidden");
+    });
+
+    document.getElementById("mm2-next").addEventListener("click", mmNextRound);
+
+    document.querySelector('[data-view="musical"]').addEventListener("click", (e) => {
+      if (e.target.closest("[data-mm-exit]")) {
+        mmStopAll();
+        mmShow("mm-setup");
+        renderMmSetup();
+      }
+      // Tilbage til spillene: stop musikken
+      if (e.target.closest("[data-back]")) {
+        mmStopAll();
+        mmShow("mm-setup");
+      }
+    });
+
+    renderMmSetup();
+
+    // ==========================================================
+    // BLACKJACK: almindeligt blackjack mod dealeren. Indsatsen er antal hits:
+    // taber man, tager man sine hits; vinder man, deler man dem ud.
+    // Dealeren står på 17, blackjack betaler 3:2, og man kan doble og splitte.
+    // ==========================================================
+    const BJ_SUITS = ["♠", "♥", "♦", "♣"];
+    const BJ_RANKS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+    const bjPlayers = [];
+    let bjShoe = [];
+    let bjDealer = [];
+    let bjSeats = [];       // [{ name, bet, hands: [{ cards, bet, done, split, result }] }]
+    let bjPhase = "bet";    // bet | play | dealer | done
+    let bjSeat = 0;
+    let bjHand = 0;
+    let bjRecorded = false;
+
+    function bjNewShoe() {
+      bjShoe = [];
+      for (let d = 0; d < 6; d++) BJ_SUITS.forEach((s) => BJ_RANKS.forEach((r) => bjShoe.push({ r, s })));
+      bjShoe = shuffle(bjShoe);
+    }
+
+    function bjDraw() {
+      if (bjShoe.length < 60) bjNewShoe();
+      return bjShoe.pop();
+    }
+
+    function bjCardValue(c) {
+      if (c.r === "A") return 11;
+      if (["J", "Q", "K"].includes(c.r)) return 10;
+      return Number(c.r);
+    }
+
+    function bjTotal(cards) {
+      let total = 0;
+      let aces = 0;
+      cards.forEach((c) => {
+        total += bjCardValue(c);
+        if (c.r === "A") aces++;
+      });
+      while (total > 21 && aces) {
+        total -= 10;
+        aces--;
+      }
+      return { total, soft: aces > 0 };
+    }
+
+    const bjIsBlackjack = (hand) => hand.cards.length === 2 && !hand.split && bjTotal(hand.cards).total === 21;
+
+    function bjCardHTML(c, hidden) {
+      if (hidden) return `<span class="bj-card back"></span>`;
+      const red = c.s === "♥" || c.s === "♦";
+      return `<span class="bj-card${red ? " red" : ""}"><b>${c.r}</b><i>${c.s}</i></span>`;
+    }
+
+    function bjTotalText(cards) {
+      const { total, soft } = bjTotal(cards);
+      return soft && total < 21 ? `${total - 10}/${total}` : String(total);
+    }
+
+    function renderBjPlayers() {
+      document.getElementById("bj-players").innerHTML = bjPlayers.map((name, i) => `
+        <span class="player-chip">${esc(name)}<button type="button" data-bj-remove="${i}" aria-label="${t("game.remove")}">✕</button></span>`).join("");
+    }
+
+    document.getElementById("bj-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = e.target.elements.player;
+      const name = input.value.trim();
+      if (!name || bjPlayers.length >= 6) return;
+      bjPlayers.push(name);
+      input.value = "";
+      renderBjPlayers();
+    });
+
+    document.getElementById("bj-players").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-bj-remove]");
+      if (!btn) return;
+      bjPlayers.splice(Number(btn.dataset.bjRemove), 1);
+      renderBjPlayers();
+    });
+
+    document.getElementById("bj-start").addEventListener("click", () => {
+      const names = bjPlayers.length ? bjPlayers : [t("bj.you")];
+      bjSeats = names.map((name) => ({ name, bet: 2, hands: [] }));
+      bjDealer = [];
+      bjPhase = "bet";
+      if (!bjShoe.length) bjNewShoe();
+      document.getElementById("bj-setup").classList.add("hidden");
+      document.getElementById("bj-play").classList.remove("hidden");
+      window.scrollTo(0, 0);
+      renderBj();
+    });
+
+    document.getElementById("bj-exit").addEventListener("click", () => {
+      bjPhase = "bet";
+      document.getElementById("bj-play").classList.add("hidden");
+      document.getElementById("bj-setup").classList.remove("hidden");
+    });
+
+    function bjResultText(hand) {
+      const n = hand.bet;
+      if (hand.result === "bj") return `<span class="bj-result win">${t("bj.blackjack", { n: Math.ceil(n * 1.5) })}</span>`;
+      if (hand.result === "win") return `<span class="bj-result win">${t("bj.win", { n })}</span>`;
+      if (hand.result === "lose") return `<span class="bj-result lose">${t("bj.lose", { n })}</span>`;
+      if (hand.result === "push") return `<span class="bj-result push">${t("bj.push")}</span>`;
+      return "";
+    }
+
+    function renderBj() {
+      const hideHole = bjPhase === "play";
+      document.getElementById("bj-dealer-cards").innerHTML = bjDealer.map((c, i) => bjCardHTML(c, hideHole && i === 1)).join("");
+      document.getElementById("bj-dealer-total").textContent = !bjDealer.length ? "" : hideHole ? String(bjCardValue(bjDealer[0])) : bjTotalText(bjDealer);
+      document.getElementById("bj-dealer-total").classList.toggle("hidden", !bjDealer.length);
+
+      document.getElementById("bj-hands").innerHTML = bjSeats.map((seat, si) => {
+        if (bjPhase === "bet") {
+          return `
+            <div class="bj-seat">
+              <span class="bj-seat-name">${esc(seat.name)}</span>
+              <div class="bj-bet">
+                <button type="button" class="bj-step" data-bj-bet="${si}" data-step="-1" ${seat.bet <= 1 ? "disabled" : ""}>−</button>
+                <strong>${t("bj.hits", { n: seat.bet })}</strong>
+                <button type="button" class="bj-step" data-bj-bet="${si}" data-step="1" ${seat.bet >= 10 ? "disabled" : ""}>+</button>
+              </div>
+            </div>`;
+        }
+        return seat.hands.map((hand, hi) => {
+          const turn = bjPhase === "play" && si === bjSeat && hi === bjHand;
+          const { total } = bjTotal(hand.cards);
+          return `
+            <div class="bj-seat${turn ? " turn" : ""}">
+              <div class="bj-seat-head">
+                <span class="bj-seat-name">${esc(seat.name)}${seat.hands.length > 1 ? ` · ${hi + 1}` : ""}</span>
+                <span class="bj-bet-tag">${t("bj.hits", { n: hand.bet })}</span>
+              </div>
+              <div class="bj-hand">
+                <div class="bj-cards">${hand.cards.map((c) => bjCardHTML(c)).join("")}</div>
+                <span class="bj-total${total > 21 ? " bust" : ""}">${bjTotalText(hand.cards)}</span>
+              </div>
+              ${bjResultText(hand)}
+            </div>`;
+        }).join("");
+      }).join("");
+
+      const controls = document.getElementById("bj-controls");
+      if (bjPhase === "bet") {
+        controls.innerHTML = `<button type="button" class="btn-primary bj-wide" data-bj="deal">${t("bj.deal")}</button>`;
+      } else if (bjPhase === "play") {
+        const hand = bjSeats[bjSeat].hands[bjHand];
+        const two = hand.cards.length === 2;
+        const canSplit = two && bjSeats[bjSeat].hands.length === 1 && bjCardValue(hand.cards[0]) === bjCardValue(hand.cards[1]);
+        controls.innerHTML = `
+          <p class="bj-turn-name">${t("bj.turn", { name: esc(bjSeats[bjSeat].name) })}</p>
+          <button type="button" class="btn-primary" data-bj="hit">${t("bj.hit")}</button>
+          <button type="button" class="btn-plain" data-bj="stand">${t("bj.stand")}</button>
+          ${two ? `<button type="button" class="btn-plain" data-bj="double">${t("bj.double")}</button>` : ""}
+          ${canSplit ? `<button type="button" class="btn-plain" data-bj="split">${t("bj.split")}</button>` : ""}`;
+      } else if (bjPhase === "done") {
+        controls.innerHTML = `<button type="button" class="btn-primary bj-wide" data-bj="again">${t("bj.again")}</button>`;
+      } else {
+        controls.innerHTML = "";
+      }
+    }
+
+    document.getElementById("bj-hands").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-bj-bet]");
+      if (!btn || bjPhase !== "bet") return;
+      const seat = bjSeats[Number(btn.dataset.bjBet)];
+      seat.bet = Math.max(1, Math.min(10, seat.bet + Number(btn.dataset.step)));
+      renderBj();
+    });
+
+    function bjDeal() {
+      bjDealer = [bjDraw(), bjDraw()];
+      bjSeats.forEach((seat) => {
+        seat.hands = [{ cards: [bjDraw(), bjDraw()], bet: seat.bet, done: false, split: false, result: "" }];
+      });
+      if (!bjRecorded) {
+        bjRecorded = true;
+        recordGame("blackjack");
+      }
+      // Har dealeren blackjack, er runden slut med det samme
+      if (bjTotal(bjDealer).total === 21) return bjFinish();
+      bjSeats.forEach((seat) => seat.hands.forEach((h) => { if (bjIsBlackjack(h)) h.done = true; }));
+      bjPhase = "play";
+      bjSeat = 0;
+      bjHand = 0;
+      bjNextHand();
+    }
+
+    // Gå videre til den næste hånd, der ikke er færdig
+    function bjNextHand() {
+      while (bjSeat < bjSeats.length) {
+        const hands = bjSeats[bjSeat].hands;
+        while (bjHand < hands.length) {
+          const hand = hands[bjHand];
+          if (!hand.done && hand.cards.length === 1) hand.cards.push(bjDraw()); // efter split
+          if (!hand.done && bjTotal(hand.cards).total >= 21) hand.done = true;
+          if (!hand.done) return renderBj();
+          bjHand++;
+        }
+        bjSeat++;
+        bjHand = 0;
+      }
+      bjDealerPlay();
+    }
+
+    function bjDealerPlay() {
+      bjPhase = "dealer";
+      renderBj();
+      const live = bjSeats.some((s) => s.hands.some((h) => bjTotal(h.cards).total <= 21 && !bjIsBlackjack(h)));
+      const step = () => {
+        if (live && bjTotal(bjDealer).total < 17) {
+          bjDealer.push(bjDraw());
+          renderBj();
+          setTimeout(step, 650);
+        } else {
+          bjFinish();
+        }
+      };
+      setTimeout(step, 650);
+    }
+
+    function bjFinish() {
+      bjPhase = "done";
+      const dealer = bjTotal(bjDealer).total;
+      const dealerBJ = bjDealer.length === 2 && dealer === 21;
+      bjSeats.forEach((seat) => seat.hands.forEach((hand) => {
+        const total = bjTotal(hand.cards).total;
+        const bj = bjIsBlackjack(hand);
+        if (bj && dealerBJ) hand.result = "push";
+        else if (bj) hand.result = "bj";
+        else if (dealerBJ || total > 21) hand.result = "lose";
+        else if (dealer > 21 || total > dealer) hand.result = "win";
+        else if (total < dealer) hand.result = "lose";
+        else hand.result = "push";
+      }));
+      renderBj();
+      vibrate(60);
+    }
+
+    document.getElementById("bj-controls").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-bj]");
+      if (!btn) return;
+      const action = btn.dataset.bj;
+      if (action === "deal" && bjPhase === "bet") return bjDeal();
+      if (action === "again" && bjPhase === "done") {
+        bjPhase = "bet";
+        bjDealer = [];
+        bjSeats.forEach((s) => { s.hands = []; });
+        return renderBj();
+      }
+      if (bjPhase !== "play") return;
+      const seat = bjSeats[bjSeat];
+      const hand = seat.hands[bjHand];
+      if (action === "hit") {
+        hand.cards.push(bjDraw());
+        if (bjTotal(hand.cards).total >= 21) hand.done = true;
+      }
+      if (action === "stand") hand.done = true;
+      if (action === "double" && hand.cards.length === 2) {
+        hand.bet *= 2;
+        hand.cards.push(bjDraw());
+        hand.done = true;
+      }
+      if (action === "split" && hand.cards.length === 2 && seat.hands.length === 1) {
+        const second = { cards: [hand.cards.pop()], bet: hand.bet, done: false, split: true, result: "" };
+        hand.split = true;
+        hand.cards.push(bjDraw());
+        seat.hands.push(second);
+        // Splittede esser får kun ét kort hver
+        if (hand.cards[0].r === "A") {
+          second.cards.push(bjDraw());
+          hand.done = true;
+          second.done = true;
+        }
+      }
+      if (hand.done) bjNextHand();
+      else renderBj();
+    });
+
+    // ==========================================================
     // WEED CHESS: skak mod en ven på hver sin telefon, med straffe
     // ==========================================================
     // Spillene ligger i chessGames. Mister man en brik, får man en straf fra
@@ -15628,6 +17243,19 @@
     // ==========================================================
     // Tilføj en ny dag øverst, når der kommer noget stort.
     const UPDATES = [
+      {
+        date: "2026-11-04",
+        da: [
+          "Musical Marijuana: vælg en sang og et ord, og tag et sug, hver gang ordet bliver sunget. Eller gæt sangen",
+          "Blackjack: almindeligt blackjack, hvor indsatsen er antal hits",
+          "Alle spil har fået en simpel startside, og Spin the Joint 1 og 2 er samlet i ét spil",
+        ],
+        en: [
+          "Musical Marijuana: pick a song and a word, and take a hit every time the word is sung. Or guess the song",
+          "Blackjack: classic blackjack where the bet is the number of hits",
+          "Every game has a simple start page, and Spin the Joint 1 and 2 are now one game",
+        ],
+      },
       {
         date: "2026-11-03",
         da: [
