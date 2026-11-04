@@ -535,20 +535,18 @@
     /* Menu i bunden (tab bar) */
     .tabbar {
       position: fixed;
-      left: 12px;
-      right: 12px;
-      bottom: calc(var(--safe-bottom) + 8px);
+      left: 0;
+      right: 0;
+      bottom: 0;
       z-index: 10;
       display: flex;
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 7px 6px;
-      border: 1px solid var(--border-strong);
-      border-radius: 26px;
+      padding: 8px 6px calc(var(--safe-bottom) + 8px);
+      border: 0;
+      border-top: 1px solid var(--border);
+      border-radius: 0;
       background: var(--tabbar-bg);
       -webkit-backdrop-filter: blur(24px) saturate(160%);
       backdrop-filter: blur(24px) saturate(160%);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
     }
 
     .tabbar-item {
@@ -3768,9 +3766,6 @@
       font-weight: 700;
       letter-spacing: -0.6px;
     }
-    .tabbar {
-      border-color: var(--border);
-    }
     .tile-card {
       background: rgba(10, 11, 10, 0.96);
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
@@ -4392,49 +4387,6 @@
       line-height: 1.4;
     }
 
-    /* ---------- Aftenens spil ---------- */
-    .tonight {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-      width: 100%;
-      margin-bottom: 18px;
-      padding: 20px;
-      border: 1px solid var(--primary);
-      border-radius: 22px;
-      background: linear-gradient(150deg, var(--accent-soft), var(--card));
-      color: var(--text);
-      font: inherit;
-      text-align: left;
-      cursor: pointer;
-    }
-    .tonight:active {
-      transform: scale(0.98);
-    }
-    .tonight small {
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .tonight strong {
-      font-size: 24px;
-      font-weight: 700;
-    }
-    .tonight .muted {
-      font-size: 14px;
-    }
-    .tonight-play {
-      margin-top: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: var(--primary);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-    }
 
     /* ---------- Nyt i Smoke Hub ---------- */
     .tile {
@@ -5848,10 +5800,47 @@
       cursor: pointer;
     }
 
-    /* ---------- Weed Chess ---------- */
-    .game-item {
-      position: relative;
+    /* ---------- Games of Joints: gitter med billeder ---------- */
+    .game-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
     }
+    .game-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--text);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .game-card img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--card);
+    }
+    .game-card strong {
+      padding: 0 4px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .game-card:active img {
+      transform: scale(0.97);
+    }
+    .game-card .tile-badge {
+      z-index: 1;
+    }
+
+    /* ---------- Weed Chess ---------- */
     .chess-help {
       margin-bottom: 8px;
       font-size: 14px;
@@ -6317,50 +6306,36 @@
           <div class="view" data-view="games">
             <button class="back" data-back data-i18n="back.handbook">‹ Håndbog</button>
             <h1 class="page-title">Games of Joints</h1>
-            <!-- Aftenens spil: skifter hver dag, de andre kan stadig vælges -->
-            <button type="button" class="tonight" id="tonight" data-go="game">
-              <small><svg class="ic" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5z"/></svg> <span data-i18n="tonight.label">Aftenens spil</span></small>
-              <strong id="tonight-name"></strong>
-              <span class="muted" id="tonight-text"></span>
-              <span class="tonight-play" data-i18n="tonight.play">Spil nu ›</span>
-            </button>
-            <h2 class="section-title" data-i18n="tonight.all">Alle spil</h2>
-            <div class="game-list">
-              <button class="game-item" data-go="game">
-                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="10" height="14" rx="2" transform="rotate(-10 8.5 13.5)"/><rect x="10.5" y="3.5" width="10" height="14" rx="2" transform="rotate(10 15.5 10.5)"/></svg></span>
-                <span><strong>Game of Joints</strong><small data-i18n="game.tagline">Brætspillet for dig og vennerne</small></span>
-                <span class="chevron">›</span>
+            <!-- Alle spil med et billede af, hvordan de ser ud -->
+            <div class="game-grid">
+              <button class="game-card" data-go="game">
+                <img src="img/games/goj.webp" alt="" loading="lazy">
+                <strong>Game of Joints</strong>
               </button>
-              <button class="game-item" data-go="dice">
-                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.2"/><circle cx="15" cy="15" r="1.2"/><circle cx="12" cy="12" r="1.2"/></svg></span>
-                <span><strong data-i18n="dice.title">Terningespillet</strong><small data-i18n="dice.tagline">Slå med terningen. Øjnene er antal sug</small></span>
-                <span class="chevron">›</span>
+              <button class="game-card" data-go="dice">
+                <img src="img/games/dice.webp" alt="" loading="lazy">
+                <strong data-i18n="dice.title">Terningespillet</strong>
               </button>
-              <button class="game-item" data-go="spin">
-                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12l5-6"/><path d="M12 7V3M12 21v-4M3 12h4M17 12h4"/></svg></span>
-                <span><strong>Spin the Joint 1</strong><small data-i18n="spin.tagline">Spin the joints</small></span>
-                <span class="chevron">›</span>
+              <button class="game-card" data-go="spin">
+                <img src="img/games/spin.webp" alt="" loading="lazy">
+                <strong>Spin the Joint 1</strong>
               </button>
-              <button class="game-item" data-go="spin2">
-                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 12l-5-6"/><path d="M12 3v3M21 12h-3M12 21v-3M3 12h3M18.4 5.6l-2 2M18.4 18.4l-2-2M5.6 18.4l2-2"/></svg></span>
-                <span><strong>Spin the Joint 2</strong><small data-i18n="spin2.tagline">Jointen vælger straffen</small></span>
-                <span class="chevron">›</span>
+              <button class="game-card" data-go="spin2">
+                <img src="img/games/spin2.webp" alt="" loading="lazy">
+                <strong>Spin the Joint 2</strong>
               </button>
-              <button class="game-item" data-go="quiz">
-                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6"/><path d="M12 17h.01"/></svg></span>
-                <span><strong>Weed Quiz</strong><small data-i18n="quiz.tagline">Svar rigtigt, og du får et sug</small></span>
-                <span class="chevron">›</span>
+              <button class="game-card" data-go="quiz">
+                <img src="img/games/quiz.webp" alt="" loading="lazy">
+                <strong>Weed Quiz</strong>
               </button>
-              <button class="game-item" data-go="double">
-                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 15L14 4l2 2L5 17z"/><path d="M8 20L19 9l2 2-11 11z"/><path d="M15 2.5c.8.8.8 2 0 2.8M20 7.5c.8.8.8 2 0 2.8"/></svg></span>
-                <span><strong>Double Trouble</strong><small data-i18n="dt.tagline">To joints, hver sin vej rundt</small></span>
-                <span class="chevron">›</span>
+              <button class="game-card" data-go="double">
+                <img src="img/games/double.webp" alt="" loading="lazy">
+                <strong>Double Trouble</strong>
               </button>
-              <button class="game-item" data-go="chess">
+              <button class="game-card" data-go="chess">
                 <span class="tile-badge hidden" id="chess-badge"></span>
-                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v4M10 5h4"/><path d="M8.5 21h7l-1-6.5c1.6-.8 2.5-2.2 2.5-3.8a4 4 0 0 0-8 0c0 1.6.9 3 2.5 3.8z"/><path d="M6 21h12"/></svg></span>
-                <span><strong>Weed Chess</strong><small data-i18n="chess.tagline">Skak mod en ven. Mister du en brik, får du en straf</small></span>
-                <span class="chevron">›</span>
+                <img src="img/games/chess.webp" alt="" loading="lazy">
+                <strong>Weed Chess</strong>
               </button>
             </div>
           </div>
@@ -7966,9 +7941,6 @@
         "invite.copyPrompt": "Kopiér linket og send det til dine venner:",
         "friends.mutual1": "1 fælles ven",
         "friends.mutualN": "{n} fælles venner",
-        "tonight.label": "Aftenens spil",
-        "tonight.play": "Spil nu ›",
-        "tonight.all": "Alle spil",
         "friends.sent": "Sendte anmodninger",
         "friends.none": "Du har ingen venner endnu. Søg efter folk ovenfor og tilføj dem.",
         "friends.noResults": "Ingen fundet med det navn",
@@ -8736,9 +8708,6 @@
         "invite.copyPrompt": "Copy the link and send it to your friends:",
         "friends.mutual1": "1 mutual friend",
         "friends.mutualN": "{n} mutual friends",
-        "tonight.label": "Tonight's game",
-        "tonight.play": "Play now ›",
-        "tonight.all": "All games",
         "friends.sent": "Sent requests",
         "friends.none": "You don't have any friends yet. Search for people above and add them.",
         "friends.noResults": "No one found with that name",
@@ -9236,7 +9205,6 @@
       if (name === "munchie") renderMunchie();
       if (SECTION_OF_VIEW && SECTION_OF_VIEW[name]) openSection(name);
       if (name === "guides") renderGuides();
-      if (name === "games") renderTonight();
       if (name === "guide") renderGuide();
       if (name === "chess") {
         renderChessList();
@@ -12885,42 +12853,6 @@
     }
 
     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    // ---------- Aftenens spil ----------
-    // Samme spil for alle hele dagen, og aldrig det samme to dage i træk
-    const TONIGHT_GAMES = [
-      { view: "game", name: "Game of Joints", text: "game.tagline" },
-      { view: "double", name: "Double Trouble", text: "dt.tagline" },
-      { view: "quiz", name: "Weed Quiz", text: "quiz.tagline" },
-      { view: "dice", name: "dice.title", text: "dice.tagline" },
-      { view: "spin", name: "Spin the Joint 1", text: "spin.tagline" },
-      { view: "spin2", name: "Spin the Joint 2", text: "spin2.tagline" },
-    ];
-
-    function dayHash(day) {
-      let h = day * 2654435761 % 4294967296;
-      h = (h ^ (h >>> 15)) * 2246822519 % 4294967296;
-      return Math.abs(h ^ (h >>> 13));
-    }
-
-    function tonightIndex(date = new Date()) {
-      const day = Math.floor((date.getTime() - date.getTimezoneOffset() * 60e3) / DAY);
-      // Gå dag for dag fra en fast startdag, og vælg hver dag et af de spil,
-      // der ikke var i går
-      let pick = -1;
-      for (let d = 20300; d <= day; d++) {
-        const options = TONIGHT_GAMES.map((_, i) => i).filter((i) => i !== pick);
-        pick = options[dayHash(d) % options.length];
-      }
-      return pick;
-    }
-
-    function renderTonight() {
-      const game = TONIGHT_GAMES[tonightIndex()];
-      const button = document.getElementById("tonight");
-      button.dataset.go = game.view;
-      document.getElementById("tonight-name").textContent = game.name.includes(".") ? t(game.name) : game.name;
-      document.getElementById("tonight-text").textContent = t(game.text);
-    }
 
     // ==========================================================
     // DOUBLE TROUBLE: to joints går hver sin vej rundt i cirklen

@@ -1,6 +1,6 @@
 // Service worker til Flower: gør at appen åbner som en rigtig app (også
 // uden internet) og kan vise notifikationer på telefonen.
-const CACHE = "flower-v5";
+const CACHE = "flower-v6";
 const SHELL = [
   "./",
   "index.html",
