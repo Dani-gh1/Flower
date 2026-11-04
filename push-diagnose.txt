@@ -1,0 +1,15 @@
+Tidspunkt: 2026-11-04T17:00:35.119Z
+Bot-login: OK
+pushQueue: 0 klar til at sende, 0 venter
+pushSubs: 5 brugere har tilmeldt en telefon
+  bruger 1: web.push.apple.com, sprog da, tilmeldt 1217 min siden, nøgler OK, sidst sendt 995 min siden → svar 201
+  bruger 2: web.push.apple.com, sprog da, tilmeldt 11451 min siden, nøgler OK, sidst sendt 1170 min siden → svar 201
+  bruger 3: web.push.apple.com, sprog da, tilmeldt 997 min siden, nøgler OK, sidst sendt 0 min siden → svar 201
+  bruger 4: web.push.apple.com, sprog da, tilmeldt 9081 min siden, nøgler OK, sidst sendt 0 min siden → svar 201
+  bruger 4: web.push.apple.com, sprog da, tilmeldt 1 min siden, nøgler OK, sidst sendt 0 min siden → svar 201
+  bruger 4: fcm.googleapis.com, sprog da, tilmeldt 19 min siden, nøgler OK, sidst sendt 0 min siden → svar 201
+  bruger 4: fcm.googleapis.com, sprog da, tilmeldt 9124 min siden, nøgler OK, sidst sendt 0 min siden → svar 201
+  bruger 5: web.push.apple.com, sprog en, tilmeldt 9725 min siden, nøgler OK, sidst sendt 995 min siden → svar 201
+  bruger 5: web.push.apple.com, sprog da, tilmeldt 999 min siden, nøgler OK, sidst sendt 995 min siden → svar 201
+Cloudflare cron: ["* * * * *","30 20,21 * * *"]
+Cloudflare kørsler sidste 6 timer: [{"status":"success","antal":375,"fejl":0}]
