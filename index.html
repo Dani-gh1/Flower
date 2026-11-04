@@ -2179,7 +2179,25 @@
     .mm-rule {
       margin-top: 10px;
       color: #ff7a7f;
+      font-size: 15px !important;
       font-weight: 700;
+      line-height: 1.35;
+    }
+    .mm-rule.right {
+      color: var(--accent);
+    }
+    .mm-level {
+      width: fit-content;
+      margin: 0 auto 12px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .mm-level.level3 {
+      border-color: rgba(255, 90, 95, 0.5);
     }
 
     /* Blackjack */
@@ -7135,6 +7153,7 @@
                 <span class="mm-disc-q">?</span>
               </div>
               <div class="mm-progress"><span id="mm2-bar"></span></div>
+              <p class="mm-level hidden" id="mm2-level"></p>
               <p class="mm-status" id="mm2-status" aria-live="polite"></p>
               <div class="spin-card mm-answer hidden" id="mm2-answer" aria-live="polite"></div>
               <button type="button" class="btn-primary" id="mm2-playbtn" data-i18n="mm.play2">▶ Afspil</button>
@@ -8249,7 +8268,11 @@
         "mm.loadingSong": "Finder en sang …",
         "mm.noArtist": "Ingen sange fundet",
         "mm.answer": "Sangen var",
-        "mm.rule": "Gættede du forkert? Tag 2 sug 💨",
+        "mm.right": "Gættede du rigtigt? Del {h} ud, eller tag dem selv, hvis du ikke er skæv nok 😏",
+        "mm.wrong": "Gættede du forkert? Tag {h} selv 💨",
+        "mm.level1": "🟢 Let sang · 1 sug",
+        "mm.level2": "🟡 Mellem · 2 sug",
+        "mm.level3": "🔴 Svær sang · 3 sug",
         "bj.dealer": "Dealer",
         "bj.you": "Dig",
         "bj.hits": "{n} hits",
@@ -9069,7 +9092,11 @@
         "mm.loadingSong": "Finding a song …",
         "mm.noArtist": "No songs found",
         "mm.answer": "The song was",
-        "mm.rule": "Guessed wrong? Take 2 hits 💨",
+        "mm.right": "Guessed right? Hand out {h}, or take them yourself if you're not high enough 😏",
+        "mm.wrong": "Guessed wrong? Take {h} yourself 💨",
+        "mm.level1": "🟢 Easy song · 1 hit",
+        "mm.level2": "🟡 Medium · 2 hits",
+        "mm.level3": "🔴 Hard song · 3 hits",
         "bj.dealer": "Dealer",
         "bj.you": "You",
         "bj.hits": "{n} hits",
@@ -14964,7 +14991,10 @@
       }).filter(Boolean);
     }
 
+    const mmHits = (n) => (lang === "en" ? `${n} hit${n === 1 ? "" : "s"}` : `${n} sug`);
+
     function mmResetRound() {
+      document.getElementById("mm2-level").classList.add("hidden");
       const audio = document.getElementById("mm2-audio");
       audio.pause();
       document.getElementById("mm2-disc").classList.remove("playing", "revealed");
@@ -15002,6 +15032,9 @@
       audio.src = mmTrack.preview;
       audio.load();
       mmStatus("mm2-status", "");
+      const level = document.getElementById("mm2-level");
+      level.textContent = t("mm.level" + mmTrack.level);
+      level.className = `mm-level level${mmTrack.level}`;
       document.getElementById("mm2-playbtn").disabled = false;
       document.getElementById("mm2-guess").disabled = false;
     }
@@ -15024,6 +15057,9 @@
         setTimeout(() => { btn.textContent = t("setup.start"); }, 2500);
         return;
       }
+      // Hvor svær sangen er: listerne står med de mest kendte først,
+      // så sange langt nede er sværere at gætte og giver flere sug
+      mmBase = mmBase.map((x, i, all) => ({ ...x, level: 1 + Math.min(2, Math.floor((i / all.length) * 3)) }));
       mmSeen.clear();
       mmPool = shuffle([...mmBase]);
       mmShow("mm2-play");
@@ -15068,7 +15104,8 @@
         <small>${t("mm.answer")}</small>
         <p>${esc(mmTrack.title)}</p>
         <p class="spin-prev">${esc(mmTrack.artist)}</p>
-        <p class="mm-rule">${t("mm.rule")}</p>`;
+        <p class="mm-rule right">${t("mm.right", { h: mmHits(mmTrack.level) })}</p>
+        <p class="mm-rule">${t("mm.wrong", { h: mmHits(mmTrack.level) })}</p>`;
       box.classList.remove("hidden");
       document.getElementById("mm2-guess").classList.add("hidden");
       document.getElementById("mm2-next").classList.remove("hidden");
