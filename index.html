@@ -1798,31 +1798,91 @@
     /* ==========================================================
        GAME OF JOINTS
        ========================================================== */
-    .game-hero {
+    /* Startside for hvert spil: billede, navn, spillere og Start */
+    .setup-hero {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
-      margin: 4px 0 22px;
+      gap: 12px;
+      margin: 2px 0 22px;
       text-align: center;
     }
 
-    .game-hero .tile-img {
-      width: 72px;
-      height: 72px;
-      border-radius: 22px;
+    .setup-hero img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .setup-hero h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+    }
+
+    .setup-start {
+      width: 100%;
+      margin-top: 18px;
+    }
+
+    .setup-start:disabled {
+      opacity: 0.45;
+    }
+
+    .play-exit {
+      display: block;
+      margin: 14px auto 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Spin the Joint: vælg 1 eller 2 */
+    .mode-pick {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .mode-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 10px 12px;
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .mode-card img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 14px;
+    }
+
+    .mode-card strong {
+      font-size: 14px;
+    }
+
+    .mode-card.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+    }
+
+    #spin-level-box {
       margin-bottom: 8px;
     }
 
-    .game-hero .tile-img svg {
-      width: 36px;
-      height: 36px;
-    }
-
-    .game-hero h1 {
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: -0.8px;
+    #spin-level-box .spin-level-help {
+      margin-top: 8px;
+      text-align: center;
     }
 
     .player-add {
@@ -6317,12 +6377,8 @@
                 <strong data-i18n="dice.title">Terningespillet</strong>
               </button>
               <button class="game-card" data-go="spin">
-                <img src="img/games/spin.webp" alt="" loading="lazy">
-                <strong>Spin the Joint 1</strong>
-              </button>
-              <button class="game-card" data-go="spin2">
                 <img src="img/games/spin2.webp" alt="" loading="lazy">
-                <strong>Spin the Joint 2</strong>
+                <strong>Spin the Joint</strong>
               </button>
               <button class="game-card" data-go="quiz">
                 <img src="img/games/quiz.webp" alt="" loading="lazy">
@@ -6343,11 +6399,11 @@
           <!-- Weed Chess: mine spil og udfordringer -->
           <div class="view" data-view="chess">
             <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
-            <div class="title-row">
-              <h1 class="page-title">Weed Chess</h1>
-              <button type="button" class="mini-btn primary" id="chess-new" data-i18n="chess.challenge">＋ Udfordr</button>
+            <div class="setup-hero">
+              <img src="img/games/chess.webp" alt="">
+              <h1>Weed Chess</h1>
             </div>
-            <p class="muted chess-help" data-i18n="chess.help">Spil skak mod en ven på hver sin telefon. Mister du en brik, får du en straf fra Game of Joints: jo vigtigere brik, jo hårdere straf. Bliver du sat skakmat, skal du tage en Lunge-tornado.</p>
+            <button type="button" class="btn-primary setup-start chess-new" id="chess-new" data-i18n="chess.challengeFriend">Udfordr en ven</button>
             <div id="chess-list" class="chess-list"></div>
           </div>
 
@@ -6360,32 +6416,46 @@
           <!-- Terningespillet -->
           <div class="view" data-view="dice">
             <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
-            <h1 class="page-title" data-i18n="dice.title">Terningespillet</h1>
-            <p class="muted" data-i18n="dice.help">Slå med terningen. Det antal øjne, den lander på, er det antal sug, du skal tage. Send den videre til den næste.</p>
-            <form id="dice-form" class="player-add game-add" novalidate>
-              <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
-              <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
-            </form>
-            <div class="spin2-players" id="dice-players"></div>
-            <div class="spin-wheel dice-stage">
-              <div class="die big-die" id="dice-die" role="img"></div>
+            <!-- Startside -->
+            <div class="game-setup" id="dice-setup">
+              <div class="setup-hero">
+                <img src="img/games/dice.webp" alt="">
+                <h1 data-i18n="dice.title">Terningespillet</h1>
+              </div>
+              <h2 class="section-title" data-i18n="game.players">Spillere</h2>
+              <form id="dice-form" class="player-add" novalidate>
+                <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
+                <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
+              </form>
+              <div class="player-list" id="dice-players"></div>
+              <button type="button" class="btn-primary setup-start" data-setup-start="dice" data-i18n="setup.start">Start</button>
             </div>
-            <div class="spin-card hidden" id="dice-card" aria-live="polite"></div>
-            <button type="button" class="btn-primary" id="dice-roll" data-i18n="dice.roll">Slå med terningen</button>
+            <!-- Selve spillet -->
+            <div class="hidden" id="dice-play">
+              <div class="spin-wheel dice-stage">
+                <div class="die big-die" id="dice-die" role="img"></div>
+              </div>
+              <div class="spin-card hidden" id="dice-card" aria-live="polite"></div>
+              <button type="button" class="btn-primary" id="dice-roll" data-i18n="dice.roll">Slå med terningen</button>
+              <button type="button" class="link-btn play-exit" data-setup-exit="dice" data-i18n="setup.exit">Afslut</button>
+            </div>
           </div>
 
           <!-- Weed Quiz -->
           <div class="view" data-view="quiz">
             <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
-            <h1 class="page-title">Weed Quiz</h1>
-            <div id="quiz-setup">
-              <p class="muted" data-i18n="quiz.help">10 spørgsmål om cannabis. Svarer du rigtigt, får du lov at tage et sug. Tilføj spillere, så går spørgsmålene på skift.</p>
+            <div class="game-setup" id="quiz-setup">
+              <div class="setup-hero">
+                <img src="img/games/quiz.webp" alt="">
+                <h1>Weed Quiz</h1>
+              </div>
+              <h2 class="section-title" data-i18n="game.players">Spillere</h2>
               <form id="quiz-form" class="player-add" novalidate>
                 <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
                 <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
               </form>
               <div class="player-list" id="quiz-players"></div>
-              <button type="button" class="btn-primary" id="quiz-start"></button>
+              <button type="button" class="btn-primary setup-start" id="quiz-start"></button>
             </div>
             <div class="quiz-box hidden" id="quiz-box"></div>
           </div>
@@ -6393,61 +6463,85 @@
           <!-- Double Trouble -->
           <div class="view" data-view="double">
             <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
-            <h1 class="page-title">Double Trouble</h1>
-            <p class="muted" data-i18n="dt.help">Tænd 2 joints. 🔥 går den ene vej rundt og 💚 den anden. Hver gang I sender videre, får begge, der holder en joint, et kort. Lander begge joints hos den samme, er det DOUBLE TROUBLE!</p>
-            <form id="dt-form" class="player-add" novalidate>
-              <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
-              <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
-            </form>
-            <div class="spin-wheel dt-circle" id="dt-circle">
-              <p class="dt-dir" id="dt-dir"></p>
-              <p class="spin-empty" id="dt-empty" data-i18n="dt.empty">Tilføj mindst 3 spillere</p>
+            <div class="game-setup" id="dt-setup">
+              <div class="setup-hero">
+                <img src="img/games/double.webp" alt="">
+                <h1>Double Trouble</h1>
+              </div>
+              <h2 class="section-title" data-i18n="game.players">Spillere</h2>
+              <form id="dt-form" class="player-add" novalidate>
+                <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
+                <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
+              </form>
+              <div class="player-list" id="dt-players"></div>
+              <button type="button" class="btn-primary setup-start" data-setup-start="double"></button>
             </div>
-            <div class="dt-card hidden" id="dt-card" aria-live="polite"></div>
-            <button type="button" class="btn-primary" id="dt-pass"></button>
-            <button type="button" class="link-btn dt-finish hidden" id="dt-finish" data-i18n="game.end">Afslut</button>
-            <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
+            <div class="hidden" id="dt-play">
+              <div class="spin-wheel dt-circle" id="dt-circle">
+                <p class="dt-dir" id="dt-dir"></p>
+              </div>
+              <div class="dt-card hidden" id="dt-card" aria-live="polite"></div>
+              <button type="button" class="btn-primary" id="dt-pass"></button>
+              <button type="button" class="link-btn dt-finish hidden" id="dt-finish" data-i18n="game.end">Afslut</button>
+            </div>
           </div>
 
-          <!-- Spin the Joint -->
+          <!-- Spin the Joint: vælg 1 (jointen vælger en spiller) eller 2 (jointen vælger straffen) -->
           <div class="view" data-view="spin">
             <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
-            <h1 class="page-title">Spin the Joint 1</h1>
-            <p class="muted" data-i18n="spin.help">Tilføj mindst 2 spillere og snur jointen. Den, den peger på, skal klare kortet. Tryk på et navn for at fjerne spilleren.</p>
-            <div class="seg spin-level" id="spin-level">
-              <button type="button" class="seg-btn" data-level="easy" data-i18n="spin.easy">Nem</button>
-              <button type="button" class="seg-btn active" data-level="hard" data-i18n="spin.hard">Svær</button>
-              <button type="button" class="seg-btn" data-level="impossible" data-i18n="spin.impossible">Umulig</button>
+            <div class="game-setup" id="spin-setup">
+              <div class="setup-hero">
+                <img src="img/games/spin2.webp" alt="">
+                <h1>Spin the Joint</h1>
+              </div>
+              <div class="mode-pick" id="spin-mode">
+                <button type="button" class="mode-card active" data-spin-mode="1">
+                  <img src="img/games/spin.webp" alt="">
+                  <strong>Spin the Joint 1</strong>
+                </button>
+                <button type="button" class="mode-card" data-spin-mode="2">
+                  <img src="img/games/spin2.webp" alt="">
+                  <strong>Spin the Joint 2</strong>
+                </button>
+              </div>
+              <div id="spin-level-box">
+                <div class="seg spin-level" id="spin-level">
+                  <button type="button" class="seg-btn" data-level="easy" data-i18n="spin.easy">Nem</button>
+                  <button type="button" class="seg-btn active" data-level="hard" data-i18n="spin.hard">Svær</button>
+                  <button type="button" class="seg-btn" data-level="impossible" data-i18n="spin.impossible">Umulig</button>
+                </div>
+                <p class="muted spin-level-help" id="spin-level-help"></p>
+              </div>
+              <h2 class="section-title" data-i18n="game.players">Spillere</h2>
+              <form id="spin-form" class="player-add" novalidate>
+                <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
+                <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
+              </form>
+              <div class="player-list" id="spin-setup-players"></div>
+              <button type="button" class="btn-primary setup-start" data-setup-start="spin" id="spin-start"></button>
             </div>
-            <p class="muted spin-level-help" id="spin-level-help"></p>
-            <form id="spin-form" class="player-add" novalidate>
-              <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
-              <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
-            </form>
-            <div class="spin-wheel" id="spin-wheel">
-              <img class="spin-joint" id="spin-joint" src="joint.webp" alt="" draggable="false">
-              <p class="spin-empty" id="spin-empty" data-i18n="spin.empty">Tilføj spillere for at starte</p>
-            </div>
-            <div class="spin-card hidden" id="spin-card" aria-live="polite"></div>
-            <button type="button" class="btn-primary" id="spin-btn" data-i18n="spin.spin">Snur jointen</button>
-            <button type="button" class="btn-plain spin-end hidden" id="spin-end" data-i18n="spin.end">Slut spillet</button>
-          </div>
 
-          <!-- Spin the Joint 2: jointen lander på en straf -->
-          <div class="view" data-view="spin2">
-            <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
-            <h1 class="page-title">Spin the Joint 2</h1>
-            <form id="spin2-form" class="player-add game-add" novalidate>
-              <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
-              <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
-            </form>
-            <div class="spin2-players" id="spin2-players"></div>
-            <div class="spin-wheel spin2-wheel" id="spin2-wheel">
-              <svg class="spin-board" id="spin2-board" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
-              <img class="spin-joint" id="spin2-joint" src="joint.webp" alt="" draggable="false">
+            <!-- Spin the Joint 1: jointen vælger en spiller -->
+            <div class="hidden" id="spin1-play">
+              <div class="spin-wheel" id="spin-wheel">
+                <img class="spin-joint" id="spin-joint" src="joint.webp" alt="" draggable="false">
+              </div>
+              <div class="spin-card hidden" id="spin-card" aria-live="polite"></div>
+              <button type="button" class="btn-primary" id="spin-btn" data-i18n="spin.spin">Snur jointen</button>
+              <button type="button" class="btn-plain spin-end hidden" id="spin-end" data-i18n="spin.end">Slut spillet</button>
             </div>
-            <div class="spin-card hidden" id="spin2-card" aria-live="polite"></div>
-            <button type="button" class="btn-primary" id="spin2-btn" data-i18n="spin.spin">Snur jointen</button>
+
+            <!-- Spin the Joint 2: jointen lander på en straf -->
+            <div class="hidden" id="spin2-play">
+              <div class="spin2-players" id="spin2-players"></div>
+              <div class="spin-wheel spin2-wheel" id="spin2-wheel">
+                <svg class="spin-board" id="spin2-board" viewBox="-100 -100 200 200" aria-hidden="true"></svg>
+                <img class="spin-joint" id="spin2-joint" src="joint.webp" alt="" draggable="false">
+              </div>
+              <div class="spin-card hidden" id="spin2-card" aria-live="polite"></div>
+              <button type="button" class="btn-primary" id="spin2-btn" data-i18n="spin.spin">Snur jointen</button>
+              <button type="button" class="link-btn play-exit" data-setup-exit="spin" data-i18n="setup.exit">Afslut</button>
+            </div>
           </div>
 
           <!-- Game of Joints (brætspillet) -->
@@ -6456,10 +6550,9 @@
 
             <!-- Vælg spillere og farver -->
             <div id="game-setup">
-              <div class="game-hero">
-                <span class="tile-img" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="10" height="14" rx="2" transform="rotate(-10 8.5 13.5)"/><rect x="10.5" y="3.5" width="10" height="14" rx="2" transform="rotate(10 15.5 10.5)"/></svg></span>
+              <div class="setup-hero">
+                <img src="img/games/goj.webp" alt="">
                 <h1>Game of Joints</h1>
-                <p class="muted" data-i18n="game.tagline">Brætspillet for dig og vennerne</p>
               </div>
               <h2 class="section-title" data-i18n="game.players">Spillere</h2>
               <form id="player-form" novalidate>
@@ -6477,7 +6570,6 @@
                 <button type="button" class="seg-btn" data-board-mode="custom" data-i18n="build.custom">Byg dit eget</button>
               </div>
               <div id="board-builder" class="hidden">
-                <p class="muted build-help"><span id="custom-count"></span> · <span data-i18n="build.help">Vælg hvor mange af hvert felt. Er der for få, gentages de.</span></p>
                 <div class="build-actions">
                   <button type="button" class="mini-btn" id="custom-fill" data-i18n="build.fill">🎲 Fyld resten tilfældigt</button>
                   <button type="button" class="mini-btn" id="custom-clear" data-i18n="build.clear">Ryd</button>
@@ -6485,8 +6577,7 @@
                 <div class="build-list" id="custom-tiles"></div>
               </div>
               <p class="error" id="game-error" aria-live="polite"></p>
-              <button type="button" class="btn-primary" id="game-start" data-i18n="game.start">Start spillet</button>
-              <p class="game-note" data-i18n="game.note">Alle kan altid sige pas. Husk vand og snacks 💧</p>
+              <button type="button" class="btn-primary setup-start" id="game-start" data-i18n="game.start">Start spillet</button>
             </div>
           </div>
 
@@ -7492,6 +7583,11 @@
         "game.add": "Tilføj",
         "game.remove": "Fjern spiller",
         "game.noPlayers": "Skriv et navn, vælg en farve og tryk Tilføj. I skal være mindst 2.",
+        "setup.start": "Start",
+        "setup.exit": "Afslut",
+        "setup.min2": "Start (mindst 2 spillere)",
+        "dt.startMin": "Start (mindst 3 spillere)",
+        "chess.challengeFriend": "Udfordr en ven",
         "game.duplicate": "Den spiller er der allerede",
         "game.max": "Alle farver er taget",
         "game.needPlayers": "I skal være mindst 2 spillere",
@@ -8259,6 +8355,11 @@
         "game.add": "Add",
         "game.remove": "Remove player",
         "game.noPlayers": "Type a name, pick a colour and tap Add. You need at least 2 players.",
+        "setup.start": "Start",
+        "setup.exit": "Quit",
+        "setup.min2": "Start (at least 2 players)",
+        "dt.startMin": "Start (at least 3 players)",
+        "chess.challengeFriend": "Challenge a friend",
         "game.duplicate": "That player is already added",
         "game.max": "All colours are taken",
         "game.needPlayers": "You need at least 2 players",
@@ -8806,6 +8907,9 @@
       renderPlayers();
       renderGame();
       renderPause();
+      renderSpinSetup();
+      renderDoubleCircle();
+      renderQuizPlayers();
       if (currentUserKey()) {
         renderProfile();
         renderFriends();
@@ -12739,7 +12843,7 @@
               ${esc(p.name)}
               <button type="button" data-remove-player="${i}" aria-label="${t("game.remove")}">✕</button>
             </span>`).join("")
-        : `<p class="empty-note">${t("game.noPlayers")}</p>`;
+        : "";
       renderColorPick();
     }
 
@@ -12940,7 +13044,11 @@
         el.textContent = `${dtStarted && i === dtA ? "🔥 " : ""}${dtStarted && i === dtB ? "💚 " : ""}${p.name}`;
         dtCircle.appendChild(el);
       });
-      document.getElementById("dt-empty").classList.toggle("hidden", n > 0);
+      document.getElementById("dt-players").innerHTML = dtPlayers.map((p, i) => `
+        <span class="player-chip">${esc(p.name)}<button type="button" data-dt-remove="${i}" aria-label="${t("game.remove")}">✕</button></span>`).join("");
+      const dtStart = document.querySelector('[data-setup-start="double"]');
+      dtStart.disabled = n < 3;
+      dtStart.textContent = t(n < 3 ? "dt.startMin" : "setup.start");
       document.getElementById("dt-dir").textContent = dtStarted ? t(dtDir === 1 ? "dt.dirA" : "dt.dirB") : "";
       dtPass.disabled = n < 3;
       dtPass.textContent = t(dtStarted ? "dt.pass" : "dt.start");
@@ -12957,11 +13065,11 @@
       renderDoubleCircle();
     });
 
-    // Tryk på et navn for at fjerne spilleren (før spillet går i gang)
-    dtCircle.addEventListener("click", (e) => {
-      const el = e.target.closest(".spin-name");
-      if (!el || dtStarted) return;
-      dtPlayers.splice(Number(el.dataset.index), 1);
+    // Tryk på ✕ for at fjerne spilleren (før spillet går i gang)
+    document.getElementById("dt-players").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-dt-remove]");
+      if (!btn || dtStarted) return;
+      dtPlayers.splice(Number(btn.dataset.dtRemove), 1);
       renderDoubleCircle();
     });
 
@@ -13056,6 +13164,7 @@
         dtPlayers.forEach((p) => { p.points = 0; });
         dtCard.classList.add("hidden");
         renderDoubleCircle();
+        setPlaying("double", null);
       }
     });
 
@@ -13074,7 +13183,7 @@
 
     function renderDicePlayers() {
       document.getElementById("dice-players").innerHTML = dicePlayers.map((name, i) => `
-        <button type="button" class="chip" data-remove="${i}" title="${t("game.remove")}">${esc(name)}</button>`).join("");
+        <span class="player-chip">${esc(name)}<button type="button" data-remove="${i}" aria-label="${t("game.remove")}">✕</button></span>`).join("");
     }
 
     document.getElementById("dice-form").addEventListener("submit", (e) => {
@@ -13177,7 +13286,6 @@
         el.title = t("game.remove");
         spinCircle.appendChild(el);
       });
-      document.getElementById("spin-empty").classList.toggle("hidden", n > 0);
       document.getElementById("spin-end").classList.toggle("hidden", n < 2);
       spinBtn.disabled = n < 2;
     }
@@ -13204,6 +13312,8 @@
       if (e.target.closest("[data-spin-new]")) {
         spinPassed = [];
         spinCard.classList.add("hidden");
+        setPlaying("spin", null);
+        renderSpinSetup();
         renderSpin();
       }
       const done = e.target.closest("[data-owed-done]");
@@ -13249,6 +13359,7 @@
       input.value = "";
       spinCard.classList.add("hidden");
       renderSpin();
+      renderSpinSetup();
     });
 
     // Tryk på et navn for at fjerne spilleren
@@ -13258,6 +13369,37 @@
       spinPlayers.splice(Number(el.dataset.index), 1);
       spinCard.classList.add("hidden");
       renderSpin();
+      renderSpinSetup();
+    });
+
+    // ---------- Startsiden: vælg Spin the Joint 1 eller 2 ----------
+    let spinMode = "1";
+
+    function renderSpinSetup() {
+      document.querySelectorAll("[data-spin-mode]").forEach((b) => b.classList.toggle("active", b.dataset.spinMode === spinMode));
+      // Sværhedsgraden bruges kun i Spin the Joint 1
+      document.getElementById("spin-level-box").classList.toggle("hidden", spinMode !== "1");
+      document.getElementById("spin-setup-players").innerHTML = spinPlayers.map((name, i) => `
+        <span class="player-chip">${esc(name)}<button type="button" data-spin-remove="${i}" aria-label="${t("game.remove")}">✕</button></span>`).join("");
+      const start = document.getElementById("spin-start");
+      const tooFew = spinMode === "1" && spinPlayers.length < 2;
+      start.disabled = tooFew;
+      start.textContent = t(tooFew ? "setup.min2" : "setup.start");
+    }
+
+    document.getElementById("spin-mode").addEventListener("click", (e) => {
+      const card = e.target.closest("[data-spin-mode]");
+      if (!card) return;
+      spinMode = card.dataset.spinMode;
+      renderSpinSetup();
+    });
+
+    document.getElementById("spin-setup-players").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-spin-remove]");
+      if (!btn) return;
+      spinPlayers.splice(Number(btn.dataset.spinRemove), 1);
+      renderSpin();
+      renderSpinSetup();
     });
 
     // Timer på straffe som 4×12 og 3×10×2 (samme som på brættet)
@@ -13396,16 +13538,6 @@
         <button type="button" class="chip" data-remove="${i}" title="${t("game.remove")}">${esc(name)}</button>`).join("");
     }
 
-    document.getElementById("spin2-form").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const input = e.target.elements.player;
-      const name = input.value.trim();
-      if (!name || spin2Players.length >= 10) return;
-      spin2Players.push(name);
-      input.value = "";
-      renderSpin2();
-    });
-
     // Tryk på et navn for at fjerne spilleren
     document.getElementById("spin2-players").addEventListener("click", (e) => {
       const chip = e.target.closest("[data-remove]");
@@ -13454,6 +13586,65 @@
     });
 
     shuffleSpin2();
+
+    // ==========================================================
+    // STARTSIDER: Start viser selve spillet, Afslut går tilbage
+    // ==========================================================
+    const SETUP_PARTS = {
+      dice: { setup: "dice-setup", play: ["dice-play"] },
+      double: { setup: "dt-setup", play: ["dt-play"] },
+      spin: { setup: "spin-setup", play: ["spin1-play", "spin2-play"] },
+    };
+
+    function setPlaying(game, playId) {
+      const parts = SETUP_PARTS[game];
+      document.getElementById(parts.setup).classList.toggle("hidden", !!playId);
+      parts.play.forEach((id) => document.getElementById(id).classList.toggle("hidden", id !== playId));
+      window.scrollTo(0, 0);
+    }
+
+    handbookPage.addEventListener("click", (e) => {
+      const start = e.target.closest("[data-setup-start]");
+      if (start && !start.disabled) {
+        const game = start.dataset.setupStart;
+        if (game === "dice") {
+          diceCard.classList.add("hidden");
+          diceTurn = 0;
+          setPlaying("dice", "dice-play");
+        }
+        if (game === "double" && dtPlayers.length >= 3) {
+          setPlaying("double", "dt-play");
+          dtPass.click(); // tænder begge joints og trækker de første kort
+        }
+        if (game === "spin" && spinMode === "1" && spinPlayers.length >= 2) {
+          spinCard.classList.add("hidden");
+          renderSpin();
+          setPlaying("spin", "spin1-play");
+        }
+        if (game === "spin" && spinMode === "2") {
+          spin2Players.splice(0, spin2Players.length, ...spinPlayers);
+          spin2Turn = 0;
+          shuffleSpin2();
+          setPlaying("spin", "spin2-play");
+        }
+        return;
+      }
+      const exit = e.target.closest("[data-setup-exit]");
+      if (!exit) return;
+      const game = exit.dataset.setupExit;
+      if (game === "dice" && diceBtn.disabled) return;
+      if (game === "spin") {
+        if (spin2Btn.dataset.spinning) return;
+        timerToken++;
+        // Spillere, der er fjernet undervejs, er også væk på startsiden
+        if (spinMode === "2") spinPlayers.splice(0, spinPlayers.length, ...spin2Players);
+        renderSpin();
+        renderSpinSetup();
+      }
+      setPlaying(game, null);
+    });
+
+    renderSpinSetup();
 
     // ==========================================================
     // WEED CHESS: skak mod en ven på hver sin telefon, med straffe
@@ -17192,7 +17383,6 @@
       if (boardMode !== "custom") return;
       const counts = {};
       customTiles.forEach((id) => { counts[id] = (counts[id] || 0) + 1; });
-      document.getElementById("custom-count").textContent = t("build.count", { n: customTiles.length, total: BOARD_SIZE - 2 });
       document.getElementById("custom-tiles").innerHTML = BOARD_TILE_IDS.map((id) => `
         <div class="build-tile">
           <span class="build-icon">${TILES[id].icon}</span>
