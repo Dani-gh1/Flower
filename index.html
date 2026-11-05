@@ -14973,7 +14973,7 @@
       const cat = MM_CATS.find((c) => c.id === mmCat);
       try {
         if (!mmTop) mmTop = await mmJson(`${MM_TOP_URL}?d=${new Date().toISOString().slice(0, 10)}`, 2);
-        const list = (mmTop[cat.id] || []).map((x) => ({ title: x.t, artist: x.a, art: x.art, preview: x.p }));
+        const list = (mmTop[cat.id] || []).map((x) => ({ title: x.t, artist: x.a, art: x.art, preview: x.p, level: x.l }));
         if (list.length) return list;
       } catch {}
       // Reserve, hvis dagens lister ikke kan hentes: iTunes' hitliste
@@ -15059,7 +15059,9 @@
       }
       // Hvor svær sangen er: listerne står med de mest kendte først,
       // så sange langt nede er sværere at gætte og giver flere sug
-      mmBase = mmBase.map((x, i, all) => ({ ...x, level: 1 + Math.min(2, Math.floor((i / all.length) * 3)) }));
+      // Nogle sange har en fast sværhedsgrad; resten får den efter placering
+      const ranked = mmBase.filter((x) => !x.level);
+      mmBase = mmBase.map((x) => (x.level ? x : { ...x, level: 1 + Math.min(2, Math.floor((ranked.indexOf(x) / ranked.length) * 3)) }));
       mmSeen.clear();
       mmPool = shuffle([...mmBase]);
       mmShow("mm2-play");
