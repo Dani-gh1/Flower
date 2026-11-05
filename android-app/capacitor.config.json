@@ -3,9 +3,9 @@
   "appName": "Flower",
   "webDir": "www",
   "server": {
-    "url": "https://flowersmokeapp.github.io/Flowers/",
+    "url": "https://dani-gh1.github.io/Flowers/",
     "androidScheme": "https",
-    "allowNavigation": ["flowersmokeapp.github.io"]
+    "allowNavigation": ["dani-gh1.github.io"]
   },
   "android": {
     "backgroundColor": "#000000"

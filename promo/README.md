@@ -10,7 +10,7 @@ AI'en poster ikke selv: den lægger kun opslag i køen, og dit workflow poster d
 
 ## Om appen
 - **Flower**: en social app for folk, der ryger cannabis, på dansk og engelsk.
-- Link: https://flowersmokeapp.github.io/Flowers/ (download-side: https://flowersmokeapp.github.io/Flowers/download/)
+- Link: https://dani-gh1.github.io/Flowers/ (download-side: https://dani-gh1.github.io/Flowers/download/)
 - Det fede ved appen:
   - **Spil**: Game of Joints (brætspil), Spin the Joint 1 (Nem, Svær, Umulig) og 2 (lykkehjul med straffe), Terningespillet, Double Trouble, Weed Quiz, Weed Chess, Blackjack (indsatsen er hits) og Musical Marijuana (tag et sug, hver gang ordet bliver sunget, eller gæt sangen).
   - **Smoke spots** på et kort, med billeder og bedømmelser.
