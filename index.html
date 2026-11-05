@@ -13368,7 +13368,6 @@
         da: { name: "Slå tilbage", short: "Slå tilbage", desc: "Slå med den røde terning og ryk det antal felter tilbage." },
         en: { name: "Roll back", short: "Roll back", desc: "Roll the red die and move back that many spaces." },
       },
-      pass: { icon: "🤝", da: { name: "Pass the spliff", short: "Pass" }, en: { name: "Pass the spliff", short: "Pass" } },
       // Kun i Spin the Joint 1 på "Umulig"
       lungTornado: {
         icon: "🌪️",
@@ -13505,7 +13504,7 @@
     };
 
     // Brættet: første og sidste række ligger fast, de to midterste blandes
-    const BOARD_FIRST = ["s1", "s2", "s3", "s4", "s5", "pass", "back", "bobLong"];
+    const BOARD_FIRST = ["s1", "s2", "s3", "s4", "s5", "bobShort", "back", "bobLong"];
     const BOARD_MIDDLE = [
       "lung", "lung2", "lung3", "bobShort", "bobLong", "bobLong", "tornado", "x412", "x412",
       "x510", "x510", "x3102", "diy", "diy2", "chimney", "chimney", "lung2", "tornado",
@@ -13993,7 +13992,7 @@
     let spinAngle = 0;
     let lastCard = null;
     // Felterne fra Game of Joints (uden dem, der handler om at rykke på brættet)
-    const SPIN_TILES = ["s1", "s2", "s3", "s4", "s5", "pass", "bobLong", "bobShort", "lung", "lung2", "lung3",
+    const SPIN_TILES = ["s1", "s2", "s3", "s4", "s5", "bobLong", "bobShort", "lung", "lung2", "lung3",
       "tornado", "x412", "x510", "x3102", "diy", "diy2", "chimney", "turtle"];
     let spinRecorded = false;
 
@@ -14245,7 +14244,7 @@
       s1: "#2f7d4f", s2: "#2a7048", s3: "#256341", s4: "#205739", s5: "#1b4a31",
       turtle: "#4a8a3c", tornado: "#5b6b7d", x510: "#c2453b", x412: "#b03a46", x3102: "#d9662b",
       bobLong: "#c9a227", bobShort: "#2e8b57", lung: "#c25b7a", lung2: "#b04d6c", lung3: "#9c4060",
-      diy: "#d4a017", diy2: "#b8860b", chimney: "#6b6f76", pass: "#c27a35",
+      diy: "#d4a017", diy2: "#b8860b", chimney: "#6b6f76",
     };
 
     // Lykkehjulet: et farvet felt pr. straf, så man tydeligt kan se, hvor jointen lander
@@ -19137,7 +19136,7 @@
     // ==========================================================
     const CUSTOM_KEY = "customBoard";
     const BOARD_TILE_IDS = ["s1", "s2", "s3", "s4", "s5", "lung", "lung2", "lung3", "diy", "diy2", "chimney", "bobShort", "bobLong",
-      "tornado", "x412", "x510", "x3102", "turtle", "stinging", "pass", "back", "joker", "boost", "waterfall", "death"];
+      "tornado", "x412", "x510", "x3102", "turtle", "stinging", "back", "joker", "boost", "waterfall", "death"];
     let boardMode = "classic";
     let customTiles = [];
 
