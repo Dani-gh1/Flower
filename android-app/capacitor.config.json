@@ -3,7 +3,7 @@
   "appName": "Flower",
   "webDir": "www",
   "server": {
-    "url": "https://dani-gh1.github.io/Flowers/",
+    "url": "https://dani-gh1.github.io/Flower/",
     "androidScheme": "https",
     "allowNavigation": ["dani-gh1.github.io"]
   },
