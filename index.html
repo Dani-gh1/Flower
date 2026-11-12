@@ -8510,7 +8510,7 @@
         "bm.sec": "{n} sek",
         "bm.readyHint": "Tryk Start, når du begynder at suge, og Stop, når du slipper. Uret bliver skjult efter 1 sekund, så ram tiden i blinde.",
         "bm.runningHint": "Sug … og stop, når du tror, tiden er gået",
-        "bm.perfect": "🎯 Perfekt! Du ramte {got} af {target}. Vælg en, der tager 3 sek",
+        "bm.perfect": "🎯 Perfekt! Du ramte {got} af {target}. Vælg en, der tager 5 sek",
         "bm.short": "For kort! Du suede {got} af {target}. Tag {extra} sek mere",
         "bm.long": "For langt! Du suede {got} af {target}. Ingen straf, du fik allerede ekstra 😮‍💨",
         "bm.special.all": "👥 Alle tager {n} sek!",
@@ -9352,7 +9352,7 @@
         "bm.sec": "{n} sec",
         "bm.readyHint": "Tap Start when you begin your hit and Stop when you let go. The clock hides after 1 second, so hit the time blind.",
         "bm.runningHint": "Pull … and stop when you think the time is up",
-        "bm.perfect": "🎯 Perfect! You hit {got} of {target}. Pick someone to take 3 sec",
+        "bm.perfect": "🎯 Perfect! You hit {got} of {target}. Pick someone to take 5 sec",
         "bm.short": "Too short! You pulled {got} of {target}. Take {extra} sec more",
         "bm.long": "Too long! You pulled {got} of {target}. No penalty, you already got extra 😮‍💨",
         "bm.special.all": "👥 Everyone takes {n} sec!",
@@ -15667,8 +15667,8 @@
     // Rammer man inden for et halvt sekund, deler man sug ud; er man for
     // kort, tager man resten bagefter.
     // ==========================================================
-    // Sekunder og hvor ofte de kommer (2–6 sek er almindeligt, 9–10 er sjældent)
-    const BM_SECONDS = [[2, 10], [3, 16], [4, 18], [5, 18], [6, 14], [7, 10], [8, 7], [9, 4], [10, 3]];
+    // Sekunder og hvor ofte de kommer (5–9 sek er almindeligt, 13–15 er sjældent)
+    const BM_SECONDS = [[3, 6], [4, 9], [5, 12], [6, 14], [7, 14], [8, 12], [9, 10], [10, 8], [11, 5], [12, 4], [13, 3], [14, 2], [15, 1]];
     const BM_SPECIALS = ["all", "give", "double", "free"];
     const BM_SPECIAL_CHANCE = 0.15;
     const bmPlayers = [];
@@ -15749,7 +15749,7 @@
       renderBm();
       const el = document.getElementById("bm-seconds");
       el.className = "bm-seconds rolling";
-      const roll = setInterval(() => { el.textContent = t("bm.sec", { n: 2 + Math.floor(Math.random() * 9) }); }, 70);
+      const roll = setInterval(() => { el.textContent = t("bm.sec", { n: 3 + Math.floor(Math.random() * 13) }); }, 70);
       setTimeout(() => {
         clearInterval(roll);
         bmTarget = bmPickSeconds();
@@ -15758,7 +15758,7 @@
         vibrate(60);
         const name = bmNames()[bmTurn % bmNames().length];
         const special = bmRollSpecial();
-        if (special === "all") bmTarget = 3;
+        if (special === "all") bmTarget = 5;
         if (special) {
           el.textContent = special === "free" ? "🍀" : t("bm.sec", { n: bmTarget });
           bmShowCard(esc(t("bm.special." + special, { n: bmTarget, name })));
