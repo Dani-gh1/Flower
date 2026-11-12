@@ -2200,6 +2200,163 @@
       border-color: rgba(255, 90, 95, 0.5);
     }
 
+    /* Bong Master */
+    .bm-turn {
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .bm-stage {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .bm-seconds {
+      min-width: 120px;
+      margin-bottom: 4px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      font-size: 34px;
+      font-weight: 800;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+    .bm-seconds.rolling {
+      color: var(--muted);
+    }
+    .bm-seconds.set {
+      border-color: var(--accent);
+      color: var(--accent);
+      animation: mmPop 0.5s ease;
+    }
+    .bm-bong {
+      width: min(52vw, 200px);
+      height: auto;
+      overflow: visible;
+    }
+    .bm-glass {
+      fill: rgba(255, 255, 255, 0.05);
+      stroke: rgba(255, 255, 255, 0.6);
+      stroke-width: 3;
+    }
+    .bm-water {
+      fill: rgba(92, 184, 125, 0.45);
+    }
+    .bm-stem {
+      stroke: rgba(255, 255, 255, 0.55);
+      stroke-width: 6;
+      stroke-linecap: round;
+    }
+    .bm-bowl {
+      fill: #2a7f47;
+      stroke: rgba(255, 255, 255, 0.6);
+      stroke-width: 2;
+    }
+    .bm-smoke,
+    .bm-smoke-base {
+      fill: rgba(235, 240, 235, 0.75);
+      opacity: 0;
+      transition: opacity 0.6s;
+    }
+    .bm-smoke {
+      transform: translateY(150px);
+      transition: transform 1s ease-out, opacity 0.6s;
+    }
+    .bm-bubble {
+      fill: rgba(255, 255, 255, 0.7);
+      opacity: 0;
+    }
+    .bm-bong.running .bm-smoke,
+    .bm-bong.running .bm-smoke-base {
+      opacity: 1;
+      animation: bmSwirl 1.6s ease-in-out infinite alternate;
+    }
+    .bm-bong.running .bm-smoke {
+      transform: translateY(0);
+    }
+    .bm-bong.running .bm-bubble {
+      animation: bmBubble 0.9s ease-in infinite;
+    }
+    .bm-bong.running .b2 { animation-delay: 0.25s; }
+    .bm-bong.running .b3 { animation-delay: 0.5s; }
+    .bm-bong.running .b4 { animation-delay: 0.7s; }
+    @keyframes bmBubble {
+      0% { opacity: 0; transform: translateY(0); }
+      20% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-40px); }
+    }
+    @keyframes bmSwirl {
+      from { fill: rgba(235, 240, 235, 0.6); }
+      to { fill: rgba(235, 240, 235, 0.9); }
+    }
+    .bm-clock {
+      position: absolute;
+      top: 46%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 4px 14px;
+      border-radius: 14px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 30px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+    .bm-clock.blind {
+      animation: bmBlink 1s ease-in-out infinite;
+    }
+    @keyframes bmBlink {
+      50% { opacity: 0.4; }
+    }
+    .bm-card p:first-child {
+      font-size: 19px;
+    }
+    .bm-card.perfect {
+      border-color: var(--accent);
+    }
+    .bm-card.short {
+      border-color: rgba(255, 90, 95, 0.6);
+    }
+    .bm-scores {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+    }
+    .bm-scores small {
+      width: 100%;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .bm-score {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .bm-score.turn {
+      border-color: var(--accent);
+    }
+    #bm-btn.bm-stop {
+      background: linear-gradient(180deg, #e0484f, #b8323a);
+      box-shadow: 0 8px 22px rgba(224, 72, 79, 0.3);
+    }
+
     /* Blackjack */
     .bj-table {
       margin-bottom: 14px;
@@ -6924,6 +7081,10 @@
                 <img src="img/games/musical.webp" alt="" loading="lazy">
                 <strong>Musical Marijuana</strong>
               </button>
+              <button class="game-card" data-go="bong">
+                <img src="img/games/bong.webp" alt="" loading="lazy">
+                <strong>Bong Master</strong>
+              </button>
               <button class="game-card" data-go="blackjack">
                 <img src="img/games/blackjack.webp" alt="" loading="lazy">
                 <strong>Blackjack</strong>
@@ -7191,6 +7352,58 @@
               </div>
               <div class="bj-controls" id="bj-controls"></div>
               <button type="button" class="link-btn play-exit" id="bj-exit" data-i18n="setup.exit">Afslut</button>
+            </div>
+          </div>
+
+          <!-- Bong Master: bongen bestemmer sekunderne, og man skal ramme dem i blinde -->
+          <div class="view" data-view="bong">
+            <button class="back" data-back data-i18n="back.games">‹ Games of Joints</button>
+            <div class="game-setup" id="bm-setup">
+              <div class="setup-hero">
+                <img src="img/games/bong.webp" alt="">
+                <h1>Bong Master</h1>
+              </div>
+              <h2 class="section-title" data-i18n="game.players">Spillere</h2>
+              <form id="bm-form" class="player-add" novalidate>
+                <input type="text" name="player" maxlength="12" autocomplete="off" data-i18n-ph="game.addPh" placeholder="Navn på spiller">
+                <button type="submit" class="mini-btn primary" data-i18n="game.add">Tilføj</button>
+              </form>
+              <div class="player-list" id="bm-players"></div>
+              <button type="button" class="btn-primary setup-start" id="bm-start" data-i18n="setup.start">Start</button>
+            </div>
+            <div class="hidden" id="bm-play">
+              <p class="bm-turn" id="bm-turn"></p>
+              <div class="bm-stage">
+                <div class="bm-seconds" id="bm-seconds">?</div>
+                <svg class="bm-bong" id="bm-bong" viewBox="0 0 200 300" aria-hidden="true">
+                  <defs>
+                    <clipPath id="bm-clip-tube"><rect x="82" y="22" width="36" height="150" rx="5"/></clipPath>
+                    <clipPath id="bm-clip-base"><path d="M82 168 L44 266 Q42 282 58 282 L142 282 Q158 282 156 266 L118 168 Z"/></clipPath>
+                  </defs>
+                  <g clip-path="url(#bm-clip-base)">
+                    <rect class="bm-water" x="30" y="226" width="140" height="60"/>
+                    <circle class="bm-bubble b1" cx="92" cy="270" r="4"/>
+                    <circle class="bm-bubble b2" cx="104" cy="276" r="3"/>
+                    <circle class="bm-bubble b3" cx="112" cy="268" r="5"/>
+                    <circle class="bm-bubble b4" cx="98" cy="262" r="2.5"/>
+                    <rect class="bm-smoke-base" x="30" y="168" width="140" height="58"/>
+                  </g>
+                  <g clip-path="url(#bm-clip-tube)">
+                    <rect class="bm-smoke" x="80" y="22" width="40" height="150"/>
+                  </g>
+                  <rect class="bm-glass" x="82" y="22" width="36" height="150" rx="5"/>
+                  <path class="bm-glass" d="M82 168 L44 266 Q42 282 58 282 L142 282 Q158 282 156 266 L118 168"/>
+                  <ellipse class="bm-glass" cx="100" cy="22" rx="20" ry="5"/>
+                  <line class="bm-stem" x1="104" y1="258" x2="146" y2="214"/>
+                  <path class="bm-bowl" d="M138 214 L158 204 Q164 214 156 222 Z"/>
+                </svg>
+                <div class="bm-clock hidden" id="bm-clock"></div>
+              </div>
+              <div class="spin-card bm-card hidden" id="bm-card" aria-live="polite"></div>
+              <button type="button" class="btn-primary" id="bm-btn"></button>
+              <p class="mm-hint" id="bm-hint"></p>
+              <div class="bm-scores" id="bm-scores"></div>
+              <button type="button" class="link-btn play-exit" id="bm-exit" data-i18n="setup.exit">Afslut</button>
             </div>
           </div>
 
@@ -8287,6 +8500,24 @@
         "bj.win": "Vundet! Del {n} hits ud",
         "bj.lose": "Tabt: tag {n} hits",
         "bj.push": "Uafgjort",
+        "bm.turn": "Tur: {name}",
+        "bm.you": "Dig",
+        "bm.draw": "🎲 Træk sekunder",
+        "bm.drawing": "Bongen bestemmer …",
+        "bm.start": "Start sug",
+        "bm.stop": "Stop",
+        "bm.next": "Næste spiller",
+        "bm.sec": "{n} sek",
+        "bm.readyHint": "Tryk Start, når du begynder at suge, og Stop, når du slipper. Uret bliver skjult efter 1 sekund, så ram tiden i blinde.",
+        "bm.runningHint": "Sug … og stop, når du tror, tiden er gået",
+        "bm.perfect": "🎯 Perfekt! Du ramte {got} af {target}. Vælg en, der tager 3 sek",
+        "bm.short": "For kort! Du suede {got} af {target}. Tag {extra} sek mere",
+        "bm.long": "For langt! Du suede {got} af {target}. Ingen straf, du fik allerede ekstra 😮‍💨",
+        "bm.special.all": "👥 Alle tager {n} sek!",
+        "bm.special.give": "🎁 Giv væk! Vælg en, der skal tage {n} sek. Den valgte styrer uret",
+        "bm.special.double": "🔁 Dobbelt bong! {n} sek nu og {n} sek igen bagefter",
+        "bm.special.free": "🍀 Fri! Ingen bong til dig denne gang",
+        "bm.scores": "🎯 Perfekte sug",
         "setup.min2": "Start (mindst 2 spillere)",
         "dt.startMin": "Start (mindst 3 spillere)",
         "chess.challengeFriend": "Udfordr en ven",
@@ -9111,6 +9342,24 @@
         "bj.win": "You won! Hand out {n} hits",
         "bj.lose": "You lost: take {n} hits",
         "bj.push": "Push",
+        "bm.turn": "Turn: {name}",
+        "bm.you": "You",
+        "bm.draw": "🎲 Draw seconds",
+        "bm.drawing": "The bong decides …",
+        "bm.start": "Start hit",
+        "bm.stop": "Stop",
+        "bm.next": "Next player",
+        "bm.sec": "{n} sec",
+        "bm.readyHint": "Tap Start when you begin your hit and Stop when you let go. The clock hides after 1 second, so hit the time blind.",
+        "bm.runningHint": "Pull … and stop when you think the time is up",
+        "bm.perfect": "🎯 Perfect! You hit {got} of {target}. Pick someone to take 3 sec",
+        "bm.short": "Too short! You pulled {got} of {target}. Take {extra} sec more",
+        "bm.long": "Too long! You pulled {got} of {target}. No penalty, you already got extra 😮‍💨",
+        "bm.special.all": "👥 Everyone takes {n} sec!",
+        "bm.special.give": "🎁 Give it away! Pick someone to take {n} sec. They run the clock",
+        "bm.special.double": "🔁 Double bong! {n} sec now and {n} sec again after",
+        "bm.special.free": "🍀 Free! No bong for you this time",
+        "bm.scores": "🎯 Perfect hits",
         "setup.min2": "Start (at least 2 players)",
         "dt.startMin": "Start (at least 3 players)",
         "chess.challengeFriend": "Challenge a friend",
@@ -15412,6 +15661,199 @@
     });
 
     // ==========================================================
+    // BONG MASTER: bongen bestemmer, hvor mange sekunder man skal suge.
+    // Man trykker Start, når man begynder, og Stop, når man slipper. Uret
+    // bliver skjult efter 1 sekund, så man skal ramme tiden i blinde.
+    // Rammer man inden for et halvt sekund, deler man sug ud; er man for
+    // kort, tager man resten bagefter.
+    // ==========================================================
+    // Sekunder og hvor ofte de kommer (2–6 sek er almindeligt, 9–10 er sjældent)
+    const BM_SECONDS = [[2, 10], [3, 16], [4, 18], [5, 18], [6, 14], [7, 10], [8, 7], [9, 4], [10, 3]];
+    const BM_SPECIALS = ["all", "give", "double", "free"];
+    const BM_SPECIAL_CHANCE = 0.15;
+    const bmPlayers = [];
+    let bmTurn = 0;
+    let bmTarget = 0;
+    let bmPhase = "draw";   // draw | drawing | ready | running | result
+    let bmStartAt = 0;
+    let bmLoop = 0;
+    let bmScores = {};
+    let bmRecorded = false;
+
+    const bmNames = () => (bmPlayers.length ? bmPlayers : [t("bm.you")]);
+    const bmFmt = (sec) => (lang === "en" ? sec.toFixed(1) : sec.toFixed(1).replace(".", ","));
+
+    function bmPickSeconds() {
+      const total = BM_SECONDS.reduce((sum, [, w]) => sum + w, 0);
+      let r = Math.random() * total;
+      for (const [sec, w] of BM_SECONDS) {
+        r -= w;
+        if (r < 0) return sec;
+      }
+      return 5;
+    }
+
+    // Af og til et særligt felt: alle tager, giv væk, dobbelt bong eller fri
+    function bmRollSpecial() {
+      return Math.random() < BM_SPECIAL_CHANCE ? BM_SPECIALS[Math.floor(Math.random() * BM_SPECIALS.length)] : "";
+    }
+
+    function renderBmPlayers() {
+      document.getElementById("bm-players").innerHTML = bmPlayers.map((name, i) => `
+        <span class="player-chip">${esc(name)}<button type="button" data-bm-remove="${i}" aria-label="${t("game.remove")}">✕</button></span>`).join("");
+    }
+
+    document.getElementById("bm-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = e.target.elements.player;
+      const name = input.value.trim();
+      if (!name || bmPlayers.length >= 10) return;
+      bmPlayers.push(name);
+      input.value = "";
+      renderBmPlayers();
+    });
+
+    document.getElementById("bm-players").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-bm-remove]");
+      if (!btn) return;
+      bmPlayers.splice(Number(btn.dataset.bmRemove), 1);
+      renderBmPlayers();
+    });
+
+    function renderBm() {
+      const names = bmNames();
+      const name = names[bmTurn % names.length];
+      document.getElementById("bm-turn").textContent = t("bm.turn", { name });
+      const btn = document.getElementById("bm-btn");
+      const hint = document.getElementById("bm-hint");
+      btn.disabled = bmPhase === "drawing";
+      btn.textContent = t({ draw: "bm.draw", drawing: "bm.drawing", ready: "bm.start", running: "bm.stop", result: "bm.next" }[bmPhase]);
+      btn.classList.toggle("bm-stop", bmPhase === "running");
+      hint.textContent = bmPhase === "ready" ? t("bm.readyHint") : bmPhase === "running" ? t("bm.runningHint") : "";
+      document.getElementById("bm-bong").classList.toggle("running", bmPhase === "running");
+      document.getElementById("bm-scores").innerHTML = bmPlayers.length
+        ? `<small>${t("bm.scores")}</small>` + names.map((n) => `<span class="bm-score${n === name ? " turn" : ""}">${esc(n)} · ${bmScores[n] || 0}</span>`).join("")
+        : "";
+    }
+
+    function bmShowCard(text, kind) {
+      const card = document.getElementById("bm-card");
+      card.className = `spin-card bm-card ${kind || ""}`;
+      card.innerHTML = `<p>${text}</p>`;
+    }
+
+    function bmDraw() {
+      bmPhase = "drawing";
+      document.getElementById("bm-card").classList.add("hidden");
+      document.getElementById("bm-clock").classList.add("hidden");
+      renderBm();
+      const el = document.getElementById("bm-seconds");
+      el.className = "bm-seconds rolling";
+      const roll = setInterval(() => { el.textContent = t("bm.sec", { n: 2 + Math.floor(Math.random() * 9) }); }, 70);
+      setTimeout(() => {
+        clearInterval(roll);
+        bmTarget = bmPickSeconds();
+        el.textContent = t("bm.sec", { n: bmTarget });
+        el.className = "bm-seconds set";
+        vibrate(60);
+        const name = bmNames()[bmTurn % bmNames().length];
+        const special = bmRollSpecial();
+        if (special === "all") bmTarget = 3;
+        if (special) {
+          el.textContent = special === "free" ? "🍀" : t("bm.sec", { n: bmTarget });
+          bmShowCard(esc(t("bm.special." + special, { n: bmTarget, name })));
+        }
+        bmPhase = special === "free" ? "result" : "ready";
+        renderBm();
+      }, 1300);
+    }
+
+    function bmStartPull() {
+      bmPhase = "running";
+      bmStartAt = performance.now();
+      document.getElementById("bm-card").classList.add("hidden");
+      const clock = document.getElementById("bm-clock");
+      clock.classList.remove("hidden", "blind");
+      clearInterval(bmLoop);
+      bmLoop = setInterval(() => {
+        const sec = (performance.now() - bmStartAt) / 1000;
+        if (sec < 1) clock.textContent = bmFmt(sec);
+        else {
+          clock.textContent = "?";
+          clock.classList.add("blind");
+        }
+      }, 50);
+      renderBm();
+      if (!bmRecorded) {
+        bmRecorded = true;
+        recordGame("bong");
+      }
+    }
+
+    function bmStopPull() {
+      clearInterval(bmLoop);
+      const got = (performance.now() - bmStartAt) / 1000;
+      const diff = got - bmTarget;
+      const clock = document.getElementById("bm-clock");
+      clock.classList.remove("blind");
+      clock.textContent = `${bmFmt(got)} s`;
+      const vars = { got: `${bmFmt(got)} s`, target: `${bmTarget} s` };
+      if (Math.abs(diff) <= 0.5) {
+        const name = bmNames()[bmTurn % bmNames().length];
+        bmScores[name] = (bmScores[name] || 0) + 1;
+        bmShowCard(esc(t("bm.perfect", vars)), "perfect");
+        vibrate([80, 50, 80, 50, 160]);
+      } else if (diff < 0) {
+        bmShowCard(esc(t("bm.short", { ...vars, extra: Math.ceil(-diff) })), "short");
+        vibrate(200);
+      } else {
+        bmShowCard(esc(t("bm.long", vars)), "long");
+      }
+      bmPhase = "result";
+      renderBm();
+    }
+
+    document.getElementById("bm-btn").addEventListener("click", () => {
+      if (bmPhase === "draw") return bmDraw();
+      if (bmPhase === "ready") return bmStartPull();
+      if (bmPhase === "running") return bmStopPull();
+      if (bmPhase === "result") {
+        bmTurn = (bmTurn + 1) % bmNames().length;
+        bmPhase = "draw";
+        document.getElementById("bm-card").classList.add("hidden");
+        document.getElementById("bm-clock").classList.add("hidden");
+        const el = document.getElementById("bm-seconds");
+        el.className = "bm-seconds";
+        el.textContent = "?";
+        renderBm();
+      }
+    });
+
+    document.getElementById("bm-start").addEventListener("click", () => {
+      bmTurn = 0;
+      bmScores = {};
+      bmPhase = "draw";
+      document.getElementById("bm-seconds").className = "bm-seconds";
+      document.getElementById("bm-seconds").textContent = "?";
+      document.getElementById("bm-card").classList.add("hidden");
+      document.getElementById("bm-clock").classList.add("hidden");
+      document.getElementById("bm-setup").classList.add("hidden");
+      document.getElementById("bm-play").classList.remove("hidden");
+      window.scrollTo(0, 0);
+      renderBm();
+    });
+
+    function bmExit() {
+      clearInterval(bmLoop);
+      bmPhase = "draw";
+      document.getElementById("bm-play").classList.add("hidden");
+      document.getElementById("bm-setup").classList.remove("hidden");
+    }
+
+    document.getElementById("bm-exit").addEventListener("click", bmExit);
+    document.querySelector('[data-view="bong"] [data-back]').addEventListener("click", bmExit);
+
+    // ==========================================================
     // WEED CHESS: skak mod en ven på hver sin telefon, med straffe
     // ==========================================================
     // Spillene ligger i chessGames. Mister man en brik, får man en straf fra
@@ -17393,6 +17835,11 @@
     // ==========================================================
     // Tilføj en ny dag øverst, når der kommer noget stort.
     const UPDATES = [
+      {
+        date: "2026-11-12",
+        da: ["Bong Master: bongen bestemmer sekunderne, og du skal ramme tiden i blinde"],
+        en: ["Bong Master: the bong decides the seconds, and you have to hit the time blind"],
+      },
       {
         date: "2026-11-04",
         da: [
