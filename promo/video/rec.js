@@ -2,7 +2,7 @@ const { chromium } = require('playwright');
 const fs = require('fs');
 const LANG = process.env.APPLANG || 'da';
 const RAW = LANG === 'da' ? 'raw' : 'raw_' + LANG;
-const HIDE = `.spin-prev,#spin-level-help,.view[data-view] > p.muted,#tonight-text,.timer-ring,.timer,.game-note,.tabbar,#quiz-setup > p.muted,.game-item small,#quiz-result{display:none!important}
+const HIDE = `.spin-prev,#spin-level-help,.view[data-view] > p.muted,#tonight-text,.timer-ring,.timer,.game-note,.tabbar,#quiz-setup > p.muted,.game-item small,.game-card[data-go="game"],.game-card[data-go="dice"],.game-card[data-go="double"],.game-card[data-go="musical"],.game-card[data-go="bong"],.game-card[data-go="blackjack"],#quiz-result{display:none!important}
 .tap-dot{position:fixed;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(255,255,255,.45);border:2px solid #fff;pointer-events:none;z-index:99999;animation:tapd .5s ease-out forwards}
 @keyframes tapd{from{transform:scale(.4);opacity:1}to{transform:scale(1.4);opacity:0}}`;
 async function clip(name, fn) {

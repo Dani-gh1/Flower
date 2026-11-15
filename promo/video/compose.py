@@ -114,7 +114,7 @@ def menu(mk):
     n = mk
     build("menu", [
         (0, n["games"], "For your next game night", dict(size=80, y=1150)),
-        (n["games"], n["spin2"], "6 games in one app", dict(size=90, y=1450, style="green")),
+        (n["games"], n["spin2"], "Spin the Joint, Weed Quiz,\nWeed Chess and more", dict(size=72, y=1450, style="green")),
         (n["spin2"], n["end"], "We're starting with the wheel", dict(size=78, y=1450)),
     ], "Game of Joints, Spin the Joint, Weed Quiz and more")
 
@@ -187,6 +187,53 @@ def devstory(mk):
         (mk["spin2"], mk["quiz"], "50+ updates in the first 3 days", dict(size=80, y=230, style="green")),
         (mk["quiz"], mk["end"], "Now I need people to break it.\nTell me what to add next.", dict(size=70, y=1350)),
     ], "Feedback welcome · made by one dev")
+
+
+# ---------- Uge 47 (2026) ----------
+@video
+def quizbluedream(mk):
+    quiz_video("quizbluedream", mk, "Blueberry + Haze = ?", "Blue Dream! Did you get it?", "Weed Quiz · strains, terpenes and trivia")
+
+@video
+def quiztrichomes(mk):
+    quiz_video("quiztrichomes", mk, "Grower question: what are the tiny crystals called?", "Trichomes! Did you know?", "130+ questions in Weed Quiz")
+
+@video
+def quizpurple(mk):
+    quiz_video("quizpurple", mk, "The easiest question in Weed Quiz?", "Purple. Obviously.", "Not all of them are this easy")
+
+@video
+def modes(mk):
+    build("modes", [
+        (0, mk["one"], "Team Spin 1 or Team Spin 2?", dict(size=80, y=1250)),
+        (mk["one"], mk["two"], "1: the joint picks WHO", dict(size=82, y=1250, style="green")),
+        (mk["two"], mk["card"], "2: the wheel picks WHAT", dict(size=82, y=1250, style="green")),
+        (mk["card"], mk["end"], "Which one does your crew play?", dict(size=74, y=230)),
+    ], "Spin the Joint 1 and 2 · pick your mode")
+
+@video
+def bigcrew(mk):
+    build("bigcrew", [
+        (0, mk["play"], "Big crew tonight?", dict(size=86, y=1300)),
+        (mk["play"], mk["card"], "8 players. One joint.\nWho's up?", dict(size=76, y=1450)),
+        (mk["card"], mk["end"], "Zoe. It's always Zoe.", dict(size=80, y=230, style="green")),
+    ], "Spin the Joint · up to 10 players")
+
+@video
+def chess(mk):
+    build("chess", [
+        (0, mk["chess"], "New in Flower", dict(size=90, y=1300)),
+        (mk["chess"], mk["chess"] + 2.6, "Weed Chess", dict(size=110, y=1300, style="green")),
+        (mk["chess"] + 2.6, mk["end"], "Play a friend, each on your own phone.\nLose a piece, draw a penalty card.", dict(size=64, y=1300)),
+    ], "Challenge a friend in Weed Chess")
+
+@video
+def hostfirst(mk):
+    build("hostfirst", [
+        (0, mk["spin"], "House rule: whoever hosts spins first", dict(size=74, y=1300)),
+        (mk["spin"], mk["card"], "…", dict(size=120, y=230)),
+        (mk["card"], mk["end"], "Turtle. Thanks for having us.", dict(size=76, y=230, style="green")),
+    ], "Spin the Joint 2 · the wheel decides")
 
 if __name__ == "__main__":
     names = sys.argv[1:] or list(VIDEOS)

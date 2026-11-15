@@ -24,3 +24,6 @@ python3 compose.py umulig hjul                               # tekst + slutkort 
   (Tornado, Skildpadde, Skorsten, DIY konge, Lykkehjulet), ikke "Lunge" eller "Pass the spliff".
 - Terningespillet og Double Trouble optages ikke (jointen sendes videre = deling).
 - Ingen sundhedspåstande, intet om køb/salg, kun 18+.
+- Spil-menuen: kortene for Game of Joints, Terningespillet, Double Trouble, Musical Marijuana, Bong Master og Blackjack
+  er skjult i optagelserne (CSS i `rec.js`): de viser "sug", en bong, "hits" eller at jointen sendes rundt.
+- Spin the Joint startes via `spinSetup()` i `scenes.js` (tilstand 1/2, sværhedsgrad, spillere, Start).
